@@ -169,12 +169,12 @@
       const heights = new Float32Array(await (await fetch('dem_height.bin')).arrayBuffer());
       const { w, h, zmin, zmax, worldW, worldH } = meta;
       const sc = 1 / Math.max(worldW, worldH);             // ayak izini ~1 birime normalize et
-      const exag = 1.7;                                    // dikey abartma
+      const exag = 1.3;                                    // dikey abartma (sıvanmayı azalt)
       const geo = new THREE.PlaneGeometry(worldW*sc, worldH*sc, w-1, h-1);
       const pos = geo.attributes.position;
       for (let i=0;i<pos.count;i++){ const z = heights[i]; if (!isFinite(z)) { pos.setXYZ(i, NaN, NaN, NaN); } else { pos.setZ(i, (z - zmin) * sc * exag); } }  // nodata -> ücgen kaldır
       geo.computeVertexNormals();
-      const tex = new THREE.TextureLoader().load('ortho_tex.jpg', () => { st.textContent='✓ Arazi hazır'; });
+      const tex = new THREE.TextureLoader().load('ortho.jpg', (t) => { t.anisotropy = renderer.capabilities.getMaxAnisotropy(); t.needsUpdate = true; st.textContent = '✓ Arazi hazır'; });
       tex.colorSpace = THREE.SRGBColorSpace;
       const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map:tex, roughness:1 }));
       mesh.rotation.x = -Math.PI/2;   // düz yatır
