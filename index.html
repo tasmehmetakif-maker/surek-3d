@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sürek Şelalesi — 3B</title>
+<style>
+  :root { color-scheme: dark; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#0e1116; font-family:system-ui,-apple-system,"Segoe UI",sans-serif; }
+  #app { position:fixed; inset:0; }
+  canvas { display:block; }
+  #hud { position:fixed; top:14px; left:16px; color:#e8edf2; pointer-events:none; text-shadow:0 1px 4px rgba(0,0,0,.6); }
+  #hud strong { font-size:15px; }
+  #stats { font-size:12px; opacity:.7; margin-top:2px; }
+  #quality { position:fixed; top:14px; right:16px; display:flex; gap:6px; }
+  #quality button { background:rgba(30,35,44,.82); color:#cdd5df; border:1px solid rgba(255,255,255,.12); padding:8px 14px; border-radius:9px; font-size:13px; cursor:pointer; backdrop-filter:blur(6px); transition:all .15s; }
+  #quality button:hover { background:rgba(54,62,76,.95); color:#fff; }
+  #quality button.active { background:#2f6df0; color:#fff; border-color:#2f6df0; }
+  #status { position:fixed; left:16px; bottom:14px; color:#e8edf2; font-size:13px; background:rgba(20,24,30,.85); padding:8px 12px; border-radius:8px; }
+  #help { position:fixed; bottom:14px; right:16px; color:#9aa3af; font-size:12px; background:rgba(20,24,30,.7); padding:6px 12px; border-radius:16px; }
+</style>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="hud"><strong>Sürek Şelalesi</strong><div id="stats"></div></div>
+  <div id="quality">
+    <button class="q" data-url="low.glb">Düşük</button>
+    <button class="q active" data-url="medium.glb">Orta</button>
+    <button class="q" data-url="high.glb">Yüksek</button>
+  </div>
+  <div id="status">Durum: başlatılıyor…</div>
+  <div id="help">Sürükle: döndür · Sağ tık: kaydır · Tekerlek: yakınlaş</div>
+
+  <script type="importmap">
+  { "imports": {
+    "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
+  }}
+  </script>
+  <script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+  const statusEl = document.getElementById('status');
+  const setStatus = (t, ok) => {
+    statusEl.textContent = 'Durum: ' + t;
+    statusEl.style.background = ok === true ? 'rgba(22,54,31,.92)' : ok === false ? 'rgba(58,26,26,.92)' : 'rgba(20,24,30,.85)';
+  };
+
+  const renderer = new THREE.WebGLRenderer({ antialias:true, preserveDrawingBuffer:true });
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.NeutralToneMapping ?? THREE.NoToneMapping;
+  document.getElementById('app').appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0e1116);
+  const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 100000);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x3a3f4a, 1.2));
+  scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+  const sun = new THREE.DirectionalLight(0xffffff, 1.3); sun.position.set(1,2,1.5); scene.add(sun);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; controls.dampingFactor = 0.08;
+
+  const draco = new DRACOLoader();
+  draco.setDecoderPath('https://unpkg.com/three@0.169.0/examples/jsm/libs/draco/');
+  const loader = new GLTFLoader();
+  loader.setDRACOLoader(draco);
+
+  let current = null;
+  function dispose(o) {
+    o.traverse(n => { if (n.isMesh) { n.geometry && n.geometry.dispose(); const m = n.material; (Array.isArray(m)?m:[m]).forEach(x => x && x.dispose()); } });
+  }
+  function loadModel(url, btn) {
+    setStatus('yükleniyor… (' + url + ')');
+    loader.load(url + '?t=' + Date.now(),
+      (gltf) => {
+        if (current) { scene.remove(current); dispose(current); }
+        current = gltf.scene; scene.add(current); frame(current); stats(current);
+        setStatus('✓ ' + url + ' yüklendi', true);
+        document.querySelectorAll('.q').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+      },
+      (xhr) => { if (xhr.total) setStatus('yükleniyor… %' + Math.round(xhr.loaded/xhr.total*100)); },
+      (err) => { setStatus('✗ Hata: ' + (err && err.message ? err.message : String(err)), false); console.error(err); }
+    );
+  }
+  document.querySelectorAll('.q').forEach(b => b.onclick = () => loadModel(b.dataset.url, b));
+
+  function frame(obj) {
+    const box = new THREE.Box3().setFromObject(obj);
+    const size = box.getSize(new THREE.Vector3());
+    const c = box.getCenter(new THREE.Vector3());
+    obj.position.sub(c);
+    const d = Math.max(size.x, size.y, size.z) || 1;
+    const dist = (d/2) / Math.tan(camera.fov * Math.PI / 360) * 1.6;
+    camera.position.copy(new THREE.Vector3(1, .75, 1).normalize().multiplyScalar(dist));
+    camera.near = dist/100; camera.far = dist*100; camera.updateProjectionMatrix();
+    controls.target.set(0,0,0); controls.minDistance = d*0.02; controls.maxDistance = d*8; controls.update();
+  }
+  function stats(obj) {
+    let t = 0; obj.traverse(o => { if (o.isMesh && o.geometry) { const g = o.geometry; t += g.index ? g.index.count/3 : g.attributes.position.count/3; } });
+    document.getElementById('stats').textContent = Math.round(t).toLocaleString('tr-TR') + ' üçgen';
+  }
+  addEventListener('resize', () => { camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+  (function loop(){ requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
+
+  // Baslangic: Orta kalite
+  loadModel('medium.glb', document.querySelector('.q.active'));
+  </script>
+</body>
+</html>
