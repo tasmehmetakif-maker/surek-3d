@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sürek Şelalesi — 3B</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
+<style>
+  :root { color-scheme: dark; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#0e1116; color:#e8edf2; font-family:system-ui,-apple-system,"Segoe UI",sans-serif; }
+  #tabs { position:fixed; top:0; left:0; right:0; height:46px; display:flex; gap:4px; align-items:center; padding:0 10px; background:rgba(16,20,26,.95); border-bottom:1px solid rgba(255,255,255,.08); z-index:20; }
+  #tabs strong { font-size:14px; margin-right:14px; }
+  .tab { background:transparent; color:#9aa3af; border:0; padding:8px 14px; border-radius:8px; font-size:13px; cursor:pointer; }
+  .tab:hover { color:#fff; background:rgba(255,255,255,.06); }
+  .tab.active { color:#fff; background:#2f6df0; }
+  .view { position:fixed; top:46px; left:0; right:0; bottom:0; display:none; }
+  .view.active { display:block; }
+  canvas { display:block; }
+  #quality { position:absolute; top:10px; right:14px; display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; max-width:60vw; z-index:10; }
+  #quality button { background:rgba(30,35,44,.82); color:#cdd5df; border:1px solid rgba(255,255,255,.12); padding:7px 12px; border-radius:9px; font-size:13px; cursor:pointer; backdrop-filter:blur(6px); }
+  #quality button:hover { background:rgba(54,62,76,.95); color:#fff; }
+  #quality button.active { background:#2f6df0; color:#fff; border-color:#2f6df0; }
+  #quality button.ultra.active { background:#b3471d; border-color:#b3471d; }
+  #ground { position:absolute; top:10px; left:50%; transform:translateX(-50%); display:flex; gap:5px; align-items:center; z-index:10; }
+  #ground span { color:#9aa3af; font-size:12px; }
+  #ground button { background:rgba(30,35,44,.82); color:#cdd5df; border:1px solid rgba(255,255,255,.12); padding:5px 10px; border-radius:8px; font-size:12px; cursor:pointer; }
+  #ground button.active { background:#1f7a4d; color:#fff; border-color:#1f7a4d; }
+  .hud { position:absolute; top:10px; left:14px; font-size:12px; opacity:.8; text-shadow:0 1px 4px rgba(0,0,0,.6); z-index:10; }
+  .status { position:absolute; left:14px; bottom:40px; font-size:13px; background:rgba(20,24,30,.85); padding:7px 11px; border-radius:8px; z-index:10; max-width:80vw; }
+  .osd { width:100%; height:100%; background:#0e1116; }
+  #warn { position:fixed; left:0; right:0; bottom:0; text-align:center; color:#f0d9a8; font-size:12px; background:rgba(40,30,12,.92); padding:6px 14px; z-index:30; }
+  .hint { position:absolute; right:14px; bottom:40px; font-size:12px; color:#9aa3af; background:rgba(20,24,30,.7); padding:5px 11px; border-radius:14px; z-index:10; }
+</style>
+</head>
+<body>
+  <div id="tabs">
+    <strong>Sürek Şelalesi</strong>
+    <button class="tab active" data-view="model">3B Model</button>
+    <button class="tab" data-view="ortho">Ortofoto</button>
+    <button class="tab" data-view="dem2d">DEM (2B)</button>
+    <button class="tab" data-view="dunya">Dünya 🌍</button>
+  </div>
+
+  <!-- 3B MODEL -->
+  <div class="view active" id="view-model">
+    <div class="hud" id="model-stats"></div>
+    <div id="quality">
+      <button class="q" data-url="low.glb">Düşük</button>
+      <button class="q active" data-url="medium.glb">Orta</button>
+      <button class="q" data-url="high.glb">Yüksek</button>
+      <button class="q ultra" data-url="ultra.glb">En Yüksek ⚡</button>
+    </div>
+    <div id="ground">
+      <span>Zemin:</span>
+      <button class="g" data-layer="sat">Uydu</button>
+      <button class="g" data-layer="topo">Topo</button>
+      <button class="g" data-layer="street">Sokak</button>
+      <button class="g active" data-layer="off">Kapalı</button>
+    </div>
+    <div class="status" id="model-status">Durum: başlatılıyor…</div>
+    <div class="hint">Sürükle: döndür · Sağ tık: kaydır · Tekerlek: yakınlaş</div>
+  </div>
+
+  <!-- ORTOFOTO -->
+  <div class="view" id="view-ortho"><div class="osd" id="osd-ortho"></div></div>
+
+  <!-- DEM 2B -->
+  <div class="view" id="view-dem2d"><div class="osd" id="osd-dem"></div></div>
+
+  <!-- DÜNYA (Cesium) -->
+  <div class="view" id="view-dunya">
+    <div id="cesium" style="width:100%; height:100%;"></div>
+    <div id="dunya-controls" style="position:absolute; top:12px; right:12px; z-index:30; background:rgba(20,24,30,.88); padding:8px 10px; border-radius:10px; font:13px system-ui,Segoe UI,sans-serif; color:#cfd6df; box-shadow:0 2px 10px rgba(0,0,0,.4);">
+      <label>Katman:
+        <select id="dunya-layer" style="background:#0e1116;color:#e8edf3;border:1px solid #2a313c;border-radius:6px;padding:3px 6px;">
+          <option value="uydu">Uydu</option>
+          <option value="sokak">Sokak</option>
+          <option value="topo">Topo</option>
+        </select>
+      </label>
+      <label style="margin-left:10px;"><input type="checkbox" id="dunya-labels" checked> Yer adları</label>
+      <button id="dunya-goto" style="margin-left:10px;background:#2d6cdf;color:#fff;border:0;border-radius:6px;padding:4px 9px;cursor:pointer;">Modele git</button>
+    </div>
+    <div class="status" id="dunya-status" style="z-index:30;">Durum: hazır</div>
+  </div>
+
+  <div id="warn">⚠️ "Yüksek" ve "En Yüksek" güçlü bir bilgisayar ister. Model açılmazsa veya takılırsa daha düşük bir kalite seçin.</div>
+
+  <script type="importmap">
+  { "imports": {
+    "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
+  }}
+  </script>
+  <script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+  let activeRender = null;
+
+  const views = {};
+  function registerView(name, onFirstShow) { views[name] = { init:false, onFirstShow }; }
+  function showView(name) {
+    document.getElementById('warn').style.display = (name === 'model') ? 'block' : 'none';
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === name));
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
+    const v = views[name];
+    if (v && !v.init) { v.init = true; try { v.onFirstShow(); } catch(e){ console.error(e); } }
+    if (v && v.onActivate) v.onActivate();
+  }
+  document.querySelectorAll('.tab').forEach(t => t.onclick = () => showView(t.dataset.view));
+
+  (function loop(){ requestAnimationFrame(loop); if (activeRender) activeRender(); })();
+
+  // ===================== 3B MODEL =====================
+  registerView('model', () => {});
+  {
+    const host = document.getElementById('view-model');
+    const statusEl = document.getElementById('model-status');
+    const setStatus = (t, ok) => { statusEl.textContent = 'Durum: ' + t; statusEl.style.background = ok===true?'rgba(22,54,31,.92)':ok===false?'rgba(70,26,26,.95)':'rgba(20,24,30,.85)'; };
+
+    const renderer = new THREE.WebGLRenderer({ antialias:true, preserveDrawingBuffer:true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.NeutralToneMapping ?? THREE.NoToneMapping;
+    host.appendChild(renderer.domElement);
+    renderer.domElement.addEventListener('webglcontextlost', (e) => { e.preventDefault(); setStatus('✗ Cihaz bu kaliteyi kaldıramadı — daha DÜŞÜK kalite seçin', false); });
+
+    const scene = new THREE.Scene(); scene.background = new THREE.Color(0x0e1116);
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100000);
+    scene.add(new THREE.HemisphereLight(0xffffff,0x3a3f4a,1.2));
+    scene.add(new THREE.AmbientLight(0xffffff,0.35));
+    const sun = new THREE.DirectionalLight(0xffffff,1.3); sun.position.set(1,2,1.5); scene.add(sun);
+    const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true;
+
+    const draco = new DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.169.0/examples/jsm/libs/draco/');
+    const loader = new GLTFLoader(); loader.setDRACOLoader(draco);
+    let current = null;
+    const dispose = o => o.traverse(n => { if (n.isMesh){ n.geometry?.dispose(); (Array.isArray(n.material)?n.material:[n.material]).forEach(m=>m?.dispose()); } });
+    function frame(obj){ const b=new THREE.Box3().setFromObject(obj), s=b.getSize(new THREE.Vector3()), c=b.getCenter(new THREE.Vector3()); obj.position.sub(c); const d=Math.max(s.x,s.y,s.z)||1, dist=(d/2)/Math.tan(camera.fov*Math.PI/360)*1.6; camera.position.copy(new THREE.Vector3(1,.75,1).normalize().multiplyScalar(dist)); camera.near=dist/100; camera.far=dist*100; camera.updateProjectionMatrix(); controls.target.set(0,0,0); controls.minDistance=d*.02; controls.maxDistance=d*8; controls.update(); }
+    function stats(obj){ let t=0; obj.traverse(o=>{ if(o.isMesh&&o.geometry){ const g=o.geometry; t+=g.index?g.index.count/3:g.attributes.position.count/3; } }); document.getElementById('model-stats').textContent = Math.round(t).toLocaleString('tr-TR')+' üçgen'; }
+    function load(url, btn){ setStatus('yükleniyor… ('+url+')'); loader.load(url+'?t='+Date.now(),
+      g=>{ if(current){scene.remove(current);dispose(current);} current=g.scene; scene.add(current); frame(current); if(curLayer!=='off') placeGround(); stats(current); setStatus('✓ '+url+' yüklendi', true); document.querySelectorAll('.q').forEach(b=>b.classList.remove('active')); btn?.classList.add('active'); },
+      x=>{ if(x.total) setStatus('yükleniyor… %'+Math.round(x.loaded/x.total*100)); },
+      e=>{ console.error(e); setStatus('✗ "'+url+'" açılamadı — daha DÜŞÜK kalite seçin', false); }); }
+    document.querySelectorAll('.q').forEach(b => b.onclick = () => load(b.dataset.url, b));
+
+    // --- Uydu / harita zemin ---
+    let ground = null, curLayer = 'off';
+    const gtex = {};
+    const tl = new THREE.TextureLoader();
+    function placeGround(){ if(!ground||!current) return; const box=new THREE.Box3().setFromObject(current), c=box.getCenter(new THREE.Vector3()); ground.scale.set(2000,2000,1); ground.position.set(c.x, box.min.y, c.z); }
+    function setGround(layer){
+      curLayer = layer;
+      document.querySelectorAll('.g').forEach(b=>b.classList.toggle('active', b.dataset.layer===layer));
+      if(layer==='off'){ if(ground) ground.visible=false; return; }
+      if(!ground){ ground=new THREE.Mesh(new THREE.PlaneGeometry(1,1), new THREE.MeshBasicMaterial({side:THREE.DoubleSide})); ground.rotation.x=-Math.PI/2; scene.add(ground); }
+      ground.visible=true;
+      const url={sat:'ground_sat.jpg',topo:'ground_topo.jpg',street:'ground_street.jpg'}[layer];
+      if(!gtex[layer]){ gtex[layer]=tl.load(url); gtex[layer].colorSpace=THREE.SRGBColorSpace; }
+      ground.material.map=gtex[layer]; ground.material.needsUpdate=true;
+      placeGround();
+    }
+    document.querySelectorAll('.g').forEach(b=>b.onclick=()=>setGround(b.dataset.layer));
+
+    function resize(){ const w=host.clientWidth, h=host.clientHeight; renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+    addEventListener('resize', resize);
+    views.model.onActivate = () => { resize(); activeRender = () => { controls.update(); renderer.render(scene,camera); }; };
+    resize();
+    views.model.onActivate();
+    load('medium.glb', document.querySelector('.q.active'));
+  }
+
+  // ===================== ORTOFOTO =====================
+  registerView('ortho', () => {
+    OpenSeadragon({ element: document.getElementById('osd-ortho'), tileSources:{ type:'image', url:'ortho.jpg' }, showNavigationControl:false, gestureSettingsMouse:{clickToZoom:false} });
+  });
+  views.ortho && (views.ortho.onActivate = () => { activeRender = null; });
+
+  // ===================== DEM 2B =====================
+  registerView('dem2d', () => {
+    OpenSeadragon({ element: document.getElementById('osd-dem'), tileSources:{ type:'image', url:'dem_relief.jpg' }, showNavigationControl:false, gestureSettingsMouse:{clickToZoom:false} });
+  });
+  views.dem2d && (views.dem2d.onActivate = () => { activeRender = null; });
+
+  // ===================== DÜNYA (Cesium 3B küre) =====================
+  function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=()=>rej(new Error('yüklenemedi: '+src)); document.head.appendChild(s); }); }
+  registerView('dunya', async () => {
+    activeRender = null;  // Three.js döngüsünü durdur (Cesium kendi döngüsünü kullanır)
+    const st = document.getElementById('dunya-status');
+    const setS = (t,bad)=>{ st.textContent='Durum: '+t; st.style.background = bad?'rgba(70,26,26,.95)':'rgba(20,24,30,.85)'; };
+    setS('Cesium yükleniyor… (büyük kütüphane, ilk açılış birkaç saniye)');
+    try {
+      if(!window.Cesium){
+        window.CESIUM_BASE_URL = 'https://unpkg.com/cesium/Build/Cesium/';
+        const css=document.createElement('link'); css.rel='stylesheet'; css.href='https://unpkg.com/cesium/Build/Cesium/Widgets/widgets.css'; document.head.appendChild(css);
+        await loadScript('https://unpkg.com/cesium/Build/Cesium/Cesium.js');
+      }
+      // Ücretsiz (anahtarsız) taban katmanları — Esri tile sırası {z}/{y}/{x}, OSM {z}/{x}/{y}
+      const layers = {
+        uydu:  ()=> new Cesium.UrlTemplateImageryProvider({ url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', maximumLevel:19, credit:'Esri, Maxar, Earthstar Geographics' }),
+        sokak: ()=> new Cesium.UrlTemplateImageryProvider({ url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png', maximumLevel:19, credit:'© OpenStreetMap katkıda bulunanlar' }),
+        topo:  ()=> new Cesium.UrlTemplateImageryProvider({ url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', maximumLevel:19, credit:'Esri' })
+      };
+      const labelsProv = ()=> new Cesium.UrlTemplateImageryProvider({ url:'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', maximumLevel:19, credit:'Esri' });
+
+      const viewer = new Cesium.Viewer('cesium', {
+        baseLayer: new Cesium.ImageryLayer(layers.uydu()),
+        baseLayerPicker:false, geocoder:false, homeButton:false, sceneModePicker:false,
+        navigationHelpButton:false, animation:false, timeline:false, infoBox:false, selectionIndicator:false, fullscreenButton:true
+      });
+      window.CV = viewer;
+      let baseLayer = viewer.imageryLayers.get(0);
+      const labelLayer = new Cesium.ImageryLayer(labelsProv());
+      viewer.imageryLayers.add(labelLayer);                 // yer adları (en üstte)
+      // 3B kabartma (arazi) — küresel Esri yükseklik
+      viewer.scene.setTerrain(new Cesium.Terrain(Cesium.ArcGISTiledElevationTerrainProvider.fromUrl('https://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer')));
+
+      // Modeli gerçek konumuna yerleştir.
+      // GLB Y-yukarı (yükseklik = Y ekseni); Cesium burada ekseni düz eşlediği için
+      // model yan yatıyordu. Çözüm: ENU çerçevesi × Doğu ekseni etrafında +90° döndürme
+      // matrisiyle glTF +Y'yi gerçek Yukarı'ya çeviriyoruz (heading de doğru oturuyor).
+      const lon=39.325927, lat=39.659821, h=1309;   // h = ortalama yükseklik (zemin)
+      const modelPos = Cesium.Cartesian3.fromDegrees(lon, lat, h);
+      const enuFrame = Cesium.Transforms.eastNorthUpToFixedFrame(modelPos);
+      const modelMat = Cesium.Matrix4.multiplyByMatrix3(enuFrame, Cesium.Matrix3.fromRotationX(Cesium.Math.toRadians(90)), new Cesium.Matrix4());
+      const modelQuat = Cesium.Quaternion.fromRotationMatrix(Cesium.Matrix4.getMatrix3(modelMat, new Cesium.Matrix3()));
+      viewer.entities.add({
+        name:'Sürek Şelalesi',
+        position: modelPos,
+        orientation: modelQuat,
+        model:{ uri:'medium.glb' }
+      });
+      // Kamera: modele açılı bak. flyTo (süreli) hem güzel animasyon verir hem de
+      // uçuş sırasında karoların akmasını sağlar (flyTo{duration:0} yön vermiyordu).
+      function gotoModel(dur){
+        viewer.camera.flyTo({
+          destination: Cesium.Cartesian3.fromDegrees(lon, lat-0.012, h+1700),
+          orientation:{ heading:Cesium.Math.toRadians(0), pitch:Cesium.Math.toRadians(-33), roll:0 },
+          duration: (dur===undefined ? 1.5 : dur)
+        });
+      }
+      // İlk açılış: önce bölgeyi göster (düşük-zoom karolar hızlı yüklenir), sonra modele süzül
+      viewer.camera.setView({ destination: Cesium.Cartesian3.fromDegrees(lon, lat, 45000), orientation:{ heading:0, pitch:Cesium.Math.toRadians(-90), roll:0 } });
+      gotoModel(3);
+
+      // Kontroller: katman / yer adları / modele git
+      function setBase(key){
+        const nl = new Cesium.ImageryLayer(layers[key]());
+        viewer.imageryLayers.add(nl, 0);            // en alta
+        viewer.imageryLayers.remove(baseLayer, true);
+        baseLayer = nl;
+      }
+      const selL=document.getElementById('dunya-layer'); if(selL){ selL.value='uydu'; selL.onchange=e=>setBase(e.target.value); }
+      const cbL=document.getElementById('dunya-labels'); if(cbL){ cbL.checked=true; cbL.onchange=e=>{ labelLayer.show=e.target.checked; }; }
+      const btnG=document.getElementById('dunya-goto'); if(btnG) btnG.onclick=()=>gotoModel();
+
+      setS('✓ Hazır — sürükle: kaydır · sağ tık-sürükle: eğ/döndür · tekerlek: yakınlaş');
+    } catch(e){ console.error(e); setS('✗ Yüklenemedi: '+(e.message||e), true); }
+  });
+  </script>
+</body>
+</html>

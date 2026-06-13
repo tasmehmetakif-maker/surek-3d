@@ -1,0 +1,85 @@
+{
+  "surek": {
+    "photos": 629,
+    "lat": 39.659003,
+    "lon": 39.323105,
+    "camera": "DJI FC3582",
+    "areaW": 838,
+    "areaH": 814,
+    "zmin": 1199,
+    "zmax": 1420,
+    "gsd": 5.2
+  },
+  "stadyum": {
+    "photos": 555,
+    "lat": 39.749521,
+    "lon": 39.494942,
+    "camera": "DJI FC3582"
+  },
+  "mezra": {
+    "photos": 2379,
+    "lat": 39.66263,
+    "lon": 39.325029,
+    "camera": "DJI FC3582",
+    "areaW": 3154,
+    "areaH": 2177,
+    "zmin": 1181,
+    "zmax": 1760,
+    "gsd": 30.2
+  },
+  "buzul": {
+    "photos": 2710,
+    "lat": 39.490681,
+    "lon": 39.394027,
+    "camera": "DJI FC3582",
+    "areaW": 3823,
+    "areaH": 3164,
+    "zmin": 2291,
+    "zmax": 2937,
+    "gsd": 15.4
+  },
+  "kemah": {
+    "photos": 1449,
+    "lat": 39.576895,
+    "lon": 38.949948,
+    "camera": "DJI FC3582",
+    "areaW": 998,
+    "areaH": 963,
+    "zmin": 912,
+    "zmax": 1123,
+    "gsd": 4.6
+  },
+  "otlukbeli": {
+    "photos": 1983,
+    "lat": 40.017674,
+    "lon": 39.975767,
+    "camera": "DJI FC3582",
+    "areaW": 897,
+    "areaH": 714,
+    "zmin": 1729,
+    "zmax": 1893,
+    "gsd": 3.8
+  },
+  "polat": {
+    "photos": 2533,
+    "lat": 39.530576,
+    "lon": 38.626022,
+    "camera": "DJI FC3582",
+    "areaW": 1480,
+    "areaH": 1455,
+    "zmin": 1324,
+    "zmax": 1533,
+    "gsd": 9.6
+  },
+  "tomara": {
+    "photos": 3370,
+    "lat": 40.080245,
+    "lon": 39.050229,
+    "camera": "DJI FC3582",
+    "areaW": 1216,
+    "areaH": 1003,
+    "zmin": 1194,
+    "zmax": 1551,
+    "gsd": 6.7
+  }
+}

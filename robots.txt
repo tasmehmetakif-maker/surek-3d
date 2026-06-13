@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://tasmehmetakif-maker.github.io/surek-3d/sitemap.xml
