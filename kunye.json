@@ -81,5 +81,16 @@
     "zmin": 1194,
     "zmax": 1551,
     "gsd": 6.7
+  },
+  "konarli": {
+    "photos": 3169,
+    "lat": 39.540452,
+    "lon": 40.4746,
+    "camera": "DJI FC3582",
+    "areaW": 1457,
+    "areaH": 1459,
+    "zmin": 1915,
+    "zmax": 2200,
+    "gsd": 10.7
   }
 }
