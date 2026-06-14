@@ -691,11 +691,21 @@ document.querySelectorAll('.pub .pt').forEach(function(el){
       function resize(){ var w=wrap.clientWidth,h=wrap.clientHeight; if(!w||!h) return; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
       // Her acilista RASTGELE model (yenileyince degisir). Yalniz YAYINDA olan modeller
       // (GLB erisilebilir): otlukbeli, stadyum. Coming-soon modeller calinma korumasi nedeniyle havuzda yok.
-      var POOL=[{s:'otlukbeli',n:'Otlukbeli Gölü'},{s:'stadyum',n:'Erzincan Stadyumu'}];
+      var POOL=[
+        {s:'otlukbeli',n:'Otlukbeli Gölü',g:'otlukbeli/low.glb'},
+        {s:'stadyum',n:'Erzincan Stadyumu',g:'stadyum/low.glb'},
+        {s:'buzul',n:'Katır Buzul Gölleri',g:'buzul/low.glb'},
+        {s:'mezra',n:'Mezra',g:'mezra/low.glb'},
+        {s:'kemah',n:'Peribacaları',g:'kemah/low.glb'},
+        {s:'polat',n:'Polat Gölü',g:'polat/low.glb'},
+        {s:'tomara',n:'Tomara Şelalesi',g:'tomara/low.glb'},
+        {s:'konarli',n:'Konarlı Şelalesi',g:'konarli/low.glb'},
+        {s:'surek',n:'Sürek Şelalesi',g:'low.glb'}
+      ];
       var pick=POOL[Math.floor(Math.random()*POOL.length)];
       var poster=document.querySelector('.hero-poster'); if(poster) poster.src=pick.s+'-onizleme.jpg';
       var cm=document.getElementById('hc-model'); if(cm) cm.textContent=pick.n;
-      loader.load(pick.s+'/low.glb', function(g){
+      loader.load(pick.g, function(g){
         var mo=g.scene, box=new THREE.Box3().setFromObject(mo), s=box.getSize(new THREE.Vector3()), c=box.getCenter(new THREE.Vector3());
         mo.position.sub(c); var d=Math.max(s.x,s.y,s.z)||100;
         var tilt=new THREE.Group(); tilt.add(mo); tilt.rotation.x=-0.62; pivot.add(tilt);
