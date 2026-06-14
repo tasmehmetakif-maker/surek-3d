@@ -41,6 +41,7 @@
   #quality button:hover { background:rgba(54,62,76,.95); color:#fff; }
   #quality button.active { background:#2f6df0; color:#fff; border-color:#2f6df0; }
   #quality button.ultra.active { background:#b3471d; border-color:#b3471d; }
+  #quality .qlabel { flex-basis:100%; text-align:right; font-size:10.5px; letter-spacing:.3px; text-transform:uppercase; color:#8b94a3; margin-bottom:1px; }
   .hud { position:absolute; top:10px; left:14px; font-size:12px; opacity:.8; text-shadow:0 1px 4px rgba(0,0,0,.6); z-index:10; }
   .status { position:absolute; left:14px; bottom:40px; font-size:13px; background:rgba(20,24,30,.85); padding:7px 11px; border-radius:8px; z-index:10; max-width:80vw; }
   .osd { width:100%; height:100%; background:#0e1116; }
@@ -131,10 +132,11 @@
   <div class="view active" id="view-model">
     <div class="hud" id="model-stats"></div>
     <div id="quality">
-      <button class="q" data-url="low.glb" data-i18n="q.low">Düşük</button>
-      <button class="q active" data-url="medium.glb" data-i18n="q.medium">Orta</button>
-      <button class="q" data-url="high.glb" data-i18n="q.high">Yüksek</button>
-      <button class="q ultra" data-url="ultra.glb" data-i18n="q.ultra" data-fallback="https://surek-ultra.tas-mehmet-akif.workers.dev/polat-ultra.glb?v=2">En Yüksek</button>
+      <span class="qlabel" data-i18n="q.label">Model kalitesi</span>
+      <button class="q" data-url="low.glb" data-i18n="q.low" data-i18n-title="q.low.t" title="Düşük detay — en hızlı">Düşük</button>
+      <button class="q active" data-url="medium.glb" data-i18n="q.medium" data-i18n-title="q.medium.t" title="Dengeli (önerilen)">Orta</button>
+      <button class="q" data-url="high.glb" data-i18n="q.high" data-i18n-title="q.high.t" title="Yüksek detay">Yüksek</button>
+      <button class="q ultra" data-url="ultra.glb" data-i18n="q.ultra" data-i18n-title="q.ultra.t" title="Tam detay" data-fallback="https://surek-ultra.tas-mehmet-akif.workers.dev/polat-ultra.glb?v=2">En Yüksek</button>
     </div>
     <div class="status" id="model-status">Durum: başlatılıyor…</div>
     <div class="hint" data-i18n="hint.controls">Sürükle: döndür · Sağ tık: kaydır · Tekerlek: yakınlaş</div>
@@ -292,6 +294,7 @@
   THREE.Mesh.prototype.raycast = acceleratedRaycast;
 
   let activeRender = null;
+  const IMGV = '?v=3';  // ortofoto/DEM/kontur görüntüleri için cache-bust sürümü (kontur değişince artır)
 
   const views = {};
   function registerView(name, onFirstShow) { views[name] = { init:false, onFirstShow }; }
@@ -805,13 +808,13 @@ ER  - `;
 
   // ===================== ORTOFOTO =====================
   registerView('ortho', () => {
-    OpenSeadragon({ element: document.getElementById('osd-ortho'), tileSources:{ type:'image', url:'ortho.jpg' }, showNavigationControl:false, gestureSettingsMouse:{clickToZoom:false} });
+    OpenSeadragon({ element: document.getElementById('osd-ortho'), tileSources:{ type:'image', url:'ortho.jpg'+IMGV }, showNavigationControl:false, gestureSettingsMouse:{clickToZoom:false} });
   });
   views.ortho && (views.ortho.onActivate = () => { activeRender = null; });
 
   // ===================== DEM 2B =====================
   registerView('dem2d', () => {
-    const v = OpenSeadragon({ element: document.getElementById('osd-dem'), tileSources:{ type:'image', url:'dem_relief.jpg' }, showNavigationControl:false, gestureSettingsMouse:{clickToZoom:false} });
+    const v = OpenSeadragon({ element: document.getElementById('osd-dem'), tileSources:{ type:'image', url:'dem_relief.jpg'+IMGV }, showNavigationControl:false, gestureSettingsMouse:{clickToZoom:false} });
     // Ölçek çubuğu — DEM gerçek genişliği 1479.9 m
     v.addHandler('open', () => {
       if (typeof v.scalebar !== 'function') return;
@@ -828,7 +831,7 @@ ER  - `;
     document.querySelectorAll('#dem-layers .dl').forEach(b => b.onclick = () => {
       document.querySelectorAll('#dem-layers .dl').forEach(x => x.classList.remove('active'));
       b.classList.add('active');
-      v.open({ type:'image', url: b.dataset.img });
+      v.open({ type:'image', url: b.dataset.img+IMGV });
       document.querySelectorAll('#dem-legend .leg').forEach(l => { l.style.display = (l.dataset.leg === b.dataset.leg) ? 'block' : 'none'; });
     });
   });
@@ -839,7 +842,7 @@ ER  - `;
     const wrap=document.getElementById('cmp-wrap'), base=document.getElementById('cmp-base'),
           topImg=document.getElementById('cmp-top-img'), top=document.getElementById('cmp-top'),
           div=document.getElementById('cmp-divider'), lblR=document.getElementById('cmp-lbl-r');
-    base.src='ortho.jpg'; topImg.src='dem_relief.jpg';
+    base.src='ortho.jpg'+IMGV; topImg.src='dem_relief.jpg'+IMGV;
     let pct=50, drag=false;
     function setPct(p){ pct=Math.max(0,Math.min(100,p)); top.style.clipPath='inset(0 0 0 '+pct+'%)'; div.style.left=pct+'%'; }
     setPct(50);
@@ -850,7 +853,7 @@ ER  - `;
     wrap.addEventListener('pointerdown', e=>{ if(e.target!==div && !div.contains(e.target)) setPct(xToPct(e.clientX)); });
     document.querySelectorAll('#cmp-pick .cdl').forEach(b=>b.onclick=()=>{
       document.querySelectorAll('#cmp-pick .cdl').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active'); topImg.src=b.dataset.img;
+      b.classList.add('active'); topImg.src=b.dataset.img+IMGV;
       if(lblR){ lblR.setAttribute('data-i18n', b.dataset.key); lblR.textContent=(window.T?T(b.dataset.key):b.textContent); }
     });
   });
