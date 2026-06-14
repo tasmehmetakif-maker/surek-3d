@@ -98,6 +98,8 @@
     'dem.slope': ['Eğim', 'Slope'],
     'dem.aspect': ['Bakı', 'Aspect'],
     'dem.contour': ['Eşyükselti', 'Contours'],
+    'dem.contourtgl': ['⛰ Eşyükselti', '⛰ Contours'],
+    'dem.contourtgl.t': ['Eşyükselti eğrilerini aç/kapa (üstüne bindir)', 'Toggle contour lines (overlay)'],
     'leg.elev': ['Yükseklik (m)', 'Elevation (m)'],
     'leg.contour': ['Eşyükselti', 'Contours'],
     'leg.contour.major': ['Ana çizgi', 'Index line'],

@@ -233,7 +233,7 @@
       <button class="dl active" data-img="dem_relief.jpg" data-leg="dem" data-i18n="dem.relief">Renkli DEM</button>
       <button class="dl" data-img="slope.jpg" data-leg="slope" data-i18n="dem.slope">Eğim</button>
       <button class="dl" data-img="aspect.jpg" data-leg="aspect" data-i18n="dem.aspect">Bakı</button>
-      <button class="dl" data-img="contour.jpg" data-leg="contour" data-i18n="dem.contour">Eşyükselti</button>
+      <button class="dl dl-toggle" id="dem-contour" data-i18n="dem.contourtgl" title="Eşyükselti eğrilerini aç/kapa">⛰ Eşyükselti</button>
     </div>
     <div id="dem-legend">
       <div class="leg" data-leg="dem">
@@ -875,25 +875,30 @@ ER  - `;
   // ===================== DEM 2B =====================
   registerView('dem2d', () => {
     const v = OpenSeadragon({ element: document.getElementById('osd-dem'), tileSources:{ type:'image', url:'dem_relief.jpg'+IMGV }, showNavigationControl:false, gestureSettingsMouse:{clickToZoom:false} });
-    // Ölçek çubuğu — DEM gerçek genişliği 3154.5 m
-    v.addHandler('open', () => {
-      if (typeof v.scalebar !== 'function') return;
+    let contourOn = false;
+    function addScalebar(){
+      if (typeof v.scalebar !== 'function' || !v.world.getItemAt(0)) return;
       const wpx = v.world.getItemAt(0).getContentSize().x;
-      v.scalebar({
-        type: OpenSeadragon.ScalebarType.MAP,
-        pixelsPerMeter: wpx / 3154.5,
-        location: OpenSeadragon.ScalebarLocation.BOTTOM_RIGHT,
-        minWidth: '90px', barThickness: 3,
-        color: '#e8edf2', fontColor: '#e8edf2',
-        backgroundColor: 'rgba(18,22,28,.75)', fontSize: '12px'
-      });
-    });
-    document.querySelectorAll('#dem-layers .dl').forEach(b => b.onclick = () => {
-      document.querySelectorAll('#dem-layers .dl').forEach(x => x.classList.remove('active'));
+      v.scalebar({ type: OpenSeadragon.ScalebarType.MAP, pixelsPerMeter: wpx / 3154.5, location: OpenSeadragon.ScalebarLocation.BOTTOM_RIGHT, minWidth:'90px', barThickness:3, color:'#e8edf2', fontColor:'#e8edf2', backgroundColor:'rgba(18,22,28,.75)', fontSize:'12px' });
+    }
+    function addContour(){ if(contourOn) v.addTiledImage({ tileSource:{type:'image', url:'contour_overlay.png'+IMGV}, index:1, opacity:1 }); }
+    function removeContour(){ while(v.world.getItemCount() > 1) v.world.removeItem(v.world.getItemAt(v.world.getItemCount()-1)); }
+    // Taban katman degisince (open) ölçek + (acıksa) kontur overlay yeniden eklenir
+    v.addHandler('open', () => { addScalebar(); addContour(); });
+    // Taban katman butonlari (toggle haric)
+    document.querySelectorAll('#dem-layers .dl:not(.dl-toggle)').forEach(b => b.onclick = () => {
+      document.querySelectorAll('#dem-layers .dl:not(.dl-toggle)').forEach(x => x.classList.remove('active'));
       b.classList.add('active');
       v.open({ type:'image', url: b.dataset.img+IMGV });
-      document.querySelectorAll('#dem-legend .leg').forEach(l => { l.style.display = (l.dataset.leg === b.dataset.leg) ? 'block' : 'none'; });
+      document.querySelectorAll('#dem-legend .leg').forEach(l => { if(l.dataset.leg!=='contour') l.style.display = (l.dataset.leg === b.dataset.leg) ? 'block' : 'none'; });
     });
+    // Kontur eğrileri aç/kapa (her taban haritanın üstüne bindirir)
+    const ctBtn = document.getElementById('dem-contour');
+    if(ctBtn) ctBtn.onclick = () => {
+      contourOn = !contourOn; ctBtn.classList.toggle('active', contourOn);
+      if(contourOn) addContour(); else removeContour();
+      document.querySelectorAll('#dem-legend .leg').forEach(l => { if(l.dataset.leg==='contour') l.style.display = contourOn ? 'block' : 'none'; });
+    };
   });
   views.dem2d && (views.dem2d.onActivate = () => { activeRender = null; });
 
