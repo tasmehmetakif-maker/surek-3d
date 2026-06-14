@@ -4,9 +4,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Otlukbeli Gölü — 3B Model</title>
+<title>Otlukbeli Gölü-Otlukbeli (Erzincan) — 3B Model</title>
 <meta name="description" content="Otlukbeli (Erzincan) gölü ve çevresinin yüksek çözünürlüklü fotogrametri 3B arazi modeli. Döndür, yakınlaş, gerçek metre ile ölç; DEM (yükseklik/eğim/bakı)." />
-<meta property="og:title" content="Otlukbeli Gölü — İnteraktif 3B Model" />
+<meta property="og:title" content="Otlukbeli Gölü (Otlukbeli, Erzincan) — İnteraktif 3B Model" />
 <meta property="og:description" content="Otlukbeli (Erzincan) gölü ve çevresinin yüksek çözünürlüklü fotogrametri 3B arazi modeli. Döndür, yakınlaş, gerçek metre ile ölç; DEM (yükseklik/eğim/bakı)." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://mehmetakiftas.com/otlukbeli/" />
@@ -18,7 +18,7 @@
 <link rel="canonical" href="https://mehmetakiftas.com/otlukbeli/" />
 <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
 <link rel="apple-touch-icon" href="../favicon.svg" />
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Otlukbeli Gölü — İHA fotogrametrisi 3B modeli","description":"Otlukbeli (Erzincan) gölü ve çevresinin yüksek çözünürlüklü fotogrametri 3B arazi modeli. Döndür, yakınlaş, gerçek metre ile ölç; DEM (yükseklik/eğim/bakı).","url":"https://mehmetakiftas.com/otlukbeli/","image":"https://mehmetakiftas.com/otlukbeli-onizleme.jpg","creator":{"@type":"Person","name":"Mehmet Akif Taş"},"measurementTechnique":"SfM–MVS fotogrametri (Agisoft Metashape)","keywords":["fotogrametri","3B model","SfM","DEM","ortofoto","jeomorfoloji"],"license":"https://creativecommons.org/licenses/by/4.0/","isAccessibleForFree":true,"encodingFormat":"model/gltf-binary","dateCreated":"2025-06-07","spatialCoverage":{"@type":"Place","geo":{"@type":"GeoCoordinates","latitude":40.017674,"longitude":39.975767}}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Otlukbeli Gölü-Otlukbeli (Erzincan) — İHA fotogrametrisi 3B modeli","description":"Otlukbeli (Erzincan) gölü ve çevresinin yüksek çözünürlüklü fotogrametri 3B arazi modeli. Döndür, yakınlaş, gerçek metre ile ölç; DEM (yükseklik/eğim/bakı).","url":"https://mehmetakiftas.com/otlukbeli/","image":"https://mehmetakiftas.com/otlukbeli-onizleme.jpg","creator":{"@type":"Person","name":"Mehmet Akif Taş"},"measurementTechnique":"SfM–MVS fotogrametri (Agisoft Metashape)","keywords":["fotogrametri","3B model","SfM","DEM","ortofoto","jeomorfoloji"],"license":"https://creativecommons.org/licenses/by/4.0/","isAccessibleForFree":true,"encodingFormat":"model/gltf-binary","dateCreated":"2025-06-07","spatialCoverage":{"@type":"Place","geo":{"@type":"GeoCoordinates","latitude":40.017674,"longitude":39.975767}}}</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
 <script src="../openseadragon-scalebar.js"></script>
 <script src="../i18n.js"></script>
@@ -57,7 +57,9 @@
   #tools button.on { background:#2f6df0; color:#fff; border-color:#2f6df0; }
   #tools button.thelp { background:rgba(47,109,240,.16); border-color:rgba(47,109,240,.4); }
   #tools button.thelp:hover { background:rgba(47,109,240,.34); color:#fff; }
-  #measure-readout { position:absolute; left:50%; bottom:92px; transform:translateX(-50%); display:none; background:rgba(20,24,30,.94); border:1px solid rgba(255,255,255,.12); padding:8px 13px; border-radius:9px; font-size:13px; z-index:12; white-space:nowrap; }
+  /* Ölçüm/okuma kutusu ÜST-ORTADA (tabs'ın altında) — alttaki çok-satırlı kategorili
+     toolbar ne kadar yüksek olursa olsun menü adlarıyla ASLA çakışmaz. */
+  #measure-readout { position:absolute; left:50%; top:56px; transform:translateX(-50%); display:none; max-width:94vw; text-align:center; background:rgba(20,24,30,.96); border:1px solid rgba(255,255,255,.14); padding:8px 13px; border-radius:9px; font-size:13px; z-index:16; white-space:normal; box-shadow:0 8px 24px -10px #000; }
   #measure-readout b { color:#ffcf66; }
   #profile-panel { position:absolute; top:62px; right:14px; width:380px; max-width:46vw; display:none; background:rgba(12,15,21,.94); border:1px solid rgba(255,255,255,.12); border-radius:13px; padding:11px 13px; z-index:14; box-shadow:0 20px 46px -26px #000; backdrop-filter:blur(14px); }
   #profile-panel h5 { font-size:12.5px; font-weight:600; color:#cdd5df; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; }
@@ -136,7 +138,7 @@
 </head>
 <body>
   <div id="tabs">
-    <strong>Otlukbeli Gölü</strong>
+    <strong>Otlukbeli Gölü-Otlukbeli (Erzincan)</strong>
     <button class="tab active" data-view="model" data-i18n="tab.model">3B Model</button>
     <button class="tab" data-view="ortho" data-i18n="tab.ortho">Ortofoto</button>
     <button class="tab" data-view="dem2d" data-i18n="tab.dem2d">DEM (2B)</button>
@@ -204,7 +206,7 @@
       <div class="sun-note" data-i18n="sun.note">Gölgeler, modelin konumundan (enlem/boylam) ve seçilen tarih-saatten hesaplanan gerçek güneş açısıyla çizilir.</div>
     </div>
     <div id="kunye">
-      <h4>Otlukbeli Gölü — <span data-i18n="info.title">Künye</span></h4>
+      <h4>Otlukbeli Gölü-Otlukbeli (Erzincan) — <span data-i18n="info.title">Künye</span></h4>
       <div class="edu-blurb"><b data-i18n="info.whatis">Bu nedir?</b> Otlukbeli Gölü çevresi, kalsiyumca zengin suların yüzeyde CO₂ kaybederek kalsiti çökeltmesiyle gelişen traverten örtüleriyle ilişkilidir; bu süreç basamaklı traverten teraslarını büyütür. (Yerel litoloji saha verisiyle teyit edilmelidir.)</div>
       <div class="row"><span data-i18n="info.location">Konum</span><span>40.0177°K, 39.9758°D</span></div>
       <div class="row"><span data-i18n="info.crs">Koordinat sistemi</span><span>UTM 37N · EPSG:32637</span></div>
@@ -832,7 +834,7 @@
       mv.setAttribute('src', 'medium.glb');
       mv.setAttribute('ar', ''); mv.setAttribute('ar-modes', 'webxr scene-viewer quick-look');
       mv.setAttribute('camera-controls', ''); mv.setAttribute('auto-rotate', ''); mv.setAttribute('shadow-intensity', '1');
-      mv.setAttribute('poster', '../otlukbeli-onizleme.jpg'); mv.setAttribute('alt', 'Otlukbeli Gölü 3B modeli');
+      mv.setAttribute('poster', '../otlukbeli-onizleme.jpg'); mv.setAttribute('alt', 'Otlukbeli Gölü-Otlukbeli (Erzincan) 3B modeli');
       document.getElementById('ar-host').appendChild(mv);
     };
     const arClose = document.getElementById('ar-close');
@@ -862,7 +864,7 @@
     if(helpPanel) helpPanel.addEventListener('click', e=>{ if(e.target===helpPanel) helpPanel.classList.remove('on'); });
 
     // ---- Atıf üretici (BibTeX / RIS) ----
-    const CITE = { title: 'Otlukbeli Gölü', year: '2025', slug: 'otlukbeli', author: 'Taş, Mehmet Akif',
+    const CITE = { title: 'Otlukbeli Gölü-Otlukbeli (Erzincan)', year: '2025', slug: 'otlukbeli', author: 'Taş, Mehmet Akif',
                    url: 'https://mehmetakiftas.com/otlukbeli/' };
     const bibtex = () =>
 `@misc{tas_${CITE.slug}_${CITE.year},
