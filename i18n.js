@@ -24,6 +24,7 @@
     'ak.card.soon': ['🔒 Yakında', '🔒 Coming soon'],
     'info.paper': ['İlgili yayın', 'Related publication'],
     'ak.card.paper': ['📄 İlgili yayın ↗', '📄 Related publication ↗'],
+    'ak.hero.cta': ['3B Modelleri Keşfet', 'Explore 3D Models'],
     // ---- Kalite ----
     'q.label': ['Model kalitesi', 'Model quality'],
     'q.low': ['Düşük', 'Low'],
