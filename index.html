@@ -284,6 +284,37 @@
   .b-role { font-size:12.5px; color:var(--muted); margin-top:3px; line-height:1.4; }
   @media (max-width:760px){ .hero-3d{min-height:88svh; padding-bottom:60px} .hero-credit{display:none} .b-profile{grid-column:span 2} }
   @media (prefers-reduced-motion:reduce){ .hero-credit .hc-dot, .scroll-cue, .hero-3d .eyebrow::before{animation:none} }
+
+  /* ===== Akademik bölümler (atıf/proje/ders/iletişim) ===== */
+  .citegrid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .citecell { background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.016)); border:1px solid var(--line); border-radius:14px; padding:22px 18px; text-align:center; text-decoration:none; display:block; transition:.28s var(--ease); }
+  a.citecell:hover { border-color:var(--accent2); box-shadow:0 0 28px -12px var(--glow2); transform:translateY(-2px); }
+  .citecell b { display:block; font-family:var(--font-d); font-size:34px; font-weight:700; line-height:1; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; font-variant-numeric:tabular-nums; margin-bottom:7px; }
+  .citecell span { font-family:var(--font-m); font-size:10.5px; letter-spacing:.4px; text-transform:uppercase; color:var(--muted); }
+  .projgrid { display:grid; grid-template-columns:1fr; gap:14px; }
+  .projcard { background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.016)); border:1px solid var(--line); border-left:2px solid var(--accent); border-radius:0 14px 14px 0; padding:18px 22px; transition:.3s var(--ease); }
+  .projcard:hover { border-left-color:var(--accent2); transform:translateX(4px); box-shadow:0 0 34px -16px var(--glow); }
+  .proj-yr { font-family:var(--font-m); font-size:11.5px; color:var(--accent2); margin-bottom:6px; }
+  .projcard h3 { font-family:var(--font-d); font-size:16px; font-weight:600; line-height:1.35; color:#eef2f7; margin-bottom:9px; }
+  .proj-meta { font-size:12.5px; color:var(--muted); }
+  .proj-tag { color:#cbb8ec; background:var(--tag-bg); border:1px solid var(--tag-border); padding:2px 9px; border-radius:20px; font-size:11px; }
+  .teach-grid { display:grid; grid-template-columns:1.4fr 1fr; gap:22px; }
+  .courses, .theses { list-style:none; }
+  .courses li { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); font-size:14px; color:#d7dee6; }
+  .courses li:last-child { border-bottom:0; }
+  .lv { margin-left:auto; flex:0 0 auto; font-family:var(--font-m); font-size:10px; letter-spacing:.3px; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:6px; padding:2px 8px; }
+  .lv-y { color:var(--accent2); border-color:rgba(46,230,214,.35); }
+  .theses li { padding:12px 0; border-bottom:1px solid var(--line); }
+  .theses li:last-child { border-bottom:0; }
+  .theses li b { display:block; font-size:14px; font-weight:600; color:#eef2f7; line-height:1.4; margin-bottom:4px; }
+  .theses li span { font-family:var(--font-m); font-size:11.5px; color:var(--muted); }
+  .contact-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .cinfo { background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.016)); border:1px solid var(--line); border-radius:14px; padding:18px 20px; }
+  .cinfo .cl { font-family:var(--font-m); font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--accent2); margin-bottom:9px; }
+  .cinfo .cv-val { font-size:13.5px; color:#d7dee6; line-height:1.5; }
+  .cinfo .cv-val a { color:#7fe9dc; }
+  .cinfo .cmut { color:var(--muted); }
+  @media (max-width:760px){ .citegrid{grid-template-columns:1fr 1fr} .teach-grid,.contact-grid{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -296,6 +327,7 @@
         <a href="#modeller" data-i18n="ak.nav.models">3B Modeller</a>
         <a href="#harita" data-i18n="ak.nav.map">Harita</a>
         <a href="#yayinlar" data-i18n="ak.nav.pubs">Yayınlar</a>
+        <a href="#projeler" data-i18n="ak.nav.projects">Projeler</a>
       </div>
       <span id="lang-switch" style="margin:0 4px 0 14px"></span>
       <button id="hamb" class="hamb" aria-label="Menü">☰</button>
@@ -321,7 +353,9 @@
     </div>
     <a href="#harita" data-i18n="ak.nav.map">Harita</a>
     <a href="yayinlar.html" data-i18n="ak.nav.pubs">Yayınlar</a>
-    <a href="mailto:akif.tas@erzincan.edu.tr" data-i18n="ak.nav.contact">İletişim</a>
+    <a href="#projeler" data-i18n="ak.nav.projects">Projeler</a>
+    <a href="#iletisim" data-i18n="ak.nav.contact2">İletişim</a>
+    <a href="cv.html" target="_blank" rel="noopener" data-i18n="ak.cv">CV (PDF)</a>
     <a href="https://avesis.ebyu.edu.tr/akif.tas" target="_blank" rel="noopener">AVESİS</a>
   </aside>
 
@@ -376,6 +410,7 @@
         <div class="bento-cell b-contact">
           <div class="b-label" data-i18n="ak.b.links">Bağlantılar</div>
           <div class="contact">
+            <a href="cv.html" target="_blank" rel="noopener" data-i18n="ak.cv">📄 CV (PDF)</a>
             <a href="mailto:akif.tas@erzincan.edu.tr" data-i18n="ak.c.email">✉️ E-posta</a>
             <a href="https://orcid.org/0000-0003-3543-037X" target="_blank" rel="noopener">ORCID</a>
             <a href="https://scholar.google.com/citations?user=zmL04OYAAAAJ" target="_blank" rel="noopener">Google Scholar</a>
@@ -566,6 +601,105 @@
       <div class="pub-all reveal"><a href="yayinlar.html" data-i18n="ak.pub.all">Tüm yayınlar (23) — özet, DOI, bildiriler &amp; kitap bölümleri →</a></div>
       <div class="edit">Yayınlar AVESİS profilinden alındı. İstersen her birine DOI/PDF linki veya "İlgili 3B model" bağlantısı ekleyebilirsin.</div>
     </section>
+
+    <!-- ATIF & ETKİ (canlı) -->
+    <section id="atif">
+      <div class="shead reveal">
+        <div class="eyebrow" data-i18n="ak.cite.eyebrow">Akademik Etki</div>
+        <h2 data-i18n="ak.cite.h2">Atıf Metrikleri</h2>
+        <div class="sub" data-i18n="ak.cite.sub">Google Scholar'dan güncel atıf etkisi (otomatik güncellenir).</div>
+      </div>
+      <div class="citegrid reveal">
+        <a class="citecell" href="https://scholar.google.com/citations?user=zmL04OYAAAAJ" target="_blank" rel="noopener"><b id="ct-cit">45</b><span data-i18n="ak.cite.total">Toplam Atıf</span></a>
+        <div class="citecell"><b id="ct-h">4</b><span>h-index</span></div>
+        <div class="citecell"><b id="ct-i10">2</b><span>i10-index</span></div>
+        <div class="citecell"><b>23</b><span data-i18n="ak.cite.works">Yayın</span></div>
+      </div>
+      <div class="edit"><span data-i18n="ak.cite.src">Kaynak: Google Scholar & OpenAlex · canlı</span> · <a href="https://scholar.google.com/citations?user=zmL04OYAAAAJ" target="_blank" rel="noopener">Google Scholar ↗</a></div>
+    </section>
+
+    <!-- PROJELER -->
+    <section id="projeler">
+      <div class="shead reveal">
+        <div class="eyebrow" data-i18n="ak.proj.eyebrow">Araştırma</div>
+        <h2 data-i18n="ak.proj.h2">Projeler</h2>
+        <div class="sub" data-i18n="ak.proj.sub">Katkı sunulan bilimsel araştırma projeleri (AVESİS).</div>
+      </div>
+      <div class="projgrid">
+        <article class="projcard reveal">
+          <div class="proj-yr">2025–2026</div>
+          <h3>Marmara Denizinin Güneyinde Bulunan Göl ve Sulak Alanlarda Mekansal Değişimin CBS ile Haritalandırılması ve Göllerdeki Ağır Metal Birikim Düzeylerinin Su ve Sediment Örneklerinde İncelenmesi</h3>
+          <div class="proj-meta"><span class="proj-tag" data-i18n="ak.role.res">Araştırmacı</span> · BAP Araştırma Projesi · Yürütücü: Şenol C.</div>
+        </article>
+        <article class="projcard reveal">
+          <div class="proj-yr">2025</div>
+          <h3>Konya-Beyşehir Yol Güzergahı Miryokefalon Savaş Yerinin Tespiti</h3>
+          <div class="proj-meta"><span class="proj-tag" data-i18n="ak.role.res">Araştırmacı</span> · CB Strateji ve Bütçe Başkanlığı · Yürütücü: Çaycı A.</div>
+        </article>
+        <article class="projcard reveal">
+          <div class="proj-yr">2024–2025</div>
+          <h3>Erzincan Coğrafya Atlası</h3>
+          <div class="proj-meta"><span class="proj-tag" data-i18n="ak.role.res">Araştırmacı</span> · BAP Araştırma Projesi · Yürütücü: Akpınar E.</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- DERSLER & TEZLER -->
+    <section id="dersler">
+      <div class="shead reveal">
+        <div class="eyebrow" data-i18n="ak.teach.eyebrow">Eğitim</div>
+        <h2 data-i18n="ak.teach.h2">Dersler & Danışmanlık</h2>
+      </div>
+      <div class="teach-grid reveal">
+        <div class="teach-col">
+          <div class="b-label" data-i18n="ak.teach.courses">Verdiği Dersler</div>
+          <ul class="courses">
+            <li>Uzaktan Algılama ve Coğrafi Bilgi Sistemleri <em class="lv lv-y">YL</em></li>
+            <li>Havza Bazında Analizler ve Coğrafi Bilgi Sistemleri <em class="lv lv-y">YL</em></li>
+            <li>Coğrafi Bilgi Sistemlerinde İleri Seviye Analizler <em class="lv">Lisans</em></li>
+            <li>Coğrafi Bilgi Sisteminde Analizler <em class="lv">Lisans</em></li>
+            <li>Coğrafi Bilgi Sistemleri 1 <em class="lv">Lisans</em></li>
+            <li>Coğrafi Bilgi Sistemleri 2 <em class="lv">Lisans</em></li>
+            <li>Arazi Uygulamaları <em class="lv">Lisans</em></li>
+            <li>Mesleki Fotoğrafçılık <em class="lv">Lisans</em></li>
+            <li>Mesleki Bilgisayar <em class="lv">Lisans</em></li>
+            <li>Mesleki Yabancı Dil <em class="lv">Lisans</em></li>
+          </ul>
+        </div>
+        <div class="teach-col">
+          <div class="b-label" data-i18n="ak.teach.theses">Tez Danışmanlıkları</div>
+          <ul class="theses">
+            <li>
+              <b>Analitik Hiyerarşi Süreci (AHS) Metodu ile Terme Havzası (Samsun) Taşkın Risk Analizi</b>
+              <span>Y. Ayvaz · 2023 · Yüksek Lisans</span>
+            </li>
+          </ul>
+          <div class="edit" data-i18n="ak.teach.note">Yeni danışmanlıklar tamamlandıkça eklenecek.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- İLETİŞİM -->
+    <section id="iletisim">
+      <div class="shead reveal">
+        <div class="eyebrow" data-i18n="ak.con.eyebrow">İletişim</div>
+        <h2 data-i18n="ak.con.h2">İletişim</h2>
+      </div>
+      <div class="contact-grid reveal">
+        <div class="cinfo">
+          <div class="cl" data-i18n="ak.con.office">Ofis</div>
+          <div class="cv-val">Erzincan Binali Yıldırım Üniversitesi · Fen-Edebiyat Fakültesi · Coğrafya Bölümü — CBS Anabilim Dalı · Erzincan, Türkiye</div>
+        </div>
+        <div class="cinfo">
+          <div class="cl" data-i18n="ak.con.phone">Telefon</div>
+          <div class="cv-val"><a href="tel:+904462243032">+90 446 224 3032</a> <span class="cmut">· Dahili 40281</span></div>
+        </div>
+        <div class="cinfo">
+          <div class="cl" data-i18n="ak.con.email">E-posta</div>
+          <div class="cv-val"><a href="mailto:akif.tas@erzincan.edu.tr">akif.tas@erzincan.edu.tr</a></div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer><div class="wrap">© <span id="yr"></span> · <b>Mehmet Akif Taş</b> · Akademik Portföy · Fotogrametri &amp; 3B Modelleme
@@ -663,6 +797,17 @@ document.querySelectorAll('.pub .pt').forEach(function(el){
   a.target='_blank'; a.rel='noopener'; a.title='Makaleyi aç / ara (Google Scholar)'; a.textContent=t;
   el.textContent=''; el.appendChild(a);
 });
+/* Canlı atıf metrikleri: Scholar değerleri taban (45/4/2); OpenAlex'ten canlı çekip yükselt. */
+(function(){
+  function setN(id,v){ var el=document.getElementById(id); if(el) el.textContent=Number(v).toLocaleString((window.getLang&&window.getLang()==='en')?'en-US':'tr-TR'); }
+  try {
+    fetch('https://api.openalex.org/authors/A5036448179?mailto=cbsilerianaliz@gmail.com')
+      .then(function(r){return r.json();})
+      .then(function(d){ if(!d||!d.summary_stats) return; var ss=d.summary_stats;
+        setN('ct-cit', Math.max(45, d.cited_by_count||0)); setN('ct-h', Math.max(4, ss.h_index||0)); setN('ct-i10', Math.max(2, ss.i10_index||0)); })
+      .catch(function(){});
+  } catch(e){}
+})();
 </script>
 <!-- Immersive 3B hero: canlı dönen Otlukbeli modeli (poster önce -> 3B fade-in; mobil/reduced-motion'da poster kalır) -->
 <script type="importmap">
