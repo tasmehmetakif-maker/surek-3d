@@ -113,6 +113,7 @@
     <div id="tools">
       <button id="t-measure" title="İki noktaya tıkla: mesafe ve yükseklik farkı">📏 Ölç</button>
       <button id="t-vol" title="Alanı çevrele: taban (seçilen noktaların en alçağı) üstü hacim (m³)">📦 Hacim</button>
+      <button id="t-area" title="Alanı çevrele: düzlemsel + gerçek 3B yüzey alanı (m²)">📐 Alan</button>
       <button id="t-elev" title="Bir noktaya tıkla: o noktanın rakımı (m)">📍 Rakım</button>
       <button id="t-profile" title="İki nokta seç: aradaki topografik yükseklik profili">📈 Profil</button>
       <button id="t-clear" title="Tüm ölçüm/işaretleri temizle">🗑 Temizle</button>
@@ -303,7 +304,7 @@
       }, 50);
     }
     const measureGroup = new THREE.Group(); scene.add(measureGroup);
-    let measuring = false, mpts = [], volMode = false, vpts = [], elevMode = false;
+    let measuring = false, mpts = [], volMode = false, vpts = [], elevMode = false, areaMode = false, apts = [];
     const MIDZ = {{MIDZ}};  // model orta rakımı (m, deniz seviyesinden); null ise bağıl yükseklik
     const readout = document.getElementById('measure-readout');
     function clearMeasure(){ measureGroup.clear(); mpts = []; readout.replaceChildren(); readout.style.display = 'none'; }
@@ -320,19 +321,19 @@
     let downXY = null;
     renderer.domElement.addEventListener('pointerdown', e => { downXY = [e.clientX, e.clientY]; });
     renderer.domElement.addEventListener('pointerup', e => {
-      if((!measuring && !volMode && !elevMode && !profileMode) || !current || !downXY) { downXY=null; return; }
+      if((!measuring && !volMode && !elevMode && !profileMode && !areaMode) || !current || !downXY) { downXY=null; return; }
       const moved = Math.hypot(e.clientX-downXY[0], e.clientY-downXY[1]); downXY = null;
       if(moved > 6) return;  // sürükleme = döndürme; tıklama = nokta ekle
       const r = renderer.domElement.getBoundingClientRect();
       const ndc = new THREE.Vector2(((e.clientX-r.left)/r.width)*2-1, -((e.clientY-r.top)/r.height)*2+1);
       ray.setFromCamera(ndc, camera);
       const hit = ray.intersectObject(current, true)[0];
-      if(hit){ if(measuring) addPt(hit.point); else if(volMode) addVolPt(hit.point); else if(elevMode) showElev(hit.point); else if(profileMode) addProfilePt(hit.point); }
+      if(hit){ if(measuring) addPt(hit.point); else if(volMode) addVolPt(hit.point); else if(elevMode) showElev(hit.point); else if(profileMode) addProfilePt(hit.point); else if(areaMode) addAreaPt(hit.point); }
     });
     const btnM = document.getElementById('t-measure');
     btnM.onclick = () => {
       measuring = !measuring; btnM.classList.toggle('on', measuring);
-      if(measuring){ ensureBVH(); volMode=false; if(btnV) btnV.classList.remove('on'); clearVol(); elevMode=false; if(btnE) btnE.classList.remove('on'); profileMode=false; if(btnP) btnP.classList.remove('on'); clearProfile(); }
+      if(measuring){ ensureBVH(); volMode=false; if(btnV) btnV.classList.remove('on'); clearVol(); elevMode=false; if(btnE) btnE.classList.remove('on'); profileMode=false; if(btnP) btnP.classList.remove('on'); clearProfile(); areaMode=false; if(btnArea) btnArea.classList.remove('on'); clearArea(); }
       renderer.domElement.style.cursor = measuring ? 'crosshair' : '';
       if(measuring && mpts.length < 2){ readout.replaceChildren(document.createTextNode('İki noktaya tıkla — örn. zeminin iki ucu')); readout.style.display='block'; }
       else if(!measuring && mpts.length < 2){ readout.style.display='none'; }
@@ -347,9 +348,9 @@
     const btnC = document.getElementById('t-clear');
     // Tum araclari kapat + tum gorsel isaretleri/panelleri temizle + buton durumlarini sifirla.
     function resetTools(){
-      clearMeasure(); clearVol(); clearProfile();
-      measuring = volMode = elevMode = profileMode = false;
-      [btnM, btnV, btnE, btnP].forEach(b => b && b.classList.remove('on'));
+      clearMeasure(); clearVol(); clearProfile(); clearArea();
+      measuring = volMode = elevMode = profileMode = areaMode = false;
+      [btnM, btnV, btnE, btnP, btnArea].forEach(b => b && b.classList.remove('on'));
       renderer.domElement.style.cursor = '';
       readout.style.display = 'none';
     }
@@ -413,7 +414,7 @@
     }
     if(btnP) btnP.onclick = () => {
       profileMode = !profileMode; btnP.classList.toggle('on', profileMode);
-      if(profileMode){ ensureBVH(); measuring = false; btnM.classList.remove('on'); volMode = false; if(btnV) btnV.classList.remove('on'); elevMode = false; if(btnE) btnE.classList.remove('on'); clearMeasure(); clearVol(); clearProfile(); renderer.domElement.style.cursor = 'crosshair'; readout.replaceChildren(document.createTextNode('İki nokta seç — aradaki yükseklik profili çıkar')); readout.style.display = 'block'; }
+      if(profileMode){ ensureBVH(); measuring = false; btnM.classList.remove('on'); volMode = false; if(btnV) btnV.classList.remove('on'); elevMode = false; if(btnE) btnE.classList.remove('on'); areaMode=false; if(btnArea) btnArea.classList.remove('on'); clearArea(); clearMeasure(); clearVol(); clearProfile(); renderer.domElement.style.cursor = 'crosshair'; readout.replaceChildren(document.createTextNode('İki nokta seç — aradaki yükseklik profili çıkar')); readout.style.display = 'block'; }
       else { renderer.domElement.style.cursor = ''; readout.style.display = 'none'; }
     };
     const profCloseBtn = document.getElementById('t-profile-close');
@@ -431,7 +432,7 @@
     }
     if(btnE) btnE.onclick = () => {
       elevMode = !elevMode; btnE.classList.toggle('on', elevMode);
-      if(elevMode){ ensureBVH(); measuring=false; btnM.classList.remove('on'); volMode=false; if(btnV) btnV.classList.remove('on'); profileMode=false; if(btnP) btnP.classList.remove('on'); clearMeasure(); clearVol(); clearProfile(); renderer.domElement.style.cursor='crosshair'; readout.replaceChildren(document.createTextNode('Bir noktaya tıkla — o noktanın rakımı görünür')); readout.style.display='block'; }
+      if(elevMode){ ensureBVH(); measuring=false; btnM.classList.remove('on'); volMode=false; if(btnV) btnV.classList.remove('on'); profileMode=false; if(btnP) btnP.classList.remove('on'); areaMode=false; if(btnArea) btnArea.classList.remove('on'); clearArea(); clearMeasure(); clearVol(); clearProfile(); renderer.domElement.style.cursor='crosshair'; readout.replaceChildren(document.createTextNode('Bir noktaya tıkla — o noktanın rakımı görünür')); readout.style.display='block'; }
       else { renderer.domElement.style.cursor=''; readout.style.display='none'; measureGroup.clear(); }
     };
 
@@ -494,9 +495,67 @@
     const btnV = document.getElementById('t-vol');
     if(btnV) btnV.onclick = () => {
       volMode = !volMode; btnV.classList.toggle('on', volMode);
-      if(volMode){ ensureBVH(); measuring=false; btnM.classList.remove('on'); elevMode=false; if(btnE) btnE.classList.remove('on'); profileMode=false; if(btnP) btnP.classList.remove('on'); clearMeasure(); clearVol(); clearProfile(); renderer.domElement.style.cursor='crosshair'; updateVolReadout(); }
+      if(volMode){ ensureBVH(); measuring=false; btnM.classList.remove('on'); elevMode=false; if(btnE) btnE.classList.remove('on'); profileMode=false; if(btnP) btnP.classList.remove('on'); areaMode=false; if(btnArea) btnArea.classList.remove('on'); clearArea(); clearMeasure(); clearVol(); clearProfile(); renderer.domElement.style.cursor='crosshair'; updateVolReadout(); }
       else { renderer.domElement.style.cursor=''; clearVol(); readout.style.display='none'; }
     };
+    // ---- Alan: yüzeyi çevrele -> düzlemsel (footprint) + gerçek 3B yüzey alanı (m²) + pürüzlülük ----
+    const areaGroup = new THREE.Group(); scene.add(areaGroup);
+    const btnArea = document.getElementById('t-area');
+    function clearArea(){ areaGroup.clear(); apts = []; }
+    function drawAreaPoly(){
+      areaGroup.clear();
+      const r = Math.max(modelSize*0.004, 0.3);
+      apts.forEach(p => { const m=new THREE.Mesh(new THREE.SphereGeometry(r,12,12), new THREE.MeshBasicMaterial({color:0xffa53d, depthTest:false})); m.position.copy(p); m.renderOrder=999; areaGroup.add(m); });
+      if(apts.length>=2){ const pts=apts.slice(); if(apts.length>=3) pts.push(apts[0]); const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color:0xffa53d, depthTest:false})); ln.renderOrder=999; areaGroup.add(ln); }
+    }
+    function addAreaPt(p){ apts.push(p.clone()); drawAreaPoly(); updateAreaReadout(); }
+    function computeArea(){
+      if(apts.length < 3 || !current) return {planar:0, surf:0};
+      const poly = apts.map(p => [p.x, p.z]);
+      let pa=0; for(let i=0,j=poly.length-1;i<poly.length;j=i++){ pa += (poly[j][0]+poly[i][0])*(poly[j][1]-poly[i][1]); }
+      const planar = Math.abs(pa/2);
+      let surf=0;
+      const v0=new THREE.Vector3(), v1=new THREE.Vector3(), v2=new THREE.Vector3(), e1=new THREE.Vector3(), e2=new THREE.Vector3();
+      current.updateWorldMatrix(true,true);
+      current.traverse(o => {
+        if(!o.isMesh || !o.geometry) return;
+        const pos=o.geometry.attributes.position, idx=o.geometry.index, m=o.matrixWorld;
+        const tc = idx ? idx.count/3 : pos.count/3;
+        for(let t=0;t<tc;t++){
+          let a,b,c; if(idx){ a=idx.getX(3*t); b=idx.getX(3*t+1); c=idx.getX(3*t+2); } else { a=3*t; b=3*t+1; c=3*t+2; }
+          v0.fromBufferAttribute(pos,a).applyMatrix4(m); v1.fromBufferAttribute(pos,b).applyMatrix4(m); v2.fromBufferAttribute(pos,c).applyMatrix4(m);
+          const cx=(v0.x+v1.x+v2.x)/3, cz=(v0.z+v1.z+v2.z)/3;
+          if(!pointInPoly(cx, cz, poly)) continue;
+          e1.subVectors(v1,v0); e2.subVectors(v2,v0);
+          surf += e1.cross(e2).length()/2;  // gerçek 3B üçgen alanı
+        }
+      });
+      return {planar, surf};
+    }
+    function updateAreaReadout(){
+      readout.replaceChildren(); readout.style.display='block';
+      if(apts.length < 3){ readout.append(document.createTextNode('Alan — yüzeyi çevrele: yüzeye tıkla ('+apts.length+'/3+ nokta)')); return; }
+      const mkBtn=(txt,bg,fn)=>{ const b=document.createElement('button'); b.textContent=txt; b.style.cssText='background:'+bg+';color:#fff;border:0;border-radius:6px;padding:3px 9px;margin:0 3px;cursor:pointer;font-size:12px'; b.onclick=fn; return b; };
+      readout.append(document.createTextNode(apts.length+' nokta · '));
+      readout.append(mkBtn('Alanı hesapla', '#cf7b1d', () => {
+        readout.replaceChildren(document.createTextNode('hesaplanıyor…'));
+        setTimeout(() => {
+          const r=computeArea(); readout.replaceChildren();
+          const bp=document.createElement('b'); bp.textContent=fmt0(r.planar)+' m²';
+          const bs=document.createElement('b'); bs.textContent=fmt0(r.surf)+' m²';
+          const bk=document.createElement('b'); bk.textContent=(r.planar>0?(r.surf/r.planar):1).toLocaleString('tr-TR',{maximumFractionDigits:2})+'×';
+          readout.append('Düzlemsel: ', bp, '  ·  Yüzey (3B): ', bs, '  ·  Pürüzlülük: ', bk, '  ');
+          readout.append(mkBtn('Temizle', '#3a4250', () => { clearArea(); updateAreaReadout(); }));
+        }, 30);
+      }));
+      readout.append(mkBtn('Temizle', '#3a4250', () => { clearArea(); updateAreaReadout(); }));
+    }
+    if(btnArea) btnArea.onclick = () => {
+      areaMode = !areaMode; btnArea.classList.toggle('on', areaMode);
+      if(areaMode){ ensureBVH(); measuring=false; btnM.classList.remove('on'); volMode=false; if(btnV) btnV.classList.remove('on'); elevMode=false; if(btnE) btnE.classList.remove('on'); profileMode=false; if(btnP) btnP.classList.remove('on'); clearMeasure(); clearVol(); clearProfile(); clearArea(); renderer.domElement.style.cursor='crosshair'; updateAreaReadout(); }
+      else { renderer.domElement.style.cursor=''; clearArea(); readout.style.display='none'; }
+    };
+
     document.getElementById('t-shot').onclick = () => { renderer.render(scene,camera); const a=document.createElement('a'); a.download='{{SHOT}}'; a.href=renderer.domElement.toDataURL('image/png'); a.click(); };
     // Kamera görünümü bağlantısı: hash'i güncelle + URL kopyala
     const btnShare = document.getElementById('t-share');
