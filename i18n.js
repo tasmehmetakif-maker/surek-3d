@@ -22,6 +22,7 @@
     'cs.body': ['Bu modelin interaktif 3B görüntüleyicisi hazırlanıyor ve yakında yayında olacak.', 'The interactive 3D viewer for this model is being prepared and will be available soon.'],
     'cs.back': ['← Tüm modeller', '← All models'],
     'ak.card.soon': ['🔒 Yakında', '🔒 Coming soon'],
+    'info.paper': ['İlgili yayın', 'Related publication'],
     // ---- Kalite ----
     'q.label': ['Model kalitesi', 'Model quality'],
     'q.low': ['Düşük', 'Low'],

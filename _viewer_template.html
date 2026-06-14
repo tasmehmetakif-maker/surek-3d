@@ -108,6 +108,10 @@
   #kunye .row span:first-child { color:#9aa3af; }
   #kunye .row span:last-child { color:#e8edf2; text-align:right; }
   #kunye .note { margin-top:8px; color:#6f7a88; font-size:11px; }
+  #kunye .kpaper { margin-top:9px; padding:8px 10px; font-size:11px; line-height:1.55; color:#cdd5df; background:rgba(47,109,240,.09); border:1px solid rgba(47,109,240,.22); border-radius:8px; }
+  #kunye .kpaper-lbl { color:#7fb0ff; font-weight:700; font-size:9.5px; text-transform:uppercase; letter-spacing:.5px; margin-bottom:3px; }
+  #kunye .kpaper-cite i { color:#cdd5df; }
+  #kunye .kpaper-cite a { color:#7fe9dc; text-decoration:none; font-weight:700; margin-left:3px; }
   #kunye .edu-blurb { margin:0 0 9px; padding:8px 10px; font-size:11.5px; line-height:1.55; color:#d6dde6; background:rgba(56,232,208,.07); border:1px solid rgba(56,232,208,.18); border-radius:8px; }
   #kunye .edu-blurb b { color:#7fe9dc; }
   #kunye .cite { margin-top:9px; display:flex; gap:6px; }
@@ -219,6 +223,7 @@
       <div class="row"><span data-i18n="info.photos">Fotoğraf sayısı</span><span>{{PHOTOS}}</span></div>
       <div class="row"><span data-i18n="info.license">Lisans</span><span><a href="https://creativecommons.org/licenses/by/4.0/deed.tr" target="_blank" rel="noopener" style="color:#7fe9dc;text-decoration:none">CC BY 4.0</a></span></div>
       <div class="note">{{NOTE}}</div>
+      {{PAPER}}
       <div class="cite">
         <button id="cite-bib" type="button" data-i18n="cite.bib">⧉ BibTeX kopyala</button>
         <button id="cite-ris" type="button" data-i18n="cite.ris">⧉ RIS kopyala</button>
