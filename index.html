@@ -344,7 +344,7 @@
         <div><b data-count="3">3</b><span data-i18n="ak.m.proj">Proje</span></div>
       </div>
     </div>
-    <div class="hero-credit"><span class="hc-dot"></span><span data-i18n="ak.hero.live">Canlı 3B model · Otlukbeli Gölü</span></div>
+    <div class="hero-credit"><span class="hc-dot"></span><span data-i18n="ak.hero.live2">Canlı 3B model</span> · <span id="hc-model">Otlukbeli Gölü</span></div>
     <a class="scroll-cue" href="#profil" aria-label="Aşağı kaydır">↓</a>
   </section>
 
@@ -689,13 +689,19 @@ document.querySelectorAll('.pub .pt').forEach(function(el){
       var loader=new GLTFLoader(); loader.setDRACOLoader(draco);
       var pivot=new THREE.Group(); scene.add(pivot);
       function resize(){ var w=wrap.clientWidth,h=wrap.clientHeight; if(!w||!h) return; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
-      loader.load('otlukbeli/low.glb', function(g){
+      // Her acilista RASTGELE model (yenileyince degisir). Yalniz YAYINDA olan modeller
+      // (GLB erisilebilir): otlukbeli, stadyum. Coming-soon modeller calinma korumasi nedeniyle havuzda yok.
+      var POOL=[{s:'otlukbeli',n:'Otlukbeli Gölü'},{s:'stadyum',n:'Erzincan Stadyumu'}];
+      var pick=POOL[Math.floor(Math.random()*POOL.length)];
+      var poster=document.querySelector('.hero-poster'); if(poster) poster.src=pick.s+'-onizleme.jpg';
+      var cm=document.getElementById('hc-model'); if(cm) cm.textContent=pick.n;
+      loader.load(pick.s+'/low.glb', function(g){
         var mo=g.scene, box=new THREE.Box3().setFromObject(mo), s=box.getSize(new THREE.Vector3()), c=box.getCenter(new THREE.Vector3());
         mo.position.sub(c); var d=Math.max(s.x,s.y,s.z)||100;
         var tilt=new THREE.Group(); tilt.add(mo); tilt.rotation.x=-0.62; pivot.add(tilt);
         camera.position.set(0, d*0.78, d*1.02); camera.lookAt(0,0,0);
         resize();
-        var p=document.querySelector('.hero-poster'); if(p) p.classList.add('hide');
+        if(poster) poster.classList.add('hide');
       }, undefined, function(){});
       var running=false;
       function loop(){ if(!running) return; requestAnimationFrame(loop); pivot.rotation.y+=0.0016; renderer.render(scene,camera); }

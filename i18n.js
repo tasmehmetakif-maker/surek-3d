@@ -31,6 +31,7 @@
     'ak.b.research': ['Araştırma Alanları', 'Research Areas'],
     'ak.b.links': ['Bağlantılar', 'Links'],
     'ak.hero.live': ['Canlı 3B model · Otlukbeli Gölü', 'Live 3D model · Otlukbeli Lake'],
+    'ak.hero.live2': ['Canlı 3B model', 'Live 3D model'],
     // ---- Kalite ----
     'q.label': ['Model kalitesi', 'Model quality'],
     'q.low': ['Düşük', 'Low'],
