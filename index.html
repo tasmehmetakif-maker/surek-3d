@@ -380,14 +380,14 @@
 @keyframes pl-pulse{ 0%{box-shadow:0 0 0 0 rgba(46,230,214,.5)} 70%{box-shadow:0 0 0 8px rgba(46,230,214,0)} 100%{box-shadow:0 0 0 0 rgba(46,230,214,0)} }
 @keyframes pl-grainshift{ 0%{transform:translate(0,0)} 33%{transform:translate(-4%,3%)} 66%{transform:translate(3%,-2%)} 100%{transform:translate(0,0)} }
 @media (max-width:760px){
-  #preloader{ background:radial-gradient(130% 80% at 50% 18%, #0c1426 0%, #070a0f 58%, #05070b 100%); justify-content:center; }
+  #preloader{ background:radial-gradient(130% 80% at 50% 18%, #0c1426 0%, #070a0f 58%, #05070b 100%); justify-content:center; align-items:flex-start; }
   #preloader .pl-sky{ opacity:1; mix-blend-mode:normal; }
   #preloader .pl-scrim{ background:linear-gradient(180deg, rgba(5,7,11,.5), rgba(5,7,11,.15) 40%, transparent 70%); }
-  #preloader .pl-warmwash{ background:radial-gradient(70% 40% at 50% 30%, rgba(255,150,92,.24), transparent 70%); }
+  #preloader .pl-warmwash{ background:radial-gradient(84% 38% at 50% 66%, rgba(255,150,92,.26), transparent 72%); }
   #preloader .pl-mtn{ filter:none; }
   #preloader .pl-mist{ display:none; }
   #preloader .pl-grain{ opacity:.04; animation:none; }
-  #preloader .pl-ui{ text-align:center; max-width:none; padding:0 22px; margin-bottom:14svh; }
+  #preloader .pl-ui{ text-align:center; max-width:none; padding:13svh 22px 0; margin:0; }
   #preloader .pl-line{ margin-left:auto; margin-right:auto; }
 }
 @media (prefers-reduced-motion:reduce){
@@ -464,6 +464,13 @@
     var rise=document.getElementById('pl-rise'), num=document.getElementById('pl-num'), bar=document.getElementById('pl-bar'),
         glow=document.getElementById('pl-glow'), ridge=document.getElementById('pl-ridgeline'),
         skyhalo=document.getElementById('pl-skyhalo'), warm=document.getElementById('pl-warm');
+    // Mobil: dar/uzun ekranda dagi 'slice' kirptigi icin zirve sag disinda kaliyordu.
+    // 'meet' + zirveye yakinlastirilmis viewBox ile dag buyuk ve ORTADA gorunur.
+    // (Dolum rect'i hala 0..1200/0..800 user-space'inde; pencereyi kaydirmak dolumu etkilemez.)
+    if(window.matchMedia && matchMedia('(max-width:760px)').matches){
+      var mtnEl=document.querySelector('#preloader .pl-mtn');
+      if(mtnEl){ mtnEl.setAttribute('preserveAspectRatio','xMidYMax meet'); mtnEl.setAttribute('viewBox','500 80 700 720'); }
+    }
     var VB=800, target=0, shown=0, finished=false, ending=false, raf=null, lastT=0;
     var t0=(window.performance&&performance.now)?performance.now():0;
     try{ document.body && document.body.setAttribute('aria-busy','true'); }catch(e){}
