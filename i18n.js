@@ -29,8 +29,16 @@
                   '⚠️ "High" and "Highest" need a powerful computer. If the model fails to open or stutters, choose a lower quality.'],
     'hint.controls': ['Sürükle: döndür · Sağ tık: kaydır · Tekerlek: yakınlaş',
                       'Drag: rotate · Right-click: pan · Wheel: zoom'],
+    // ---- Araç grupları + yardım ----
+    'grp.measure': ['Ölçüm', 'Measure'],
+    'grp.view': ['Görünüm', 'View'],
+    'grp.share': ['Paylaşım & Bilgi', 'Share & Info'],
+    'tool.help': ['❔ Yardım', '❔ Help'],
+    'tool.help.t': ['Tüm araçların ne işe yaradığı ve nasıl kullanılacağı', 'What every tool does and how to use it'],
+    'help.title': ['Araçlar — Ne işe yarar, nasıl kullanılır', 'Tools — what they do, how to use them'],
+    'help.intro': ['Her araç bir kez açılır/kapanır. Ölçüm araçları için modele tıklayarak nokta seç.', 'Each tool toggles on/off. For measurement tools, click the model to place points.'],
     // ---- Araç butonları (metin + başlık) ----
-    'tool.measure': ['📏 Ölç', '📏 Measure'],
+    'tool.measure': ['📏 Mesafe', '📏 Distance'],
     'tool.measure.t': ['İki noktaya tıkla: mesafe ve yükseklik farkı', 'Click two points: distance and height difference'],
     'tool.vol': ['📦 Hacim', '📦 Volume'],
     'tool.vol.t': ['Alanı çevrele: taban (seçilen noktaların en alçağı) üstü hacim (m³)', 'Enclose an area: volume above the base (lowest selected point) in m³'],

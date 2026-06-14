@@ -47,10 +47,15 @@
   .osd { width:100%; height:100%; background:#0e1116; }
   #warn { position:fixed; left:0; right:0; bottom:0; text-align:center; color:#f0d9a8; font-size:12px; background:rgba(40,30,12,.92); padding:6px 14px; z-index:30; }
   .hint { position:absolute; right:14px; bottom:40px; font-size:12px; color:#9aa3af; background:rgba(20,24,30,.7); padding:5px 11px; border-radius:14px; z-index:10; }
-  #tools { position:absolute; left:50%; bottom:48px; transform:translateX(-50%); display:flex; gap:6px; z-index:12; }
-  #tools button { background:rgba(30,35,44,.9); color:#cdd5df; border:1px solid rgba(255,255,255,.14); padding:7px 11px; border-radius:9px; font-size:13px; cursor:pointer; }
-  #tools button:hover { background:rgba(54,62,76,.97); color:#fff; }
+  #tools { position:absolute; left:50%; bottom:40px; transform:translateX(-50%); display:flex; gap:13px; align-items:flex-end; flex-wrap:wrap; justify-content:center; max-width:96vw; z-index:12; }
+  .tgroup { display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .tglabel { font-size:9.5px; letter-spacing:.7px; text-transform:uppercase; color:#7c8492; font-weight:700; }
+  .tgbtns { display:flex; gap:5px; background:rgba(12,15,21,.6); border:1px solid rgba(255,255,255,.08); padding:5px; border-radius:13px; backdrop-filter:blur(6px); }
+  #tools button { background:rgba(34,40,50,.92); color:#cdd5df; border:1px solid rgba(255,255,255,.12); padding:7px 11px; border-radius:9px; font-size:13px; cursor:pointer; white-space:nowrap; }
+  #tools button:hover { background:rgba(58,66,80,.98); color:#fff; }
   #tools button.on { background:#2f6df0; color:#fff; border-color:#2f6df0; }
+  #tools button.thelp { background:rgba(47,109,240,.16); border-color:rgba(47,109,240,.4); }
+  #tools button.thelp:hover { background:rgba(47,109,240,.34); color:#fff; }
   #measure-readout { position:absolute; left:50%; bottom:92px; transform:translateX(-50%); display:none; background:rgba(20,24,30,.94); border:1px solid rgba(255,255,255,.12); padding:8px 13px; border-radius:9px; font-size:13px; z-index:12; white-space:nowrap; }
   #measure-readout b { color:#ffcf66; }
   #profile-panel { position:absolute; top:62px; right:14px; width:380px; max-width:46vw; display:none; background:rgba(12,15,21,.94); border:1px solid rgba(255,255,255,.12); border-radius:13px; padding:11px 13px; z-index:14; box-shadow:0 20px 46px -26px #000; backdrop-filter:blur(14px); }
@@ -83,6 +88,17 @@
   #cmp-pick .cdl:hover { background:rgba(54,62,76,.95); color:#fff; }
   #cmp-pick .cdl.active { background:#2f6df0; color:#fff; border-color:#2f6df0; }
   #cmp-hint { position:absolute; bottom:56px; left:50%; transform:translateX(-50%); font-size:11.5px; color:#9aa3af; background:rgba(20,24,30,.7); padding:4px 10px; border-radius:12px; z-index:4; pointer-events:none; }
+  #help-panel { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(6,8,12,.66); z-index:40; backdrop-filter:blur(3px); }
+  #help-panel.on { display:flex; }
+  #help-panel .hp-card { width:min(560px,92vw); max-height:82vh; overflow:auto; background:rgba(16,20,27,.98); border:1px solid rgba(255,255,255,.13); border-radius:16px; padding:18px 20px; box-shadow:0 30px 70px -30px #000; }
+  #help-panel h4 { display:flex; justify-content:space-between; align-items:center; font-size:15px; color:#fff; margin-bottom:6px; }
+  #help-panel .pclose { cursor:pointer; color:#9aa3af; font-size:17px; }
+  #help-panel .pclose:hover { color:#fff; }
+  #help-panel .hp-intro { font-size:12.5px; color:#9aa3af; margin-bottom:8px; line-height:1.55; }
+  #help-panel .hp-grp { font-size:10.5px; text-transform:uppercase; letter-spacing:.6px; color:#7fe9dc; font-weight:700; margin:14px 0 4px; }
+  #help-panel .hp-item { display:flex; gap:11px; align-items:flex-start; padding:7px 0; border-top:1px solid rgba(255,255,255,.06); }
+  #help-panel .hp-name { flex:0 0 120px; font-size:13px; color:#e8edf2; font-weight:600; }
+  #help-panel .hp-desc { flex:1; font-size:12.5px; color:#aab2bf; line-height:1.5; }
   #kunye { position:absolute; left:14px; top:40px; width:280px; display:none; background:rgba(18,22,28,.96); border:1px solid rgba(255,255,255,.12); padding:12px 14px; border-radius:11px; font-size:12.5px; line-height:1.65; z-index:13; box-shadow:0 4px 18px rgba(0,0,0,.5); }
   #kunye h4 { font-size:13px; margin-bottom:7px; color:#fff; }
   #kunye .row { display:flex; justify-content:space-between; gap:12px; }
@@ -141,20 +157,36 @@
     <div class="status" id="model-status">Durum: başlatılıyor…</div>
     <div class="hint" data-i18n="hint.controls">Sürükle: döndür · Sağ tık: kaydır · Tekerlek: yakınlaş</div>
     <div id="tools">
-      <button id="t-measure" data-i18n="tool.measure" data-i18n-title="tool.measure.t" title="İki noktaya tıkla: mesafe ve yükseklik farkı">📏 Ölç</button>
-      <button id="t-vol" data-i18n="tool.vol" data-i18n-title="tool.vol.t" title="Alanı çevrele: taban (seçilen noktaların en alçağı) üstü hacim (m³)">📦 Hacim</button>
-      <button id="t-area" data-i18n="tool.area" data-i18n-title="tool.area.t" title="Alanı çevrele: düzlemsel + gerçek 3B yüzey alanı (m²)">📐 Alan</button>
-      <button id="t-elev" data-i18n="tool.elev" data-i18n-title="tool.elev.t" title="Bir noktaya tıkla: o noktanın rakımı (m)">📍 Rakım</button>
-      <button id="t-profile" data-i18n="tool.profile" data-i18n-title="tool.profile.t" title="İki nokta seç: aradaki topografik yükseklik profili">📈 Profil</button>
-      <button id="t-clear" data-i18n="tool.clear" data-i18n-title="tool.clear.t" title="Tüm ölçüm/işaretleri temizle">🗑 Temizle</button>
-      <button id="t-wire" data-i18n="tool.wire" data-i18n-title="tool.wire.t" title="Modeli üçgen ağ (wireframe) olarak göster">△ Üçgenler</button>
-      <button id="t-rotate" data-i18n="tool.rotate" data-i18n-title="tool.rotate.t" title="Otomatik döndür (sunum)">🔄 Döndür</button>
-      <button id="t-tour" data-i18n="tool.tour" data-i18n-title="tool.tour.t" title="Sinematik 360° tur çek ve video (.webm) olarak indir">🎬 Tur</button>
-      <button id="t-sun" data-i18n="tool.sun" data-i18n-title="tool.sun.t" title="Güneş/gölge: tarih-saate göre gerçek güneş konumu ve gölgeler">☀️ Güneş</button>
-      <button id="t-shot" data-i18n="tool.shot" data-i18n-title="tool.shot.t" title="Ekran görüntüsünü PNG indir">📷 Görüntü</button>
-      <button id="t-share" data-i18n="tool.share" data-i18n-title="tool.share.t" title="Bu kamera görünümünün bağlantısını kopyala">🔗 Bağlantı</button>
-      <button id="t-ar" data-i18n="tool.ar" data-i18n-title="tool.ar.t" title="Mobil cihazda artırılmış gerçeklik (AR) ile gör">📱 AR</button>
-      <button id="t-kunye" data-i18n="tool.info" data-i18n-title="tool.info.t" title="Künye / teknik bilgi">ℹ️ Künye</button>
+      <div class="tgroup">
+        <span class="tglabel" data-i18n="grp.measure">Ölçüm</span>
+        <div class="tgbtns">
+          <button id="t-measure" data-i18n="tool.measure" data-i18n-title="tool.measure.t" title="İki noktaya tıkla: mesafe ve yükseklik farkı">📏 Mesafe</button>
+          <button id="t-vol" data-i18n="tool.vol" data-i18n-title="tool.vol.t" title="Alanı çevrele: taban üstü hacim (m³)">📦 Hacim</button>
+          <button id="t-area" data-i18n="tool.area" data-i18n-title="tool.area.t" title="Alanı çevrele: düzlemsel + gerçek 3B yüzey alanı (m²)">📐 Alan</button>
+          <button id="t-elev" data-i18n="tool.elev" data-i18n-title="tool.elev.t" title="Bir noktaya tıkla: o noktanın rakımı (m)">📍 Rakım</button>
+          <button id="t-profile" data-i18n="tool.profile" data-i18n-title="tool.profile.t" title="İki nokta seç: aradaki yükseklik profili">📈 Profil</button>
+          <button id="t-clear" data-i18n="tool.clear" data-i18n-title="tool.clear.t" title="Tüm ölçüm/işaretleri temizle">🗑 Temizle</button>
+        </div>
+      </div>
+      <div class="tgroup">
+        <span class="tglabel" data-i18n="grp.view">Görünüm</span>
+        <div class="tgbtns">
+          <button id="t-wire" data-i18n="tool.wire" data-i18n-title="tool.wire.t" title="Modeli üçgen ağ (wireframe) göster">△ Üçgenler</button>
+          <button id="t-rotate" data-i18n="tool.rotate" data-i18n-title="tool.rotate.t" title="Otomatik döndür">🔄 Döndür</button>
+          <button id="t-tour" data-i18n="tool.tour" data-i18n-title="tool.tour.t" title="Sinematik 360° tur çek ve video indir">🎬 Tur</button>
+          <button id="t-sun" data-i18n="tool.sun" data-i18n-title="tool.sun.t" title="Güneş/gölge: tarih-saate göre gerçek güneş ve gölgeler">☀️ Güneş</button>
+        </div>
+      </div>
+      <div class="tgroup">
+        <span class="tglabel" data-i18n="grp.share">Paylaşım & Bilgi</span>
+        <div class="tgbtns">
+          <button id="t-shot" data-i18n="tool.shot" data-i18n-title="tool.shot.t" title="Ekran görüntüsünü PNG indir">📷 Görüntü</button>
+          <button id="t-share" data-i18n="tool.share" data-i18n-title="tool.share.t" title="Bu kamera görünümünün bağlantısını kopyala">🔗 Bağlantı</button>
+          <button id="t-ar" data-i18n="tool.ar" data-i18n-title="tool.ar.t" title="Mobilde artırılmış gerçeklik (AR)">📱 AR</button>
+          <button id="t-kunye" data-i18n="tool.info" data-i18n-title="tool.info.t" title="Künye / teknik bilgi">ℹ️ Künye</button>
+          <button id="t-help" class="thelp" data-i18n="tool.help" data-i18n-title="tool.help.t" title="Araçların ne işe yaradığı ve nasıl kullanılacağı">❔ Yardım</button>
+        </div>
+      </div>
     </div>
     <div id="measure-readout"></div>
     <div id="profile-panel">
@@ -266,6 +298,15 @@
   </div>
 
   <div id="warn" data-i18n="warn.perf">⚠️ "Yüksek" ve "En Yüksek" güçlü bir bilgisayar ister. Model açılmazsa veya takılırsa daha düşük bir kalite seçin.</div>
+
+  <!-- Yardım paneli: tüm araçların ne işe yaradığı + nasıl kullanılacağı -->
+  <div id="help-panel">
+    <div class="hp-card">
+      <h4><span data-i18n="help.title">Araçlar — Ne işe yarar, nasıl kullanılır</span><span class="pclose" id="t-help-close" data-i18n-title="common.close.t" title="Kapat">✕</span></h4>
+      <div class="hp-intro" data-i18n="help.intro">Her araç bir kez açılır/kapanır. Ölçüm araçları için modele tıklayarak nokta seç.</div>
+      <div id="hp-list"></div>
+    </div>
+  </div>
 
   <!-- AR overlay (model-viewer tembel yüklenir) -->
   <div id="ar-overlay">
@@ -771,6 +812,27 @@
     if(arClose) arClose.onclick = () => arOverlay.classList.remove('on');
     const kun = document.getElementById('kunye');
     document.getElementById('t-kunye').onclick = () => { kun.style.display = (kun.style.display==='block') ? 'none' : 'block'; };
+
+    // ---- Yardım paneli: araç gruplarından (ad + açıklama) dinamik liste ----
+    const helpPanel = document.getElementById('help-panel'), btnHelp = document.getElementById('t-help');
+    function buildHelp(){
+      const list = document.getElementById('hp-list'); if(!list) return;
+      while(list.firstChild) list.removeChild(list.firstChild);
+      document.querySelectorAll('#tools .tgroup').forEach(grp => {
+        const gl = grp.querySelector('.tglabel');
+        const gd = document.createElement('div'); gd.className='hp-grp'; gd.textContent = gl ? gl.textContent : ''; list.appendChild(gd);
+        grp.querySelectorAll('.tgbtns button').forEach(b => {
+          if(b.id==='t-help') return;
+          const row=document.createElement('div'); row.className='hp-item';
+          const n=document.createElement('div'); n.className='hp-name'; n.textContent=b.textContent;
+          const d=document.createElement('div'); d.className='hp-desc'; d.textContent=b.title||'';
+          row.append(n,d); list.appendChild(row);
+        });
+      });
+    }
+    if(btnHelp) btnHelp.onclick = () => { buildHelp(); helpPanel.classList.add('on'); };
+    const helpCloseBtn=document.getElementById('t-help-close'); if(helpCloseBtn) helpCloseBtn.onclick=()=>helpPanel.classList.remove('on');
+    if(helpPanel) helpPanel.addEventListener('click', e=>{ if(e.target===helpPanel) helpPanel.classList.remove('on'); });
 
     // ---- Atıf üretici (BibTeX / RIS) ----
     const CITE = { title: 'Polat Gölü', year: '2025', slug: 'polat', author: 'Taş, Mehmet Akif',
