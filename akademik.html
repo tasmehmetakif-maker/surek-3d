@@ -23,6 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="i18n.js"></script>
 <style>
   /* ===== PALET (tek yerden değiştirilir) — Zümrüt–Teal ===== */
   :root {
@@ -185,12 +186,13 @@
     <div class="brand"><span class="mk">MT</span> Mehmet Akif Taş</div>
     <div style="display:flex; align-items:center;">
       <div class="links">
-        <a href="#hakkinda">Hakkında</a>
+        <a href="#hakkinda" data-i18n="ak.nav.about">Hakkında</a>
         <a href="#etkinlik">ERJEOKUM 2026</a>
-        <a href="#modeller">3B Modeller</a>
-        <a href="#harita">Harita</a>
-        <a href="#yayinlar">Yayınlar</a>
+        <a href="#modeller" data-i18n="ak.nav.models">3B Modeller</a>
+        <a href="#harita" data-i18n="ak.nav.map">Harita</a>
+        <a href="#yayinlar" data-i18n="ak.nav.pubs">Yayınlar</a>
       </div>
+      <span id="lang-switch" style="margin:0 4px 0 14px"></span>
       <button id="hamb" class="hamb" aria-label="Menü">☰</button>
     </div>
   </nav></div></header>
@@ -198,9 +200,9 @@
   <div id="sideovl"></div>
   <aside id="sidemenu">
     <div class="sclose"><button id="sclose" aria-label="Kapat">✕</button></div>
-    <a href="#hakkinda">Hakkında</a>
+    <a href="#hakkinda" data-i18n="ak.nav.about">Hakkında</a>
     <a href="#etkinlik">ERJEOKUM 2026</a>
-    <div class="grp" data-sub="sm-models">3B Modeller <span class="car">▾</span></div>
+    <div class="grp" data-sub="sm-models"><span data-i18n="ak.nav.models">3B Modeller</span> <span class="car">▾</span></div>
     <div class="sub" id="sm-models">
       <a href="index.html">Sürek Şelalesi</a>
       <a href="stadyum/">Erzincan Stadyumu</a>
@@ -212,9 +214,9 @@
       <a href="tomara/">Tomara Şelalesi</a>
       <a href="konarli/">Konarlı Şelalesi</a>
     </div>
-    <a href="#harita">Harita</a>
-    <a href="yayinlar.html">Yayınlar</a>
-    <a href="mailto:akif.tas@erzincan.edu.tr">İletişim</a>
+    <a href="#harita" data-i18n="ak.nav.map">Harita</a>
+    <a href="yayinlar.html" data-i18n="ak.nav.pubs">Yayınlar</a>
+    <a href="mailto:akif.tas@erzincan.edu.tr" data-i18n="ak.nav.contact">İletişim</a>
     <a href="https://avesis.ebyu.edu.tr/akif.tas" target="_blank" rel="noopener">AVESİS</a>
   </aside>
 
@@ -222,25 +224,25 @@
     <section id="hakkinda" class="hero" style="border-top:0;">
       <div class="avatar"><img src="akif-avatar.jpg" alt="Mehmet Akif Taş" /></div>
       <div class="who">
-        <div class="eyebrow">Akademik Portföy</div>
+        <div class="eyebrow" data-i18n="ak.hero.eyebrow">Akademik Portföy</div>
         <h1 class="grad">Dr. Öğr. Üyesi Mehmet Akif Taş</h1>
-        <div class="role">Erzincan Binali Yıldırım Üniversitesi · Fen-Edebiyat Fakültesi · Coğrafya Bölümü (CBS)</div>
-        <p>Coğrafi Bilgi Sistemleri (CBS) ve uzaktan algılama tabanlı fiziki ve beşeri coğrafya araştırmaları yürütüyorum.
+        <div class="role" data-i18n="ak.hero.role">Erzincan Binali Yıldırım Üniversitesi · Fen-Edebiyat Fakültesi · Coğrafya Bölümü (CBS)</div>
+        <p data-i18n="ak.hero.bio">Coğrafi Bilgi Sistemleri (CBS) ve uzaktan algılama tabanlı fiziki ve beşeri coğrafya araştırmaları yürütüyorum.
            Başlıca çalışma konularım: doğal afet duyarlılık analizleri (heyelan ve taşkın; AHP / Frekans Oranı yöntemleri),
            arazi kullanımı ve ekosistem değişimi, göl seviyesi ile orman örtüsü değişimlerinin uydu görüntüleriyle (Landsat,
            Sentinel) izlenmesi, jeomorfoloji ve jeolojik–kültürel miras (travertenler). Saha verilerini drone fotogrametrisi
            (Agisoft Metashape) ile yüksek çözünürlüklü 3B model, ortofoto ve sayısal yükseklik modeline (DEM) dönüştürüyorum.</p>
-        <div class="eduline">🎓 <b>Doktora:</b> Marmara Üniversitesi, Coğrafya (2021) &nbsp;·&nbsp; <b>Kurum:</b> EBYÜ, Coğrafya Bölümü — CBS Anabilim Dalı</div>
+        <div class="eduline">🎓 <b data-i18n="ak.edu.l1">Doktora:</b> <span data-i18n="ak.edu.v1">Marmara Üniversitesi, Coğrafya (2021)</span> &nbsp;·&nbsp; <b data-i18n="ak.edu.l2">Kurum:</b> <span data-i18n="ak.edu.v2">EBYÜ, Coğrafya Bölümü — CBS Anabilim Dalı</span></div>
         <div class="metrics">
-          <div><b>23</b>Yayın</div>
-          <div><b>3</b>Proje</div>
-          <div><b>1</b>Tez danışmanlığı</div>
+          <div><b>23</b><span data-i18n="ak.m.pubs">Yayın</span></div>
+          <div><b>3</b><span data-i18n="ak.m.proj">Proje</span></div>
+          <div><b>1</b><span data-i18n="ak.m.thesis">Tez danışmanlığı</span></div>
         </div>
         <div class="rtags">
-          <span>CBS</span><span>Uzaktan Algılama</span><span>Doğal Afetler</span><span>Heyelan</span><span>Taşkın</span><span>Jeomorfoloji</span><span>Fotogrametri</span><span>Türkiye Coğrafyası</span>
+          <span data-i18n="ak.tag.gis">CBS</span><span data-i18n="ak.tag.rs">Uzaktan Algılama</span><span data-i18n="ak.tag.haz">Doğal Afetler</span><span data-i18n="ak.tag.land">Heyelan</span><span data-i18n="ak.tag.flood">Taşkın</span><span data-i18n="ak.tag.geom">Jeomorfoloji</span><span data-i18n="ak.tag.photo">Fotogrametri</span><span data-i18n="ak.tag.tr">Türkiye Coğrafyası</span>
         </div>
         <div class="contact">
-          <a href="mailto:akif.tas@erzincan.edu.tr">✉️ E-posta</a>
+          <a href="mailto:akif.tas@erzincan.edu.tr" data-i18n="ak.c.email">✉️ E-posta</a>
           <a href="https://orcid.org/0000-0003-3543-037X" target="_blank" rel="noopener">ORCID</a>
           <a href="https://scholar.google.com/citations?user=zmL04OYAAAAJ" target="_blank" rel="noopener">Google Scholar</a>
           <a href="https://www.webofscience.com/wos/author/record/AFK-5678-2022" target="_blank" rel="noopener">Web of Science</a>
@@ -248,33 +250,33 @@
         </div>
         <div class="qrbox">
           <img id="qr" alt="Site karekodu">
-          <div class="qc"><b>📱 Telefonla aç</b>Poster/sunumda okut, site açılsın.</div>
+          <div class="qc"><b data-i18n="ak.qr.t">📱 Telefonla aç</b><span data-i18n="ak.qr.d">Poster/sunumda okut, site açılsın.</span></div>
         </div>
-        <div class="edit">Bilgiler ve fotoğraf AVESİS profilinden alındı.</div>
+        <div class="edit" data-i18n="ak.hero.src">Bilgiler ve fotoğraf AVESİS profilinden alındı.</div>
       </div>
     </section>
 
     <section id="etkinlik">
       <div class="shead reveal">
-        <div class="eyebrow">Düzenlenen Çalıştay</div>
+        <div class="eyebrow" data-i18n="ak.ev.eyebrow">Düzenlenen Çalıştay</div>
         <h2>ERJEOKUM 2026</h2>
-        <div class="sub">Erzincan'ın jeolojik ve kültürel mirası üzerine uluslararası çalıştay — düzenleme kurulunda görevli.</div>
+        <div class="sub" data-i18n="ak.ev.sub">Erzincan'ın jeolojik ve kültürel mirası üzerine uluslararası çalıştay — düzenleme kurulunda görevli.</div>
       </div>
       <div class="event reveal">
-        <div class="ev-badge">18–20 Haziran 2026 · Erzincan</div>
-        <h3>ERJEOKUM 2026 — Erzincan'ın Jeolojik ve Kültürel Mirası Çalıştayı</h3>
-        <div class="ev-meta">Erzincan Binali Yıldırım Üniversitesi · "Milyonlarca yıllık jeolojik mirası keşfet"</div>
-        <p>Erzincan bölgesinin jeolojik ve kültürel mirası: travertenler, volkanik yapılar, jeomorfoloji, tarihi mimari ve kültürel koruma. EBYÜ ev sahipliğinde; MTA, UNESCO Türkiye Millî Komisyonu ve jeoloji/coğrafya derneklerinin desteğiyle, dört oturum ve teknik arazi gezileriyle uluslararası katılımlı çalıştay.</p>
-        <div class="ev-role">Görev: <b>Ulusal Sekreterya</b> (Düzenleme Kurulu)</div>
-        <a class="btn" href="https://erjeokum2026.org/" target="_blank" rel="noopener">Çalıştay sitesi →</a>
+        <div class="ev-badge" data-i18n="ak.ev.badge">18–20 Haziran 2026 · Erzincan</div>
+        <h3 data-i18n="ak.ev.h3">ERJEOKUM 2026 — Erzincan'ın Jeolojik ve Kültürel Mirası Çalıştayı</h3>
+        <div class="ev-meta" data-i18n="ak.ev.meta">Erzincan Binali Yıldırım Üniversitesi · "Milyonlarca yıllık jeolojik mirası keşfet"</div>
+        <p data-i18n="ak.ev.body">Erzincan bölgesinin jeolojik ve kültürel mirası: travertenler, volkanik yapılar, jeomorfoloji, tarihi mimari ve kültürel koruma. EBYÜ ev sahipliğinde; MTA, UNESCO Türkiye Millî Komisyonu ve jeoloji/coğrafya derneklerinin desteğiyle, dört oturum ve teknik arazi gezileriyle uluslararası katılımlı çalıştay.</p>
+        <div class="ev-role"><span data-i18n="ak.ev.rolel">Görev:</span> <b data-i18n="ak.ev.rolev">Ulusal Sekreterya</b> <span data-i18n="ak.ev.rolep">(Düzenleme Kurulu)</span></div>
+        <a class="btn" href="https://erjeokum2026.org/" target="_blank" rel="noopener" data-i18n="ak.ev.btn">Çalıştay sitesi →</a>
       </div>
     </section>
 
     <section id="modeller">
       <div class="shead reveal">
-        <div class="eyebrow">İnteraktif Vitrin</div>
-        <h2>3B Modeller</h2>
-        <div class="sub">Fotogrametri (Agisoft Metashape) ile üretilmiş, web'de interaktif arazi modelleri. Döndür, yakınlaş, gerçek metre ile ölç.</div>
+        <div class="eyebrow" data-i18n="ak.md.eyebrow">İnteraktif Vitrin</div>
+        <h2 data-i18n="ak.nav.models">3B Modeller</h2>
+        <div class="sub" data-i18n="ak.md.sub">Fotogrametri (Agisoft Metashape) ile üretilmiş, web'de interaktif arazi modelleri. Döndür, yakınlaş, gerçek metre ile ölç.</div>
       </div>
       <div class="grid">
 
@@ -366,18 +368,18 @@
     <!-- ============ HARİTA ============ -->
     <section id="harita">
       <div class="shead reveal">
-        <div class="eyebrow">Mekânsal</div>
-        <h2>Model Konumları</h2>
-        <div class="sub">Her modelin Erzincan'da kapsadığı alan (çerçeve) ve konumu. Sağ üstten uydu (etiketli) / yol / sokak seçebilirsin; çerçeveye veya pin'e tıkla → 3B modele git.</div>
+        <div class="eyebrow" data-i18n="ak.map.eyebrow">Mekânsal</div>
+        <h2 data-i18n="ak.map.h2">Model Konumları</h2>
+        <div class="sub" data-i18n="ak.map.sub">Her modelin Erzincan'da kapsadığı alan (çerçeve) ve konumu. Sağ üstten uydu (etiketli) / yol / sokak seçebilirsin; çerçeveye veya pin'e tıkla → 3B modele git.</div>
       </div>
       <div id="map"></div>
     </section>
 
     <section id="yayinlar">
       <div class="shead reveal">
-        <div class="eyebrow">Bilimsel Üretim</div>
-        <h2>Yayınlar</h2>
-        <div class="sub">Makaleler ve bildiriler. Her birine PDF/DOI ve varsa ilgili 3B model bağlantısı eklenebilir.</div>
+        <div class="eyebrow" data-i18n="ak.pub.eyebrow">Bilimsel Üretim</div>
+        <h2 data-i18n="ak.pub.h2">Yayınlar</h2>
+        <div class="sub" data-i18n="ak.pub.sub">Makaleler ve bildiriler. Her birine PDF/DOI ve varsa ilgili 3B model bağlantısı eklenebilir.</div>
       </div>
 
       <div class="reveal">
@@ -422,7 +424,7 @@
       </div></div>
       </div>
 
-      <div class="pub-all reveal"><a href="yayinlar.html">Tüm yayınlar (23) — özet, DOI, bildiriler &amp; kitap bölümleri →</a></div>
+      <div class="pub-all reveal"><a href="yayinlar.html" data-i18n="ak.pub.all">Tüm yayınlar (23) — özet, DOI, bildiriler &amp; kitap bölümleri →</a></div>
       <div class="edit">Yayınlar AVESİS profilinden alındı. İstersen her birine DOI/PDF linki veya "İlgili 3B model" bağlantısı ekleyebilirsin.</div>
     </section>
   </main>
@@ -489,6 +491,17 @@
   </script>
 <style>.pub .pt a{color:inherit;text-decoration:none}.pub .pt a:hover{color:var(--accent2,#7fe9dc);text-decoration:underline}.pub .pt a::after{content:" ↗";opacity:.5;font-size:.85em}</style>
 <script>
+/* Model kartı açıklamaları + "3B Görüntüle" butonlarını çeviri anahtarlarına bağla (i18n). */
+(function(){
+  var cardKey={surek:'ak.card.surek',stadyum:'ak.card.stadyum',buzul:'ak.card.buzul',mezra:'ak.card.mezra',kemah:'ak.card.kemah',otlukbeli:'ak.card.otlukbeli',polat:'ak.card.polat',tomara:'ak.card.tomara',konarli:'ak.card.konarli'};
+  document.querySelectorAll('.grid .card').forEach(function(c){
+    var th=c.querySelector('.thumb'); if(!th) return;
+    var key=Array.prototype.map.call(th.classList,function(k){return cardKey[k];}).find(Boolean);
+    var desc=c.querySelector('.desc'); if(key&&desc) desc.setAttribute('data-i18n',key);
+    var btn=c.querySelector('.btn'); if(btn) btn.setAttribute('data-i18n','ak.card.view');
+  });
+  if(window.setLang&&window.getLang) window.setLang(window.getLang());  // yeni data-i18n'leri uygula
+})();
 /* Her yayın başlığını Google Scholar aramasına bağla -> tıklayınca makaleye gider. */
 document.querySelectorAll('.pub .pt').forEach(function(el){
   var t=el.textContent.trim(); if(!t) return;
