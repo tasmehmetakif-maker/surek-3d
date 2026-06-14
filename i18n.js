@@ -23,6 +23,7 @@
     'cs.back': ['← Tüm modeller', '← All models'],
     'ak.card.soon': ['🔒 Yakında', '🔒 Coming soon'],
     'info.paper': ['İlgili yayın', 'Related publication'],
+    'ak.card.paper': ['📄 İlgili yayın ↗', '📄 Related publication ↗'],
     // ---- Kalite ----
     'q.label': ['Model kalitesi', 'Model quality'],
     'q.low': ['Düşük', 'Low'],
