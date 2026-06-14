@@ -258,6 +258,32 @@
   @media (max-width:880px){ .hero-grid{grid-template-columns:1fr; gap:32px} .hero-visual{order:-1} .portrait{width:240px} .bento{grid-template-columns:1fr 1fr} .b-bio,.b-tags,.b-contact,.b-qr{grid-column:span 2} }
   @media (max-width:560px){ .bento{grid-template-columns:1fr} .b-bio,.b-tags,.b-contact,.b-qr{grid-column:span 1} .hero-metrics{max-width:none} .hero-full{min-height:auto; padding:74px 0 40px} }
   @media (prefers-reduced-motion:reduce){ .hero-copy .eyebrow::before, .portrait .pf-chip i{animation:none} }
+
+  /* ===== IMMERSIVE 3B HERO (canlı model) ===== */
+  .hero-3d { position:relative; min-height:100svh; display:flex; align-items:flex-end; overflow:hidden; padding:0 0 9vh; border-top:0; }
+  #hero-canvas-wrap { position:absolute; inset:0; z-index:-2; background:#05070b; }
+  #hero-canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  .hero-poster { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:1; transform:scale(1.05); transition:opacity 1.4s ease; }
+  .hero-poster.hide { opacity:0; }
+  .hero-3d::after { content:''; position:absolute; inset:0; z-index:-1; pointer-events:none;
+    background:linear-gradient(95deg, rgba(5,7,11,.95) 0%, rgba(5,7,11,.66) 34%, rgba(5,7,11,.22) 60%, transparent 82%), linear-gradient(0deg, rgba(5,7,11,.92), transparent 44%); }
+  .hero-3d-copy { position:relative; z-index:1; max-width:1180px; }
+  .hero-3d .eyebrow { color:var(--accent2); }
+  .hero-3d .eyebrow::before { animation:pulse 2.4s ease-out infinite; }
+  .hero-3d h1 { font-family:var(--font-d); font-size:clamp(42px,7.4vw,86px); font-weight:700; line-height:.96; letter-spacing:-2.6px; color:#fff; margin:10px 0 18px; }
+  .hero-3d .hero-tag { color:#d6dde6; font-size:clamp(15px,1.8vw,18px); font-weight:300; max-width:540px; line-height:1.55; margin-bottom:26px; }
+  .hero-3d .hero-actions { margin-bottom:26px; }
+  .hero-3d .hero-metrics { max-width:390px; }
+  .hero-credit { position:absolute; right:26px; bottom:9vh; z-index:1; display:flex; align-items:center; gap:8px; font-family:var(--font-m); font-size:11px; letter-spacing:.3px; color:#9fb0c4; }
+  .hero-credit .hc-dot { width:6px; height:6px; border-radius:50%; background:#ff5a52; box-shadow:0 0 8px #ff5a52; animation:pulse 1.8s ease-out infinite; }
+  .scroll-cue { position:absolute; left:50%; bottom:16px; transform:translateX(-50%); z-index:1; color:#9fb0c4; font-size:20px; text-decoration:none; animation:bob 2.2s ease-in-out infinite; }
+  @keyframes bob { 0%,100%{transform:translate(-50%,0)} 50%{transform:translate(-50%,8px)} }
+  .b-profile { grid-column:span 2; display:flex; align-items:center; gap:16px; }
+  .b-ava { width:60px; height:60px; border-radius:50%; object-fit:cover; object-position:50% 26%; flex:0 0 auto; border:1px solid rgba(46,230,214,.32); box-shadow:0 0 24px -8px var(--glow); }
+  .b-name { font-family:var(--font-d); font-weight:600; font-size:16px; color:#fff; }
+  .b-role { font-size:12.5px; color:var(--muted); margin-top:3px; line-height:1.4; }
+  @media (max-width:760px){ .hero-3d{min-height:88svh; padding-bottom:60px} .hero-credit{display:none} .b-profile{grid-column:span 2} }
+  @media (prefers-reduced-motion:reduce){ .hero-credit .hc-dot, .scroll-cue, .hero-3d .eyebrow::before{animation:none} }
 </style>
 </head>
 <body>
@@ -299,37 +325,39 @@
     <a href="https://avesis.ebyu.edu.tr/akif.tas" target="_blank" rel="noopener">AVESİS</a>
   </aside>
 
-  <section class="hero-full" id="hakkinda">
-    <div class="hero-bg" aria-hidden="true"></div>
-    <div class="wrap hero-grid">
-      <div class="hero-copy">
-        <div class="eyebrow"><span data-i18n="ak.hero.eyebrow">Akademik Portföy</span></div>
-        <h1 class="grad">Dr. Öğr. Üyesi<br>Mehmet Akif Taş</h1>
-        <div class="role" data-i18n="ak.hero.role">Erzincan Binali Yıldırım Üniversitesi · Fen-Edebiyat Fakültesi · Coğrafya Bölümü (CBS)</div>
-        <p class="hero-tag" data-i18n="ak.hero.tag">Saha verilerini İHA fotogrametrisiyle yüksek çözünürlüklü, ölçülebilir 3B arazi modellerine dönüştürüyorum.</p>
-        <div class="hero-actions">
-          <a class="hero-cta" href="#modeller"><span data-i18n="ak.hero.cta">3B Modelleri Keşfet</span> <span class="ar">→</span></a>
-          <a class="hero-cta2" href="#yayinlar"><span data-i18n="ak.nav.pubs">Yayınlar</span></a>
-        </div>
-        <div class="metrics hero-metrics">
-          <div><b data-count="9">9</b><span data-i18n="ak.m.models">3B Model</span></div>
-          <div><b data-count="23">23</b><span data-i18n="ak.m.pubs">Yayın</span></div>
-          <div><b data-count="3">3</b><span data-i18n="ak.m.proj">Proje</span></div>
-        </div>
+  <section class="hero-3d" id="hakkinda">
+    <div id="hero-canvas-wrap" aria-hidden="true">
+      <img class="hero-poster" src="otlukbeli-onizleme.jpg" alt="" />
+      <canvas id="hero-canvas"></canvas>
+    </div>
+    <div class="wrap hero-3d-copy">
+      <div class="eyebrow"><span data-i18n="ak.hero.eyebrow">Akademik Portföy</span></div>
+      <h1>Dr. Öğr. Üyesi<br><span class="grad">Mehmet Akif Taş</span></h1>
+      <p class="hero-tag" data-i18n="ak.hero.tag">Saha verilerini İHA fotogrametrisiyle yüksek çözünürlüklü, ölçülebilir 3B arazi modellerine dönüştürüyorum.</p>
+      <div class="hero-actions">
+        <a class="hero-cta" href="#modeller"><span data-i18n="ak.hero.cta">3B Modelleri Keşfet</span> <span class="ar">→</span></a>
+        <a class="hero-cta2" href="#yayinlar"><span data-i18n="ak.nav.pubs">Yayınlar</span></a>
       </div>
-      <div class="hero-visual">
-        <div class="portrait">
-          <img src="akif-avatar.jpg" alt="Mehmet Akif Taş" />
-          <span class="pf-tick tl"></span><span class="pf-tick tr"></span><span class="pf-tick bl"></span><span class="pf-tick br"></span>
-          <div class="pf-chip"><i></i> Erzincan · Türkiye</div>
-        </div>
+      <div class="metrics hero-metrics">
+        <div><b data-count="9">9</b><span data-i18n="ak.m.models">3B Model</span></div>
+        <div><b data-count="23">23</b><span data-i18n="ak.m.pubs">Yayın</span></div>
+        <div><b data-count="3">3</b><span data-i18n="ak.m.proj">Proje</span></div>
       </div>
     </div>
+    <div class="hero-credit"><span class="hc-dot"></span><span data-i18n="ak.hero.live">Canlı 3B model · Otlukbeli Gölü</span></div>
+    <a class="scroll-cue" href="#profil" aria-label="Aşağı kaydır">↓</a>
   </section>
 
   <section class="bento-sec" id="profil">
     <div class="wrap">
       <div class="bento">
+        <div class="bento-cell b-profile">
+          <img class="b-ava" src="akif-avatar.jpg" alt="Mehmet Akif Taş" />
+          <div class="b-pinfo">
+            <div class="b-name">Dr. Öğr. Üyesi Mehmet Akif Taş</div>
+            <div class="b-role" data-i18n="ak.hero.role">Erzincan Binali Yıldırım Üniversitesi · Fen-Edebiyat Fakültesi · Coğrafya Bölümü (CBS)</div>
+          </div>
+        </div>
         <div class="bento-cell b-bio">
           <div class="b-label" data-i18n="ak.b.about">Hakkında</div>
           <p data-i18n="ak.hero.bio">Coğrafi Bilgi Sistemleri (CBS) ve uzaktan algılama tabanlı fiziki ve beşeri coğrafya araştırmaları yürütüyorum.
@@ -635,6 +663,47 @@ document.querySelectorAll('.pub .pt').forEach(function(el){
   a.target='_blank'; a.rel='noopener'; a.title='Makaleyi aç / ara (Google Scholar)'; a.textContent=t;
   el.textContent=''; el.appendChild(a);
 });
+</script>
+<!-- Immersive 3B hero: canlı dönen Otlukbeli modeli (poster önce -> 3B fade-in; mobil/reduced-motion'da poster kalır) -->
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
+}}
+</script>
+<script type="module">
+  (function(){
+    var ok = window.matchMedia && !matchMedia('(prefers-reduced-motion:reduce)').matches && !matchMedia('(hover:none)').matches && innerWidth>=760;
+    var wrap = document.getElementById('hero-canvas-wrap');
+    if(!ok || !wrap) return;
+    Promise.all([import('three'), import('three/addons/loaders/GLTFLoader.js'), import('three/addons/loaders/DRACOLoader.js')]).then(function(m){
+      var THREE=m[0], GLTFLoader=m[1].GLTFLoader, DRACOLoader=m[2].DRACOLoader;
+      var canvas=document.getElementById('hero-canvas');
+      var renderer=new THREE.WebGLRenderer({canvas:canvas, antialias:true, alpha:true, powerPreference:'high-performance'});
+      renderer.setPixelRatio(Math.min(devicePixelRatio,1.8)); renderer.outputColorSpace=THREE.SRGBColorSpace;
+      var scene=new THREE.Scene();
+      var camera=new THREE.PerspectiveCamera(40,1,0.1,8000);
+      scene.add(new THREE.HemisphereLight(0xdcefff,0x141a22,1.35));
+      var sun=new THREE.DirectionalLight(0xffffff,1.6); sun.position.set(0.6,1.4,0.8); scene.add(sun);
+      var draco=new DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.169.0/examples/jsm/libs/draco/');
+      var loader=new GLTFLoader(); loader.setDRACOLoader(draco);
+      var pivot=new THREE.Group(); scene.add(pivot);
+      function resize(){ var w=wrap.clientWidth,h=wrap.clientHeight; if(!w||!h) return; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+      loader.load('otlukbeli/low.glb', function(g){
+        var mo=g.scene, box=new THREE.Box3().setFromObject(mo), s=box.getSize(new THREE.Vector3()), c=box.getCenter(new THREE.Vector3());
+        mo.position.sub(c); var d=Math.max(s.x,s.y,s.z)||100;
+        var tilt=new THREE.Group(); tilt.add(mo); tilt.rotation.x=-0.62; pivot.add(tilt);
+        camera.position.set(0, d*0.78, d*1.02); camera.lookAt(0,0,0);
+        resize();
+        var p=document.querySelector('.hero-poster'); if(p) p.classList.add('hide');
+      }, undefined, function(){});
+      var running=false;
+      function loop(){ if(!running) return; requestAnimationFrame(loop); pivot.rotation.y+=0.0016; renderer.render(scene,camera); }
+      addEventListener('resize', resize); resize();
+      var hero=document.querySelector('.hero-3d');
+      new IntersectionObserver(function(es){ var vis=es[0].isIntersecting; if(vis && !running){ running=true; loop(); } else if(!vis){ running=false; } }, {threshold:0}).observe(hero);
+    }).catch(function(){});
+  })();
 </script>
 </body>
 </html>
