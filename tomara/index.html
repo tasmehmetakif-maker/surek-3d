@@ -58,6 +58,17 @@
   #profile-panel canvas { width:100%; height:150px; display:block; background:rgba(0,0,0,.28); border-radius:8px; }
   #profile-panel .psum { margin-top:8px; font-size:11.5px; color:#9aa3af; display:flex; gap:14px; flex-wrap:wrap; }
   #profile-panel .psum b { color:#7fe9dc; }
+  #sun-panel { position:absolute; top:62px; right:14px; width:300px; max-width:46vw; display:none; background:rgba(12,15,21,.94); border:1px solid rgba(255,255,255,.12); border-radius:13px; padding:12px 14px; z-index:14; box-shadow:0 20px 46px -26px #000; backdrop-filter:blur(14px); }
+  #sun-panel h5 { font-size:12.5px; font-weight:600; color:#cdd5df; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+  #sun-panel .pclose { cursor:pointer; color:#9aa3af; font-size:15px; }
+  #sun-panel .pclose:hover { color:#fff; }
+  #sun-panel .sun-row { display:flex; align-items:center; gap:9px; margin-bottom:9px; font-size:12.5px; color:#cdd5df; }
+  #sun-panel .sun-row label { width:42px; color:#9aa3af; flex:0 0 auto; }
+  #sun-panel .sun-row input[type=range] { flex:1; accent-color:#ffb52e; }
+  #sun-panel .sun-row input[type=date] { flex:1; background:rgba(30,35,44,.85); color:#e8edf2; border:1px solid rgba(255,255,255,.14); border-radius:7px; padding:4px 7px; font-size:12.5px; color-scheme:dark; }
+  #sun-panel .sun-row b { color:#ffcf66; min-width:46px; text-align:right; }
+  #sun-panel .sun-info { font-size:12px; color:#ffcf66; background:rgba(255,181,46,.08); border:1px solid rgba(255,181,46,.2); border-radius:8px; padding:6px 9px; margin-top:2px; }
+  #sun-panel .sun-note { margin-top:8px; font-size:10.5px; line-height:1.5; color:#6f7a88; }
   #kunye { position:absolute; left:14px; top:40px; width:280px; display:none; background:rgba(18,22,28,.96); border:1px solid rgba(255,255,255,.12); padding:12px 14px; border-radius:11px; font-size:12.5px; line-height:1.65; z-index:13; box-shadow:0 4px 18px rgba(0,0,0,.5); }
   #kunye h4 { font-size:13px; margin-bottom:7px; color:#fff; }
   #kunye .row { display:flex; justify-content:space-between; gap:12px; }
@@ -121,6 +132,8 @@
       <button id="t-clear" title="Tüm ölçüm/işaretleri temizle">🗑 Temizle</button>
       <button id="t-wire" title="Modeli üçgen ağ (wireframe) olarak göster">△ Üçgenler</button>
       <button id="t-rotate" title="Otomatik döndür (sunum)">🔄 Döndür</button>
+      <button id="t-tour" title="Sinematik 360° tur çek ve video (.webm) olarak indir">🎬 Tur</button>
+      <button id="t-sun" title="Güneş/gölge: tarih-saate göre gerçek güneş konumu ve gölgeler">☀️ Güneş</button>
       <button id="t-shot" title="Ekran görüntüsünü PNG indir">📷 Görüntü</button>
       <button id="t-share" title="Bu kamera görünümünün bağlantısını kopyala">🔗 Bağlantı</button>
       <button id="t-ar" title="Mobil cihazda artırılmış gerçeklik (AR) ile gör">📱 AR</button>
@@ -131,6 +144,13 @@
       <h5><span>📈 Yükseklik Profili</span><span><span class="pclose" id="t-profile-csv" title="Profili CSV indir" style="margin-right:12px">⬇️</span><span class="pclose" id="t-profile-close" title="Kapat">✕</span></span></h5>
       <canvas id="profile-canvas" width="740" height="300"></canvas>
       <div class="psum" id="profile-sum"></div>
+    </div>
+    <div id="sun-panel">
+      <h5><span>☀️ Güneş / Gölge</span><span class="pclose" id="t-sun-close" title="Kapat">✕</span></h5>
+      <div class="sun-row"><label>Tarih</label><input type="date" id="sun-date"></div>
+      <div class="sun-row"><label>Saat</label><input type="range" id="sun-time" min="240" max="1320" step="5" value="780"><b id="sun-time-val">13:00</b></div>
+      <div class="sun-info" id="sun-info">—</div>
+      <div class="sun-note">Gölgeler, modelin konumundan (enlem/boylam) ve seçilen tarih-saatten hesaplanan gerçek güneş açısıyla çizilir.</div>
     </div>
     <div id="kunye">
       <h4>Tomara Şelalesi — Künye</h4>
@@ -286,7 +306,7 @@
     function frame(obj){ const b=new THREE.Box3().setFromObject(obj), s=b.getSize(new THREE.Vector3()), c=b.getCenter(new THREE.Vector3()); obj.position.sub(c); const d=Math.max(s.x,s.y,s.z)||1, dist=(d/2)/Math.tan(camera.fov*Math.PI/360)*1.6; modelSize=d; camera.position.copy(new THREE.Vector3(1,.75,1).normalize().multiplyScalar(dist)); camera.near=dist/100; camera.far=dist*100; camera.updateProjectionMatrix(); controls.target.set(0,0,0); controls.minDistance=d*.02; controls.maxDistance=d*8; controls.update(); }
     function stats(obj){ let t=0; obj.traverse(o=>{ if(o.isMesh&&o.geometry){ const g=o.geometry; t+=g.index?g.index.count/3:g.attributes.position.count/3; } }); const txt=Math.round(t).toLocaleString('tr-TR'); document.getElementById('model-stats').textContent = txt+' üçgen'; const k=document.getElementById('k-tris'); if(k) k.textContent=txt; }
     function load(url, btn){ setStatus('yükleniyor… ('+url+')'); loader.load(url,
-      g=>{ if(current){scene.remove(current);dispose(current);} current=g.scene; bvhReady=false; scene.add(current); frame(current); if(!_hashApplied){ _hashApplied=true; applyHashCam(); } stats(current); resetTools(); applyWire(); setStatus('✓ '+url+' yüklendi', true); document.querySelectorAll('.q').forEach(b=>b.classList.remove('active')); btn?.classList.add('active'); },
+      g=>{ if(current){scene.remove(current);dispose(current);} current=g.scene; bvhReady=false; scene.add(current); frame(current); if(!_hashApplied){ _hashApplied=true; applyHashCam(); } stats(current); resetTools(); applyWire(); current.traverse(o=>{ if(o.isMesh){ o.castShadow=true; o.receiveShadow=true; } }); if(typeof sunOn!=='undefined' && sunOn){ configShadowCam(); updateSun(); } setStatus('✓ '+url+' yüklendi', true); document.querySelectorAll('.q').forEach(b=>b.classList.remove('active')); btn?.classList.add('active'); },
       x=>{ if(x.total) setStatus('yükleniyor… %'+Math.round(x.loaded/x.total*100)); },
       e=>{ const fb = btn && btn.dataset && btn.dataset.fallback; if(fb && url !== fb){ setStatus('yerel "En Yüksek" yok — GitHub Releases deneniyor…'); load(fb, btn); return; } console.error(e); setStatus('✗ "'+url+'" açılamadı — daha DÜŞÜK kalite seçin', false); }); }
     document.querySelectorAll('.q').forEach(b => b.onclick = () => load(b.dataset.url, b));
@@ -559,6 +579,121 @@
     };
 
     document.getElementById('t-shot').onclick = () => { renderer.render(scene,camera); const a=document.createElement('a'); a.download='tomara.png'; a.href=renderer.domElement.toDataURL('image/png'); a.click(); };
+
+    // ---- Sinematik tur + kayıt: 360° yörünge + canvas'ı .webm videoya kaydet ----
+    const btnTour = document.getElementById('t-tour');
+    let touring = false, tourRec = null, tourChunks = [], tourSaved = null;
+    function stopTour(ok){
+      if(!touring) return; touring = false;
+      if(btnTour) btnTour.classList.remove('on');
+      controls.enabled = true;
+      activeRender = tourSaved; tourSaved = null;   // ana render döngüsünü geri ver
+      if(tourRec && tourRec.state !== 'inactive'){ try{ tourRec.stop(); }catch(e){} }
+      else if(ok) setStatus('✓ tur tamamlandı', true);
+    }
+    function startTour(){
+      if(!current){ return; }
+      touring = true; if(btnTour) btnTour.classList.add('on');
+      resetTools(); controls.autoRotate = false; if(btnR) btnR.classList.remove('on');
+      controls.enabled = false;
+      tourSaved = activeRender; activeRender = null;   // çift render'i önle (temiz capture)
+      // Kayıt (destekleniyorsa)
+      tourChunks = []; tourRec = null;
+      try {
+        if(typeof MediaRecorder !== 'undefined' && renderer.domElement.captureStream){
+          const stream = renderer.domElement.captureStream(30);
+          const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9'
+                     : MediaRecorder.isTypeSupported('video/webm;codecs=vp8') ? 'video/webm;codecs=vp8' : 'video/webm';
+          tourRec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 16000000 });
+          tourRec.ondataavailable = e => { if(e.data && e.data.size) tourChunks.push(e.data); };
+          tourRec.onstop = () => {
+            const blob = new Blob(tourChunks, {type:'video/webm'});
+            const a = document.createElement('a'); a.download = 'tomara-tur.webm';
+            a.href = URL.createObjectURL(blob); a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+            setStatus('✓ tur videosu indirildi (.webm)', true);
+          };
+          tourRec.start();
+        }
+      } catch(e){ console.error(e); tourRec = null; }
+      const dur = 14000, t0 = performance.now();
+      const radius = camera.position.distanceTo(controls.target) || modelSize;
+      const a0 = Math.atan2(camera.position.z - controls.target.z, camera.position.x - controls.target.x);
+      const y0 = camera.position.y, ease = p => 0.5 - 0.5*Math.cos(p*Math.PI);
+      function step(now){
+        if(!touring) return;
+        const p = Math.min(1, (now - t0)/dur), ang = a0 + ease(p)*Math.PI*2;
+        camera.position.set(controls.target.x + radius*Math.cos(ang), y0, controls.target.z + radius*Math.sin(ang));
+        camera.lookAt(controls.target);
+        setStatus(tourRec ? ('🎬 sinematik tur kaydı… %'+Math.round(p*100)) : ('🎬 sinematik tur… %'+Math.round(p*100)));
+        renderer.render(scene, camera);
+        if(p < 1 && touring) requestAnimationFrame(step); else stopTour(true);
+      }
+      requestAnimationFrame(step);
+    }
+    if(btnTour) btnTour.onclick = () => { if(touring) stopTour(false); else startTour(); };
+
+    // ---- Güneş / gölge simülasyonu: konumdan (enlem/boylam) + tarih-saatten gerçek güneş açısı ----
+    const LAT = 40.080245, LON = 39.050229;
+    const sunPanel = document.getElementById('sun-panel'), btnSun = document.getElementById('t-sun');
+    const sunDateEl = document.getElementById('sun-date'), sunTimeEl = document.getElementById('sun-time'),
+          sunTimeVal = document.getElementById('sun-time-val'), sunInfo = document.getElementById('sun-info');
+    let sunOn = false, fillHemi = null, fillAmb = null;
+    sun.target.position.set(0,0,0); scene.add(sun.target);
+    function solarPos(dt){  // NOAA basitleştirilmiş: yerel Date -> {el, az} derece
+      const rad=Math.PI/180, JD=dt.getTime()/86400000 + 2440587.5, n=JD-2451545.0;
+      const L=((280.460+0.9856474*n)%360+360)%360, g=(((357.528+0.9856003*n)%360+360)%360)*rad;
+      const lam=(L+1.915*Math.sin(g)+0.020*Math.sin(2*g))*rad, eps=(23.439-0.0000004*n)*rad;
+      const ra=Math.atan2(Math.cos(eps)*Math.sin(lam), Math.cos(lam)), dec=Math.asin(Math.sin(eps)*Math.sin(lam));
+      const GMST=((18.697374558+24.06570982441908*n)%24+24)%24, LST=((GMST*15+LON)%360)*rad;
+      const H=LST-ra, phi=LAT*rad;
+      const el=Math.asin(Math.sin(phi)*Math.sin(dec)+Math.cos(phi)*Math.cos(dec)*Math.cos(H));
+      let az=Math.atan2(Math.sin(H), Math.cos(H)*Math.sin(phi)-Math.tan(dec)*Math.cos(phi));
+      return { el: el/rad, az: (az/rad+180+360)%360 };
+    }
+    function curSunDate(){
+      const ds=(sunDateEl.value||'2025-07-15').split('-').map(Number), mins=+sunTimeEl.value;
+      return new Date(Date.UTC(ds[0], ds[1]-1, ds[2], Math.floor(mins/60)-3, mins%60)); // TR yerel (UTC+3)
+    }
+    function configShadowCam(){
+      const s=(modelSize||500)*0.62, m=(modelSize||500);
+      sun.shadow.camera.left=-s; sun.shadow.camera.right=s; sun.shadow.camera.top=s; sun.shadow.camera.bottom=-s;
+      sun.shadow.camera.near=m*0.05; sun.shadow.camera.far=m*6;
+      sun.shadow.mapSize.set(4096,4096); sun.shadow.bias=-0.0004; sun.shadow.normalBias=Math.max(0.4, m*0.0015);
+      sun.shadow.camera.updateProjectionMatrix();
+    }
+    function updateSun(){
+      const p=solarPos(curSunDate()), mins=+sunTimeEl.value;
+      sunTimeVal.textContent=String(Math.floor(mins/60)).padStart(2,'0')+':'+String(mins%60).padStart(2,'0');
+      if(p.el<=0.5){ sunInfo.textContent='🌙 Güneş ufkun altında — gölge yok'; sun.intensity=0.08; renderer.shadowMap.needsUpdate=true; return; }
+      const elr=p.el*Math.PI/180, azr=p.az*Math.PI/180, dist=(modelSize||500)*2.2;
+      sun.position.set(dist*Math.cos(elr)*Math.sin(azr), dist*Math.sin(elr), -dist*Math.cos(elr)*Math.cos(azr)); // K=-Z, D=+X
+      sun.target.updateMatrixWorld();
+      sun.intensity = 1.0 + 1.5*Math.sin(elr);
+      const yon=['K','KD','D','GD','G','GB','B','KB'][Math.round(p.az/45)%8];
+      sunInfo.textContent='Güneş yüksekliği: '+p.el.toFixed(0)+'° · Azimut: '+p.az.toFixed(0)+'° ('+yon+')';
+      renderer.shadowMap.needsUpdate=true;
+    }
+    function setSun(on){
+      sunOn=on; btnSun.classList.toggle('on', on); sunPanel.style.display=on?'block':'none';
+      renderer.shadowMap.enabled=on; renderer.shadowMap.type=THREE.PCFSoftShadowMap; renderer.shadowMap.autoUpdate=false;
+      sun.castShadow=on;
+      if(fillHemi===null) fillHemi=scene.getObjectByProperty('type','HemisphereLight');
+      if(fillAmb===null) fillAmb=scene.getObjectByProperty('type','AmbientLight');
+      if(on){
+        if(fillHemi) fillHemi.intensity=0.32; if(fillAmb) fillAmb.intensity=0.22;  // gölgeler görünsün
+        if(current) current.traverse(o=>{ if(o.isMesh){ o.castShadow=true; o.receiveShadow=true; } });
+        configShadowCam(); updateSun();
+      } else {
+        if(fillHemi) fillHemi.intensity=1.2; if(fillAmb) fillAmb.intensity=0.35;
+        sun.position.set(1,2,1.5); sun.intensity=1.3;
+      }
+      renderer.shadowMap.needsUpdate=true;
+    }
+    if(sunDateEl && !sunDateEl.value) sunDateEl.value='2025-07-15';
+    if(sunTimeEl) sunTimeEl.oninput=()=>updateSun();
+    if(sunDateEl) sunDateEl.onchange=()=>updateSun();
+    if(btnSun) btnSun.onclick=()=>setSun(!sunOn);
+    const sunCloseBtn=document.getElementById('t-sun-close'); if(sunCloseBtn) sunCloseBtn.onclick=()=>setSun(false);
     // Kamera görünümü bağlantısı: hash'i güncelle + URL kopyala
     const btnShare = document.getElementById('t-share');
     if(btnShare) btnShare.onclick = () => {
