@@ -173,7 +173,8 @@
         <div class="tgbtns">
           <button id="t-wire" data-i18n="tool.wire" data-i18n-title="tool.wire.t" title="Modeli üçgen ağ (wireframe) göster">△ Üçgenler</button>
           <button id="t-rotate" data-i18n="tool.rotate" data-i18n-title="tool.rotate.t" title="Otomatik döndür">🔄 Döndür</button>
-          <button id="t-tour" data-i18n="tool.tour" data-i18n-title="tool.tour.t" title="Sinematik 360° tur çek ve video indir">🎬 Tur</button>
+          <button id="t-tour" data-i18n="tool.tour" data-i18n-title="tool.tour.t" title="Tur çek + video indir (rota yoksa 360°)">🎬 Tur</button>
+          <button id="t-waypoint" data-i18n="tool.wp" data-i18n-title="tool.wp.t" title="Şu anki kamera açısını tur rotasına ekle">📍 Rota +</button>
           <button id="t-sun" data-i18n="tool.sun" data-i18n-title="tool.sun.t" title="Güneş/gölge: tarih-saate göre gerçek güneş ve gölgeler">☀️ Güneş</button>
         </div>
       </div>
@@ -663,7 +664,7 @@
 
     // ---- Sinematik tur + kayıt: 360° yörünge + canvas'ı .webm videoya kaydet ----
     const btnTour = document.getElementById('t-tour');
-    let touring = false, tourRec = null, tourChunks = [], tourSaved = null;
+    let touring = false, tourRec = null, tourChunks = [], tourSaved = null, waypoints = [];
     function stopTour(ok){
       if(!touring) return; touring = false;
       if(btnTour) btnTour.classList.remove('on');
@@ -696,22 +697,47 @@
           tourRec.start();
         }
       } catch(e){ console.error(e); tourRec = null; }
-      const dur = 14000, t0 = performance.now();
-      const radius = camera.position.distanceTo(controls.target) || modelSize;
-      const a0 = Math.atan2(camera.position.z - controls.target.z, camera.position.x - controls.target.x);
-      const y0 = camera.position.y, ease = p => 0.5 - 0.5*Math.cos(p*Math.PI);
+      const useRoute = waypoints.length >= 2;
+      const dur = useRoute ? Math.min(24000, 4000 + waypoints.length*3500) : 14000, t0 = performance.now();
+      const ease = p => 0.5 - 0.5*Math.cos(p*Math.PI);
+      let posCurve, tgtCurve, radius, a0, y0;
+      if(useRoute){
+        posCurve = new THREE.CatmullRomCurve3(waypoints.map(w=>w.pos.clone()), false, 'catmullrom', 0.5);
+        tgtCurve = new THREE.CatmullRomCurve3(waypoints.map(w=>w.tgt.clone()), false, 'catmullrom', 0.5);
+      } else {
+        radius = camera.position.distanceTo(controls.target) || modelSize;
+        a0 = Math.atan2(camera.position.z - controls.target.z, camera.position.x - controls.target.x);
+        y0 = camera.position.y;
+      }
       function step(now){
         if(!touring) return;
-        const p = Math.min(1, (now - t0)/dur), ang = a0 + ease(p)*Math.PI*2;
-        camera.position.set(controls.target.x + radius*Math.cos(ang), y0, controls.target.z + radius*Math.sin(ang));
+        const p = Math.min(1, (now - t0)/dur), pe = ease(p);
+        if(useRoute){
+          camera.position.copy(posCurve.getPoint(pe));
+          controls.target.copy(tgtCurve.getPoint(pe));
+        } else {
+          const ang = a0 + pe*Math.PI*2;
+          camera.position.set(controls.target.x + radius*Math.cos(ang), y0, controls.target.z + radius*Math.sin(ang));
+        }
         camera.lookAt(controls.target);
-        setStatus(tourRec ? Tt('tour.rec',{p:Math.round(p*100)}) : Tt('tour.run',{p:Math.round(p*100)}));
+        setStatus(tourRec ? Tt(useRoute?'tour.route':'tour.rec',{p:Math.round(p*100)}) : Tt('tour.run',{p:Math.round(p*100)}));
         renderer.render(scene, camera);
         if(p < 1 && touring) requestAnimationFrame(step); else stopTour(true);
       }
       requestAnimationFrame(step);
     }
     if(btnTour) btnTour.onclick = () => { if(touring) stopTour(false); else startTour(); };
+    // Rota noktası: şu anki kamera açısını tur rotasına ekle (Tur bu noktalardan geçer)
+    const btnWp = document.getElementById('t-waypoint');
+    if(btnWp) btnWp.onclick = () => {
+      if(!current) return;
+      waypoints.push({ pos: camera.position.clone(), tgt: controls.target.clone() });
+      readout.replaceChildren(document.createTextNode(Tt('wp.added',{n:waypoints.length})));
+      const clr = document.createElement('button'); clr.textContent = Tt('wp.clear');
+      clr.style.cssText='background:#3a4250;color:#fff;border:0;border-radius:6px;padding:3px 9px;margin-left:4px;cursor:pointer;font-size:12px';
+      clr.onclick = () => { waypoints.length = 0; readout.style.display='none'; };
+      readout.append(clr); readout.style.display='block';
+    };
 
     // ---- Güneş / gölge simülasyonu: konumdan (enlem/boylam) + tarih-saatten gerçek güneş açısı ----
     const LAT = 39.490681, LON = 39.394027;
