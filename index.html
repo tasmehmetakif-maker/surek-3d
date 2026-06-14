@@ -209,6 +209,55 @@
   .thumb::after { background:linear-gradient(transparent 32%, rgba(7,10,15,.86)); }
   .thumb .ttl { font-family:var(--font-d); }
   @media (prefers-reduced-motion:reduce){ .avatar::after{animation:none;} }
+
+  /* ===== BOLD REDESIGN: tam-bleed hero + bento ===== */
+  .hero-full, .bento-sec { border-top:0; }
+  .hero-full .wrap, .bento-sec .wrap { max-width:1180px; }
+  .hero-full { position:relative; min-height:min(86vh,720px); display:flex; align-items:center; padding:96px 0 56px; overflow:hidden; }
+  .hero-bg { position:absolute; inset:0; z-index:-1; pointer-events:none;
+    background:radial-gradient(58% 78% at 80% 34%, rgba(47,109,240,.16), transparent 60%), radial-gradient(48% 66% at 16% 82%, rgba(139,92,246,.13), transparent 60%); }
+  .hero-bg::before { content:''; position:absolute; inset:0;
+    background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px); background-size:56px 56px;
+    -webkit-mask:radial-gradient(78% 72% at 62% 42%,#000,transparent 76%); mask:radial-gradient(78% 72% at 62% 42%,#000,transparent 76%); }
+  .hero-grid { display:grid; grid-template-columns:1.22fr .78fr; gap:50px; align-items:center; width:100%; }
+  .hero-copy .eyebrow::before { animation:pulse 2.4s ease-out infinite; }
+  .hero-copy h1 { font-family:var(--font-d); font-size:clamp(38px,6.2vw,66px); font-weight:700; line-height:1.02; letter-spacing:-1.8px; margin:6px 0 14px; }
+  .hero-copy .role { color:var(--gtext); font-weight:600; font-size:clamp(13px,1.5vw,15px); margin-bottom:16px; }
+  .hero-tag { color:#c6ced9; font-size:clamp(15px,1.7vw,18px); font-weight:300; line-height:1.55; max-width:540px; margin-bottom:28px; }
+  .hero-actions { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:30px; }
+  .hero-cta { margin:0; }
+  .hero-cta2 { display:inline-flex; align-items:center; gap:7px; font-family:var(--font-d); font-weight:600; font-size:14.5px; color:#e8edf2; border:1px solid var(--line); background:rgba(255,255,255,.04); padding:12px 20px; border-radius:13px; transition:.28s var(--ease); }
+  .hero-cta2:hover { border-color:var(--accent2); color:#fff; box-shadow:0 0 24px -10px var(--glow2); transform:translateY(-2px); }
+  .hero-metrics { display:flex; border:1px solid var(--line); border-radius:14px; overflow:hidden; background:rgba(255,255,255,.025); backdrop-filter:blur(8px); max-width:430px; }
+  .hero-metrics div { flex:1; padding:14px 18px; display:flex; flex-direction:column; gap:3px; border-left:1px solid var(--line); background:none; box-shadow:none; border-radius:0; }
+  .hero-metrics div:first-child { border-left:0; }
+  .hero-metrics b { font-family:var(--font-d); font-size:30px; font-weight:700; line-height:1; margin:0; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; font-variant-numeric:tabular-nums; }
+  .hero-metrics span { font-family:var(--font-m); font-size:10px; letter-spacing:.4px; text-transform:uppercase; color:var(--muted); }
+  .hero-visual { display:flex; justify-content:center; }
+  .portrait { position:relative; width:min(330px,82%); aspect-ratio:1; border-radius:24px; overflow:hidden; border:1px solid rgba(255,255,255,.12); box-shadow:0 44px 96px -42px #000, 0 0 90px -34px var(--glow); }
+  .portrait img { width:100%; height:100%; object-fit:cover; object-position:50% 26%; display:block; }
+  .portrait::after { content:''; position:absolute; inset:0; background:linear-gradient(165deg,transparent 52%,rgba(7,10,15,.6)); }
+  .portrait .pf-chip { position:absolute; left:13px; bottom:13px; z-index:2; font-family:var(--font-m); font-size:11px; color:#dff7f2; background:rgba(8,12,18,.72); border:1px solid rgba(46,230,214,.35); padding:5px 11px; border-radius:20px; backdrop-filter:blur(6px); display:flex; align-items:center; gap:7px; }
+  .portrait .pf-chip i { width:7px; height:7px; background:var(--accent2); border-radius:50%; box-shadow:0 0 8px var(--accent2); animation:pulse 2.4s ease-out infinite; }
+  .pf-tick { position:absolute; width:15px; height:15px; border:2px solid var(--accent2); z-index:2; opacity:.8; }
+  .pf-tick.tl{top:11px;left:11px;border-right:0;border-bottom:0} .pf-tick.tr{top:11px;right:11px;border-left:0;border-bottom:0}
+  .pf-tick.bl{bottom:11px;left:11px;border-right:0;border-top:0} .pf-tick.br{bottom:11px;right:11px;border-left:0;border-top:0}
+  .bento-sec { padding:6px 0 44px; }
+  .bento { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .bento-cell { background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.016)); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; backdrop-filter:blur(12px); box-shadow:0 1px 0 rgba(255,255,255,.05) inset; }
+  .b-bio { grid-column:span 2; grid-row:span 2; }
+  .b-tags, .b-contact, .b-qr { grid-column:span 2; }
+  .b-qr { display:flex; align-items:center; gap:16px; }
+  .b-qr #qr { width:88px; height:88px; border-radius:9px; background:#fff; padding:5px; flex:0 0 auto; display:block; }
+  .b-qr .qc { font-size:12.5px; color:#c2cad4; }
+  .b-qr .qc b { display:block; color:#fff; font-weight:600; margin-bottom:3px; }
+  .b-label { font-family:var(--font-m); font-size:10px; letter-spacing:1.6px; text-transform:uppercase; color:var(--accent2); margin-bottom:13px; }
+  .b-bio p { color:#c2cad4; font-weight:300; font-size:14.5px; line-height:1.62; }
+  .b-bio .eduline { margin-top:14px; }
+  .b-contact .contact, .b-tags .rtags { margin:0; }
+  @media (max-width:880px){ .hero-grid{grid-template-columns:1fr; gap:32px} .hero-visual{order:-1} .portrait{width:240px} .bento{grid-template-columns:1fr 1fr} .b-bio,.b-tags,.b-contact,.b-qr{grid-column:span 2} }
+  @media (max-width:560px){ .bento{grid-template-columns:1fr} .b-bio,.b-tags,.b-contact,.b-qr{grid-column:span 1} .hero-metrics{max-width:none} .hero-full{min-height:auto; padding:74px 0 40px} }
+  @media (prefers-reduced-motion:reduce){ .hero-copy .eyebrow::before, .portrait .pf-chip i{animation:none} }
 </style>
 </head>
 <body>
@@ -250,42 +299,72 @@
     <a href="https://avesis.ebyu.edu.tr/akif.tas" target="_blank" rel="noopener">AVESİS</a>
   </aside>
 
-  <main class="wrap">
-    <section id="hakkinda" class="hero" style="border-top:0;">
-      <div class="avatar"><img src="akif-avatar.jpg" alt="Mehmet Akif Taş" /></div>
-      <div class="who">
-        <div class="eyebrow" data-i18n="ak.hero.eyebrow">Akademik Portföy</div>
-        <h1 class="grad">Dr. Öğr. Üyesi Mehmet Akif Taş</h1>
+  <section class="hero-full" id="hakkinda">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow"><span data-i18n="ak.hero.eyebrow">Akademik Portföy</span></div>
+        <h1 class="grad">Dr. Öğr. Üyesi<br>Mehmet Akif Taş</h1>
         <div class="role" data-i18n="ak.hero.role">Erzincan Binali Yıldırım Üniversitesi · Fen-Edebiyat Fakültesi · Coğrafya Bölümü (CBS)</div>
-        <p data-i18n="ak.hero.bio">Coğrafi Bilgi Sistemleri (CBS) ve uzaktan algılama tabanlı fiziki ve beşeri coğrafya araştırmaları yürütüyorum.
-           Başlıca çalışma konularım: doğal afet duyarlılık analizleri (heyelan ve taşkın; AHP / Frekans Oranı yöntemleri),
-           arazi kullanımı ve ekosistem değişimi, göl seviyesi ile orman örtüsü değişimlerinin uydu görüntüleriyle (Landsat,
-           Sentinel) izlenmesi, jeomorfoloji ve jeolojik–kültürel miras (travertenler). Saha verilerini drone fotogrametrisi
-           (Agisoft Metashape) ile yüksek çözünürlüklü 3B model, ortofoto ve sayısal yükseklik modeline (DEM) dönüştürüyorum.</p>
-        <div class="eduline">🎓 <b data-i18n="ak.edu.l1">Doktora:</b> <span data-i18n="ak.edu.v1">Marmara Üniversitesi, Coğrafya (2021)</span> &nbsp;·&nbsp; <b data-i18n="ak.edu.l2">Kurum:</b> <span data-i18n="ak.edu.v2">EBYÜ, Coğrafya Bölümü — CBS Anabilim Dalı</span></div>
-        <div class="metrics">
+        <p class="hero-tag" data-i18n="ak.hero.tag">Saha verilerini İHA fotogrametrisiyle yüksek çözünürlüklü, ölçülebilir 3B arazi modellerine dönüştürüyorum.</p>
+        <div class="hero-actions">
+          <a class="hero-cta" href="#modeller"><span data-i18n="ak.hero.cta">3B Modelleri Keşfet</span> <span class="ar">→</span></a>
+          <a class="hero-cta2" href="#yayinlar"><span data-i18n="ak.nav.pubs">Yayınlar</span></a>
+        </div>
+        <div class="metrics hero-metrics">
+          <div><b data-count="9">9</b><span data-i18n="ak.m.models">3B Model</span></div>
           <div><b data-count="23">23</b><span data-i18n="ak.m.pubs">Yayın</span></div>
           <div><b data-count="3">3</b><span data-i18n="ak.m.proj">Proje</span></div>
-          <div><b data-count="1">1</b><span data-i18n="ak.m.thesis">Tez danışmanlığı</span></div>
         </div>
-        <div class="rtags">
-          <span data-i18n="ak.tag.gis">CBS</span><span data-i18n="ak.tag.rs">Uzaktan Algılama</span><span data-i18n="ak.tag.haz">Doğal Afetler</span><span data-i18n="ak.tag.land">Heyelan</span><span data-i18n="ak.tag.flood">Taşkın</span><span data-i18n="ak.tag.geom">Jeomorfoloji</span><span data-i18n="ak.tag.photo">Fotogrametri</span><span data-i18n="ak.tag.tr">Türkiye Coğrafyası</span>
+      </div>
+      <div class="hero-visual">
+        <div class="portrait">
+          <img src="akif-avatar.jpg" alt="Mehmet Akif Taş" />
+          <span class="pf-tick tl"></span><span class="pf-tick tr"></span><span class="pf-tick bl"></span><span class="pf-tick br"></span>
+          <div class="pf-chip"><i></i> Erzincan · Türkiye</div>
         </div>
-        <a class="hero-cta" href="#modeller"><span data-i18n="ak.hero.cta">3B Modelleri Keşfet</span> <span class="ar">→</span></a>
-        <div class="contact">
-          <a href="mailto:akif.tas@erzincan.edu.tr" data-i18n="ak.c.email">✉️ E-posta</a>
-          <a href="https://orcid.org/0000-0003-3543-037X" target="_blank" rel="noopener">ORCID</a>
-          <a href="https://scholar.google.com/citations?user=zmL04OYAAAAJ" target="_blank" rel="noopener">Google Scholar</a>
-          <a href="https://www.webofscience.com/wos/author/record/AFK-5678-2022" target="_blank" rel="noopener">Web of Science</a>
-          <a href="https://avesis.ebyu.edu.tr/akif.tas" target="_blank" rel="noopener">AVESİS</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bento-sec" id="profil">
+    <div class="wrap">
+      <div class="bento">
+        <div class="bento-cell b-bio">
+          <div class="b-label" data-i18n="ak.b.about">Hakkında</div>
+          <p data-i18n="ak.hero.bio">Coğrafi Bilgi Sistemleri (CBS) ve uzaktan algılama tabanlı fiziki ve beşeri coğrafya araştırmaları yürütüyorum.
+             Başlıca çalışma konularım: doğal afet duyarlılık analizleri (heyelan ve taşkın; AHP / Frekans Oranı yöntemleri),
+             arazi kullanımı ve ekosistem değişimi, göl seviyesi ile orman örtüsü değişimlerinin uydu görüntüleriyle (Landsat,
+             Sentinel) izlenmesi, jeomorfoloji ve jeolojik–kültürel miras (travertenler). Saha verilerini drone fotogrametrisi
+             (Agisoft Metashape) ile yüksek çözünürlüklü 3B model, ortofoto ve sayısal yükseklik modeline (DEM) dönüştürüyorum.</p>
+          <div class="eduline">🎓 <b data-i18n="ak.edu.l1">Doktora:</b> <span data-i18n="ak.edu.v1">Marmara Üniversitesi, Coğrafya (2021)</span> &nbsp;·&nbsp; <b data-i18n="ak.edu.l2">Kurum:</b> <span data-i18n="ak.edu.v2">EBYÜ, Coğrafya Bölümü — CBS Anabilim Dalı</span></div>
         </div>
-        <div class="qrbox">
+        <div class="bento-cell b-tags">
+          <div class="b-label" data-i18n="ak.b.research">Araştırma Alanları</div>
+          <div class="rtags">
+            <span data-i18n="ak.tag.gis">CBS</span><span data-i18n="ak.tag.rs">Uzaktan Algılama</span><span data-i18n="ak.tag.haz">Doğal Afetler</span><span data-i18n="ak.tag.land">Heyelan</span><span data-i18n="ak.tag.flood">Taşkın</span><span data-i18n="ak.tag.geom">Jeomorfoloji</span><span data-i18n="ak.tag.photo">Fotogrametri</span><span data-i18n="ak.tag.tr">Türkiye Coğrafyası</span>
+          </div>
+        </div>
+        <div class="bento-cell b-contact">
+          <div class="b-label" data-i18n="ak.b.links">Bağlantılar</div>
+          <div class="contact">
+            <a href="mailto:akif.tas@erzincan.edu.tr" data-i18n="ak.c.email">✉️ E-posta</a>
+            <a href="https://orcid.org/0000-0003-3543-037X" target="_blank" rel="noopener">ORCID</a>
+            <a href="https://scholar.google.com/citations?user=zmL04OYAAAAJ" target="_blank" rel="noopener">Google Scholar</a>
+            <a href="https://www.webofscience.com/wos/author/record/AFK-5678-2022" target="_blank" rel="noopener">Web of Science</a>
+            <a href="https://avesis.ebyu.edu.tr/akif.tas" target="_blank" rel="noopener">AVESİS</a>
+          </div>
+        </div>
+        <div class="bento-cell b-qr">
           <img id="qr" alt="Site karekodu">
           <div class="qc"><b data-i18n="ak.qr.t">📱 Telefonla aç</b><span data-i18n="ak.qr.d">Poster/sunumda okut, site açılsın.</span></div>
         </div>
-        <div class="edit" data-i18n="ak.hero.src">Bilgiler ve fotoğraf AVESİS profilinden alındı.</div>
       </div>
-    </section>
+      <div class="edit" data-i18n="ak.hero.src">Bilgiler ve fotoğraf AVESİS profilinden alındı.</div>
+    </div>
+  </section>
+
+  <main class="wrap">
 
     <section id="etkinlik">
       <div class="shead reveal">

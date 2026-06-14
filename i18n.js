@@ -25,6 +25,11 @@
     'info.paper': ['İlgili yayın', 'Related publication'],
     'ak.card.paper': ['📄 İlgili yayın ↗', '📄 Related publication ↗'],
     'ak.hero.cta': ['3B Modelleri Keşfet', 'Explore 3D Models'],
+    'ak.hero.tag': ['Saha verilerini İHA fotogrametrisiyle yüksek çözünürlüklü, ölçülebilir 3B arazi modellerine dönüştürüyorum.', 'I turn field data into high-resolution, measurable 3D terrain models using UAV photogrammetry.'],
+    'ak.m.models': ['3B Model', '3D Models'],
+    'ak.b.about': ['Hakkında', 'About'],
+    'ak.b.research': ['Araştırma Alanları', 'Research Areas'],
+    'ak.b.links': ['Bağlantılar', 'Links'],
     // ---- Kalite ----
     'q.label': ['Model kalitesi', 'Model quality'],
     'q.low': ['Düşük', 'Low'],
