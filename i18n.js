@@ -14,6 +14,9 @@
     'tab.dem2d': ['DEM (2B)', 'DEM (2D)'],
     'tab.compare': ['⇋ Karşılaştır', '⇋ Compare'],
     'nav.portfolio': ['🏛 Portföy', '🏛 Portfolio'],
+    // ---- Ziyaret sayacı ----
+    'vc.total': ['Toplam ziyaret', 'Total visits'],
+    'vc.today': ['Bugün', 'Today'],
     // ---- Kalite ----
     'q.label': ['Model kalitesi', 'Model quality'],
     'q.low': ['Düşük', 'Low'],

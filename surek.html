@@ -3,25 +3,26 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Erzincan Stadyumu — 3B Model</title>
-<meta name="description" content="Erzincan Stadyumu ve çevresinin yüksek çözünürlüklü 3B fotogrametri modeli — interaktif görüntüleyici, gerçek metre ile ölçüm." />
-<meta property="og:title" content="Erzincan Stadyumu — İnteraktif 3B Model" />
-<meta property="og:description" content="Fotogrametri ile üretilmiş 3B model. Döndür, yakınlaş, gerçek metre ile ölç." />
+<title>Sürek Şelalesi — 3B</title>
+<meta name="description" content="Sürek Şelalesi'nin yüksek çözünürlüklü 3B fotogrametri modeli — interaktif görüntüleyici, ölçüm, ortofoto ve DEM." />
+<!-- Sosyal paylaşım önizlemesi (Open Graph + Twitter). DÜZENLE: adres değişirse og:url ve og:image'i güncelle -->
+<meta property="og:title" content="Sürek Şelalesi — İnteraktif 3B Model" />
+<meta property="og:description" content="Fotogrametri ile üretilmiş 3B arazi modeli. Döndür, yakınlaş, gerçek metre ile ölç; ortofoto ve DEM görüntüle." />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://mehmetakiftas.com/stadyum/" />
-<meta property="og:image" content="https://mehmetakiftas.com/stadyum-onizleme.jpg" />
+<meta property="og:url" content="https://mehmetakiftas.com/surek.html" />
+<meta property="og:image" content="https://mehmetakiftas.com/surek-onizleme.jpg" />
 <meta property="og:site_name" content="Mehmet Akif Taş — 3B Modeller" />
 <meta property="og:locale" content="tr_TR" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://mehmetakiftas.com/stadyum-onizleme.jpg" />
-<link rel="canonical" href="https://mehmetakiftas.com/stadyum/" />
-<link rel="icon" type="image/svg+xml" href="../favicon.svg" />
-<link rel="apple-touch-icon" href="../favicon.svg" />
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Erzincan Stadyumu — İHA fotogrametrisi 3B modeli", "description": "Erzincan Stadyumu ve çevresinin İHA fotogrametrisi ile üretilmiş 3B modeli.", "url": "https://mehmetakiftas.com/stadyum/", "image": "https://mehmetakiftas.com/stadyum-onizleme.jpg", "creator": {"@type": "Person", "name": "Mehmet Akif Taş"}, "measurementTechnique": "SfM–MVS fotogrametri (Agisoft Metashape)", "keywords": ["fotogrametri", "3B model", "SfM", "DEM", "ortofoto", "jeomorfoloji"], "license": "https://creativecommons.org/licenses/by/4.0/", "isAccessibleForFree": true, "encodingFormat": "model/gltf-binary", "spatialCoverage": {"@type": "Place", "geo": {"@type": "GeoCoordinates", "latitude": 39.749521, "longitude": 39.494942}}}</script>
+<meta name="twitter:image" content="https://mehmetakiftas.com/surek-onizleme.jpg" />
+<link rel="canonical" href="https://mehmetakiftas.com/surek.html" />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="apple-touch-icon" href="favicon.svg" />
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Sürek Şelalesi — İHA fotogrametrisi 3B modeli", "description": "Sürek Şelalesi'nin İHA fotogrametrisi ile üretilmiş yüksek çözünürlüklü 3B arazi modeli; ortofoto ve DEM.", "url": "https://mehmetakiftas.com/surek.html", "image": "https://mehmetakiftas.com/surek-onizleme.jpg", "creator": {"@type": "Person", "name": "Mehmet Akif Taş"}, "measurementTechnique": "SfM–MVS fotogrametri (Agisoft Metashape)", "keywords": ["fotogrametri", "3B model", "SfM", "DEM", "ortofoto", "jeomorfoloji"], "license": "https://creativecommons.org/licenses/by/4.0/", "isAccessibleForFree": true, "encodingFormat": "model/gltf-binary", "spatialCoverage": {"@type": "Place", "geo": {"@type": "GeoCoordinates", "latitude": 39.659003, "longitude": 39.323105}}, "dateCreated": "2026-05-28"}</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
 <script src="openseadragon-scalebar.js"></script>
-<script src="../i18n.js"></script>
-<script src="../viewer-i18n-auto.js"></script>
+<script src="i18n.js"></script>
+<script src="viewer-i18n-auto.js"></script>
 <script defer src="/counter.js"></script>
 <style>
   :root { color-scheme: dark; }
@@ -92,12 +93,14 @@
   #ar-close { position:absolute; top:12px; right:14px; z-index:52; width:38px; height:38px; border-radius:10px; background:rgba(30,35,44,.92); color:#fff; border:1px solid rgba(255,255,255,.16); font-size:16px; cursor:pointer; }
   #ar-hint { position:absolute; left:50%; bottom:18px; transform:translateX(-50%); z-index:52; max-width:90vw; text-align:center; font-size:12px; color:#cdd5df; background:rgba(18,22,28,.9); padding:8px 14px; border-radius:10px; }
 </style>
-<link rel="stylesheet" href="../viewer-premium.css" />
+<link rel="stylesheet" href="viewer-premium.css" />
 </head>
 <body>
   <div id="tabs">
-    <strong>Erzincan Stadyumu</strong>
+    <strong>Sürek Şelalesi</strong>
     <button class="tab active" data-view="model">3B Model</button>
+    <button class="tab" data-view="ortho">Ortofoto</button>
+    <button class="tab" data-view="dem2d">DEM (2B)</button>
     <span id="lang-switch" style="margin-left:auto"></span>
     <a href="/" class="homelink" title="Akademik portföy / tüm modeller">🏛 Portföy</a>
   </div>
@@ -109,14 +112,14 @@
       <button class="q" data-url="low.glb">Düşük</button>
       <button class="q active" data-url="medium.glb">Orta</button>
       <button class="q" data-url="high.glb">Yüksek</button>
-      <button class="q ultra" data-url="ultra.glb" data-fallback="https://surek-ultra.tas-mehmet-akif.workers.dev/stadyum-ultra.glb?v=2">En Yüksek</button>
+      <button class="q ultra" data-url="ultra.glb" data-fallback="https://surek-ultra.tas-mehmet-akif.workers.dev/surek-ultra.glb?v=2">En Yüksek ⚡</button>
     </div>
     <div class="status" id="model-status">Durum: başlatılıyor…</div>
     <div class="hint">Sürükle: döndür · Sağ tık: kaydır · Tekerlek: yakınlaş</div>
     <div id="tools">
       <button id="t-measure" title="İki noktaya tıkla: mesafe ve yükseklik farkı">📏 Ölç</button>
       <button id="t-vol" title="Alanı çevrele: taban (seçilen noktaların en alçağı) üstü hacim (m³)">📦 Hacim</button>
-      <button id="t-elev" title="Bir noktaya tıkla: o noktanın (bağıl) yüksekliği">📍 Rakım</button>
+      <button id="t-elev" title="Bir noktaya tıkla: o noktanın rakımı (m)">📍 Rakım</button>
       <button id="t-profile" title="İki nokta seç: aradaki topografik yükseklik profili">📈 Profil</button>
       <button id="t-clear" title="Tüm ölçüm/işaretleri temizle">🗑 Temizle</button>
       <button id="t-wire" title="Modeli üçgen ağ (wireframe) olarak göster">△ Üçgenler</button>
@@ -133,26 +136,26 @@
       <div class="psum" id="profile-sum"></div>
     </div>
     <div id="kunye">
-      <h4>Erzincan Stadyumu — Künye</h4>
-      <div class="edu-blurb"><b>Bu nedir?</b> Bu model bir spor stadyumu ve çevresindeki yapılı çevreyi belgeler; doğal bir yer şekli olmayıp kentsel/yapısal fotogrametri ile ölçüm ve dokümantasyon amaçlı kaydedilmiştir.</div>
-      <div class="row"><span>Konum</span><span>39.7495°K, 39.4949°D</span></div>
+      <h4>Sürek Şelalesi — Künye</h4>
+      <div class="edu-blurb"><b>Bu nedir?</b> Sürek Şelalesi, akarsuyun dirençli bir kaya basamağı üzerinden döküldüğü bir şelaledir. Dökülme noktasındaki sert tabaka aşınmaya direnirken alttaki yumuşak katman oyulur ve basamak (knickpoint) zamanla geriye doğru gerilemektedir.</div>
+      <div class="row"><span>Konum</span><span>39.6598°K, 39.3259°D</span></div>
       <div class="row"><span>Koordinat sistemi</span><span>UTM 37N · EPSG:32637</span></div>
-      <div class="row"><span>Kapsanan alan</span><span>—</span></div>
-      <div class="row"><span>Yükseklik aralığı</span><span>—</span></div>
-      <div class="row"><span>Rölyef (fark)</span><span>—</span></div>
-      <div class="row"><span>Çözünürlük (GSD)</span><span>—</span></div>
+      <div class="row"><span>Kapsanan alan</span><span>≈ 838 × 814 m</span></div>
+      <div class="row"><span>Yükseklik aralığı</span><span>1199 – 1420 m</span></div>
+      <div class="row"><span>Rölyef (fark)</span><span>≈ 220 m</span></div>
+      <div class="row"><span>Çözünürlük (GSD)</span><span>≈ 5,2 cm/piksel</span></div>
       <div class="row"><span>Kamera</span><span>DJI FC3582</span></div>
       <div class="row"><span>Model türü</span><span>Dokulu 3B mesh</span></div>
       <div class="row"><span>Üçgen sayısı</span><span id="k-tris">—</span></div>
       <div class="row"><span>Kaynak</span><span>Agisoft Metashape</span></div>
-      <div class="row"><span>Çekim tarihi</span><span>31 Mayıs 2026</span></div>
-      <div class="row"><span>Fotoğraf sayısı</span><span>555 (DJI dronu)</span></div>
+      <div class="row"><span>Çekim tarihi</span><span>28 Mayıs 2026</span></div>
+      <div class="row"><span>Fotoğraf sayısı</span><span>629 (DJI dronu)</span></div>
       <div class="row"><span>Lisans</span><span><a href="https://creativecommons.org/licenses/by/4.0/deed.tr" target="_blank" rel="noopener" style="color:#7fe9dc;text-decoration:none">CC BY 4.0</a></span></div>
       <div class="cite">
         <button id="cite-bib" type="button">⧉ BibTeX kopyala</button>
         <button id="cite-ris" type="button">⧉ RIS kopyala</button>
       </div>
-      <div class="note">Veri: DJI hava aracı ile fotogrametrik çekim (555 görüntü).</div>
+      <div class="note">Veri: DJI hava aracı ile fotogrametrik çekim (629 görüntü).</div>
     </div>
   </div>
 
@@ -166,11 +169,19 @@
       <button class="dl active" data-img="dem_relief.jpg" data-leg="dem">Renkli DEM</button>
       <button class="dl" data-img="slope.jpg" data-leg="slope">Eğim</button>
       <button class="dl" data-img="aspect.jpg" data-leg="aspect">Bakı</button>
+      <button class="dl" data-img="contour.jpg" data-leg="contour">Eşyükselti</button>
     </div>
     <div id="dem-legend">
       <div class="leg" data-leg="dem">
         <div class="lt">Yükseklik (m)</div>
         <div class="lbar"><div class="lg lg-dem"></div><div class="ll"><span>1420</span><span>1310</span><span>1199</span></div></div>
+      </div>
+      <div class="leg" data-leg="contour" style="display:none">
+        <div class="lt">Eşyükselti</div>
+        <div class="slopecls">
+          <div><i style="background:#6b3a1a"></i>Ana çizgi (50 m)</div>
+          <div><i style="background:#3a4a2a"></i>Ara çizgi (10 m)</div>
+        </div>
       </div>
       <div class="leg" data-leg="slope" style="display:none">
         <div class="lt">Eğim (°)</div>
@@ -299,7 +310,7 @@
     }
     const measureGroup = new THREE.Group(); scene.add(measureGroup);
     let measuring = false, mpts = [], volMode = false, vpts = [], elevMode = false;
-    const MIDZ = null;  // stadyum DEM yok → bağıl yükseklik göster
+    const MIDZ = 1310;  // Sürek orta rakımı (1199-1420 m)
     const readout = document.getElementById('measure-readout');
     function clearMeasure(){ measureGroup.clear(); mpts = []; readout.replaceChildren(); readout.style.display = 'none'; }
     function dotMesh(p){ const r = Math.max(modelSize*0.004, 0.3); const m = new THREE.Mesh(new THREE.SphereGeometry(r,16,16), new THREE.MeshBasicMaterial({color:0xffcf33, depthTest:false})); m.position.copy(p); m.renderOrder = 999; return m; }
@@ -329,7 +340,7 @@
       measuring = !measuring; btnM.classList.toggle('on', measuring);
       if(measuring){ ensureBVH(); volMode=false; if(btnV) btnV.classList.remove('on'); clearVol(); elevMode=false; if(btnE) btnE.classList.remove('on'); profileMode=false; if(btnP) btnP.classList.remove('on'); clearProfile(); }
       renderer.domElement.style.cursor = measuring ? 'crosshair' : '';
-      if(measuring && mpts.length < 2){ readout.replaceChildren(document.createTextNode('İki noktaya tıkla — örn. zeminin iki ucu')); readout.style.display='block'; }
+      if(measuring && mpts.length < 2){ readout.replaceChildren(document.createTextNode('İki noktaya tıkla — örn. şelalenin üstü ve dibi')); readout.style.display='block'; }
       else if(!measuring && mpts.length < 2){ readout.style.display='none'; }
     };
     const btnR = document.getElementById('t-rotate');
@@ -414,7 +425,7 @@
     const profCloseBtn = document.getElementById('t-profile-close');
     if(profCloseBtn) profCloseBtn.onclick = () => clearProfile();
 
-    // ---- Noktasal rakım: bir noktaya tıkla -> o noktanın (bağıl) yüksekliği (m) ----
+    // ---- Noktasal rakım: bir noktaya tıkla -> o noktanın rakımı (m) ----
     const btnE = document.getElementById('t-elev');
     function showElev(p){
       measureGroup.clear(); measureGroup.add(dotMesh(p));
@@ -426,7 +437,7 @@
     }
     if(btnE) btnE.onclick = () => {
       elevMode = !elevMode; btnE.classList.toggle('on', elevMode);
-      if(elevMode){ ensureBVH(); measuring=false; btnM.classList.remove('on'); volMode=false; if(btnV) btnV.classList.remove('on'); profileMode=false; if(btnP) btnP.classList.remove('on'); clearMeasure(); clearVol(); clearProfile(); renderer.domElement.style.cursor='crosshair'; readout.replaceChildren(document.createTextNode('Bir noktaya tıkla — o noktanın yüksekliği görünür')); readout.style.display='block'; }
+      if(elevMode){ ensureBVH(); measuring=false; btnM.classList.remove('on'); volMode=false; if(btnV) btnV.classList.remove('on'); profileMode=false; if(btnP) btnP.classList.remove('on'); clearMeasure(); clearVol(); clearProfile(); renderer.domElement.style.cursor='crosshair'; readout.replaceChildren(document.createTextNode('Bir noktaya tıkla — o noktanın rakımı görünür')); readout.style.display='block'; }
       else { renderer.domElement.style.cursor=''; readout.style.display='none'; measureGroup.clear(); }
     };
 
@@ -492,7 +503,7 @@
       if(volMode){ ensureBVH(); measuring=false; btnM.classList.remove('on'); elevMode=false; if(btnE) btnE.classList.remove('on'); profileMode=false; if(btnP) btnP.classList.remove('on'); clearMeasure(); clearVol(); clearProfile(); renderer.domElement.style.cursor='crosshair'; updateVolReadout(); }
       else { renderer.domElement.style.cursor=''; clearVol(); readout.style.display='none'; }
     };
-    document.getElementById('t-shot').onclick = () => { renderer.render(scene,camera); const a=document.createElement('a'); a.download='erzincan-stadyumu.png'; a.href=renderer.domElement.toDataURL('image/png'); a.click(); };
+    document.getElementById('t-shot').onclick = () => { renderer.render(scene,camera); const a=document.createElement('a'); a.download='surek-selalesi.png'; a.href=renderer.domElement.toDataURL('image/png'); a.click(); };
     // Kamera görünümü bağlantısı: hash'i güncelle + URL kopyala
     const btnShare = document.getElementById('t-share');
     if(btnShare) btnShare.onclick = () => {
@@ -506,7 +517,7 @@
     if(btnCsv) btnCsv.onclick = () => {
       if(!lastProfile || !lastProfile.length) return;
       const csv = 'mesafe_m,rakim_m\n' + lastProfile.map(r => r.d + ',' + r.z).join('\n');
-      const a = document.createElement('a'); a.download = 'stadyum-profil.csv';
+      const a = document.createElement('a'); a.download = 'surek-profil.csv';
       a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.click(); URL.revokeObjectURL(a.href);
     };
     // Mobil AR: model-viewer'ı tembel yükle, medium.glb ile AR overlay aç
@@ -522,7 +533,7 @@
       mv.setAttribute('src', 'medium.glb');
       mv.setAttribute('ar', ''); mv.setAttribute('ar-modes', 'webxr scene-viewer quick-look');
       mv.setAttribute('camera-controls', ''); mv.setAttribute('auto-rotate', ''); mv.setAttribute('shadow-intensity', '1');
-      mv.setAttribute('poster', '../stadyum-onizleme.jpg'); mv.setAttribute('alt', 'Erzincan Stadyumu 3B modeli');
+      mv.setAttribute('poster', 'surek-onizleme.jpg'); mv.setAttribute('alt', 'Sürek Şelalesi 3B modeli');
       document.getElementById('ar-host').appendChild(mv);
     };
     const arClose = document.getElementById('ar-close');
@@ -530,7 +541,7 @@
     const kun = document.getElementById('kunye');
     document.getElementById('t-kunye').onclick = () => { kun.style.display = (kun.style.display==='block') ? 'none' : 'block'; };
     // ---- Atıf üretici (BibTeX / RIS) ----
-    const CITE = { title: "Erzincan Stadyumu", year: '2025', slug: 'stadyum', author: 'Taş, Mehmet Akif', url: 'https://mehmetakiftas.com/stadyum/' };
+    const CITE = { title: "Sürek Şelalesi", year: '2026', slug: 'surek', author: 'Taş, Mehmet Akif', url: 'https://mehmetakiftas.com/' };
     const bibtex = () =>
 `@misc{tas_${CITE.slug}_${CITE.year},
   author       = {${CITE.author}},
