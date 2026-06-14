@@ -335,7 +335,7 @@
   THREE.Mesh.prototype.raycast = acceleratedRaycast;
 
   let activeRender = null;
-  const IMGV = '?v=3';  // ortofoto/DEM/kontur görüntüleri için cache-bust sürümü (kontur değişince artır)
+  const IMGV = '?v=4';  // ortofoto/DEM/kontur görüntüleri için cache-bust sürümü (görüntü değişince artır)
 
   const views = {};
   function registerView(name, onFirstShow) { views[name] = { init:false, onFirstShow }; }
