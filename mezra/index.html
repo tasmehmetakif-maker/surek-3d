@@ -69,6 +69,18 @@
   #sun-panel .sun-row b { color:#ffcf66; min-width:46px; text-align:right; }
   #sun-panel .sun-info { font-size:12px; color:#ffcf66; background:rgba(255,181,46,.08); border:1px solid rgba(255,181,46,.2); border-radius:8px; padding:6px 9px; margin-top:2px; }
   #sun-panel .sun-note { margin-top:8px; font-size:10.5px; line-height:1.5; color:#6f7a88; }
+  #cmp-wrap { position:absolute; inset:0; overflow:hidden; background:#0e1116; user-select:none; touch-action:none; }
+  #cmp-base, #cmp-top-img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; }
+  #cmp-top { position:absolute; inset:0; overflow:hidden; will-change:clip-path; }
+  #cmp-divider { position:absolute; top:0; bottom:0; left:50%; width:2px; background:#fff; box-shadow:0 0 8px rgba(0,0,0,.6); cursor:ew-resize; z-index:5; }
+  #cmp-handle { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:40px; height:40px; border-radius:50%; background:#2f6df0; color:#fff; display:flex; align-items:center; justify-content:center; font-size:19px; box-shadow:0 2px 12px rgba(0,0,0,.55); cursor:ew-resize; }
+  .cmp-lbl { position:absolute; top:14px; padding:5px 11px; background:rgba(18,22,28,.85); border:1px solid rgba(255,255,255,.12); border-radius:8px; font-size:13px; color:#e8edf2; z-index:4; pointer-events:none; }
+  .cmp-lbl-l { left:14px; } .cmp-lbl-r { right:14px; }
+  #cmp-pick { position:absolute; bottom:14px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:6; flex-wrap:wrap; justify-content:center; max-width:90vw; }
+  #cmp-pick .cdl { background:rgba(30,35,44,.85); color:#cdd5df; border:1px solid rgba(255,255,255,.12); padding:6px 12px; border-radius:8px; font-size:13px; cursor:pointer; }
+  #cmp-pick .cdl:hover { background:rgba(54,62,76,.95); color:#fff; }
+  #cmp-pick .cdl.active { background:#2f6df0; color:#fff; border-color:#2f6df0; }
+  #cmp-hint { position:absolute; bottom:56px; left:50%; transform:translateX(-50%); font-size:11.5px; color:#9aa3af; background:rgba(20,24,30,.7); padding:4px 10px; border-radius:12px; z-index:4; pointer-events:none; }
   #kunye { position:absolute; left:14px; top:40px; width:280px; display:none; background:rgba(18,22,28,.96); border:1px solid rgba(255,255,255,.12); padding:12px 14px; border-radius:11px; font-size:12.5px; line-height:1.65; z-index:13; box-shadow:0 4px 18px rgba(0,0,0,.5); }
   #kunye h4 { font-size:13px; margin-bottom:7px; color:#fff; }
   #kunye .row { display:flex; justify-content:space-between; gap:12px; }
@@ -226,6 +238,24 @@
           <div><i style="background:rgb(120,120,125)"></i>Düz alan</div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- KARŞILAŞTIR: ortofoto ↔ DEM sürgülü karşılaştırma -->
+  <div class="view" id="view-compare">
+    <div id="cmp-wrap">
+      <img id="cmp-base" alt="Ortofoto">
+      <div id="cmp-top"><img id="cmp-top-img" alt="DEM"></div>
+      <div id="cmp-divider"><div id="cmp-handle">⇋</div></div>
+      <div class="cmp-lbl cmp-lbl-l">📷 Ortofoto</div>
+      <div class="cmp-lbl cmp-lbl-r" id="cmp-lbl-r">🗺 Renkli DEM</div>
+      <div id="cmp-pick">
+        <button class="cdl active" data-img="dem_relief.jpg" data-name="Renkli DEM">Renkli DEM</button>
+        <button class="cdl" data-img="slope.jpg" data-name="Eğim">Eğim</button>
+        <button class="cdl" data-img="aspect.jpg" data-name="Bakı">Bakı</button>
+        <button class="cdl" data-img="contour.jpg" data-name="Eşyükselti">Eşyükselti</button>
+      </div>
+      <div id="cmp-hint">Bölücüyü sürükle: solda ortofoto, sağda seçilen DEM katmanı</div>
     </div>
   </div>
 
@@ -794,6 +824,27 @@ ER  - `;
     });
   });
   views.dem2d && (views.dem2d.onActivate = () => { activeRender = null; });
+
+  // ===================== KARŞILAŞTIR (ortofoto ↔ DEM swipe) =====================
+  registerView('compare', () => {
+    const wrap=document.getElementById('cmp-wrap'), base=document.getElementById('cmp-base'),
+          topImg=document.getElementById('cmp-top-img'), top=document.getElementById('cmp-top'),
+          div=document.getElementById('cmp-divider'), lblR=document.getElementById('cmp-lbl-r');
+    base.src='ortho.jpg'; topImg.src='dem_relief.jpg';
+    let pct=50, drag=false;
+    function setPct(p){ pct=Math.max(0,Math.min(100,p)); top.style.clipPath='inset(0 0 0 '+pct+'%)'; div.style.left=pct+'%'; }
+    setPct(50);
+    const xToPct=cx=>{ const r=wrap.getBoundingClientRect(); return (cx-r.left)/r.width*100; };
+    div.addEventListener('pointerdown', e=>{ drag=true; try{div.setPointerCapture(e.pointerId);}catch(_){} e.preventDefault(); });
+    wrap.addEventListener('pointermove', e=>{ if(drag) setPct(xToPct(e.clientX)); });
+    addEventListener('pointerup', ()=>{ drag=false; });
+    wrap.addEventListener('pointerdown', e=>{ if(e.target!==div && !div.contains(e.target)) setPct(xToPct(e.clientX)); });
+    document.querySelectorAll('#cmp-pick .cdl').forEach(b=>b.onclick=()=>{
+      document.querySelectorAll('#cmp-pick .cdl').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); topImg.src=b.dataset.img; if(lblR) lblR.textContent='🗺 '+b.dataset.name;
+    });
+  });
+  views.compare && (views.compare.onActivate = () => { activeRender = null; });
   </script>
 </body>
 </html>
