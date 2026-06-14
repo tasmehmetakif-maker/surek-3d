@@ -333,7 +333,7 @@
     <div class="wrap hero-3d-copy">
       <div class="eyebrow"><span data-i18n="ak.hero.eyebrow">Akademik Portföy</span></div>
       <h1>Dr. Öğr. Üyesi<br><span class="grad">Mehmet Akif Taş</span></h1>
-      <p class="hero-tag" data-i18n="ak.hero.tag">Saha verilerini İHA fotogrametrisiyle yüksek çözünürlüklü, ölçülebilir 3B arazi modellerine dönüştürüyorum.</p>
+      <p class="hero-tag" data-i18n="ak.hero.role">Erzincan Binali Yıldırım Üniversitesi · Fen-Edebiyat Fakültesi · Coğrafya Bölümü (CBS)</p>
       <div class="hero-actions">
         <a class="hero-cta" href="#modeller"><span data-i18n="ak.hero.cta">3B Modelleri Keşfet</span> <span class="ar">→</span></a>
         <a class="hero-cta2" href="#yayinlar"><span data-i18n="ak.nav.pubs">Yayınlar</span></a>
@@ -355,7 +355,7 @@
           <img class="b-ava" src="akif-avatar.jpg" alt="Mehmet Akif Taş" />
           <div class="b-pinfo">
             <div class="b-name">Dr. Öğr. Üyesi Mehmet Akif Taş</div>
-            <div class="b-role" data-i18n="ak.hero.role">Erzincan Binali Yıldırım Üniversitesi · Fen-Edebiyat Fakültesi · Coğrafya Bölümü (CBS)</div>
+            <div class="b-role" data-i18n="ak.hero.tag">Saha verilerini İHA fotogrametrisiyle yüksek çözünürlüklü, ölçülebilir 3B arazi modellerine dönüştürüyorum.</div>
           </div>
         </div>
         <div class="bento-cell b-bio">
@@ -680,11 +680,13 @@ document.querySelectorAll('.pub .pt').forEach(function(el){
       var THREE=m[0], GLTFLoader=m[1].GLTFLoader, DRACOLoader=m[2].DRACOLoader;
       var canvas=document.getElementById('hero-canvas');
       var renderer=new THREE.WebGLRenderer({canvas:canvas, antialias:true, alpha:true, powerPreference:'high-performance'});
-      renderer.setPixelRatio(Math.min(devicePixelRatio,1.8)); renderer.outputColorSpace=THREE.SRGBColorSpace;
+      renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.outputColorSpace=THREE.SRGBColorSpace;
+      renderer.toneMapping=THREE.NeutralToneMapping||THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
       var scene=new THREE.Scene();
       var camera=new THREE.PerspectiveCamera(40,1,0.1,8000);
-      scene.add(new THREE.HemisphereLight(0xdcefff,0x141a22,1.35));
-      var sun=new THREE.DirectionalLight(0xffffff,1.6); sun.position.set(0.6,1.4,0.8); scene.add(sun);
+      scene.add(new THREE.HemisphereLight(0xffffff,0x3a3f4a,1.2));
+      scene.add(new THREE.AmbientLight(0xffffff,0.42));
+      var sun=new THREE.DirectionalLight(0xffffff,1.25); sun.position.set(0.7,1.5,0.9); scene.add(sun);
       var draco=new DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.169.0/examples/jsm/libs/draco/');
       var loader=new GLTFLoader(); loader.setDRACOLoader(draco);
       var pivot=new THREE.Group(); scene.add(pivot);
@@ -692,15 +694,15 @@ document.querySelectorAll('.pub .pt').forEach(function(el){
       // Her acilista RASTGELE model (yenileyince degisir). Yalniz YAYINDA olan modeller
       // (GLB erisilebilir): otlukbeli, stadyum. Coming-soon modeller calinma korumasi nedeniyle havuzda yok.
       var POOL=[
-        {s:'otlukbeli',n:'Otlukbeli Gölü',g:'otlukbeli/low.glb'},
-        {s:'stadyum',n:'Erzincan Stadyumu',g:'stadyum/low.glb'},
-        {s:'buzul',n:'Katır Buzul Gölleri',g:'buzul/low.glb'},
-        {s:'mezra',n:'Mezra',g:'mezra/low.glb'},
-        {s:'kemah',n:'Peribacaları',g:'kemah/low.glb'},
-        {s:'polat',n:'Polat Gölü',g:'polat/low.glb'},
-        {s:'tomara',n:'Tomara Şelalesi',g:'tomara/low.glb'},
-        {s:'konarli',n:'Konarlı Şelalesi',g:'konarli/low.glb'},
-        {s:'surek',n:'Sürek Şelalesi',g:'low.glb'}
+        {s:'otlukbeli',n:'Otlukbeli Gölü',g:'otlukbeli/medium.glb'},
+        {s:'stadyum',n:'Erzincan Stadyumu',g:'stadyum/medium.glb'},
+        {s:'buzul',n:'Katır Buzul Gölleri',g:'buzul/medium.glb'},
+        {s:'mezra',n:'Mezra',g:'mezra/medium.glb'},
+        {s:'kemah',n:'Peribacaları',g:'kemah/medium.glb'},
+        {s:'polat',n:'Polat Gölü',g:'polat/medium.glb'},
+        {s:'tomara',n:'Tomara Şelalesi',g:'tomara/medium.glb'},
+        {s:'konarli',n:'Konarlı Şelalesi',g:'konarli/medium.glb'},
+        {s:'surek',n:'Sürek Şelalesi',g:'medium.glb'}
       ];
       var pick=POOL[Math.floor(Math.random()*POOL.length)];
       var poster=document.querySelector('.hero-poster'); if(poster) poster.src=pick.s+'-onizleme.jpg';
