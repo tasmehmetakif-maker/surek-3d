@@ -48,13 +48,28 @@
   .osd { width:100%; height:100%; background:#0e1116; }
   #warn { position:fixed; left:0; right:0; bottom:0; text-align:center; color:#f0d9a8; font-size:12px; background:rgba(40,30,12,.92); padding:6px 14px; z-index:30; }
   .hint { position:absolute; right:14px; bottom:40px; font-size:12px; color:#9aa3af; background:rgba(20,24,30,.7); padding:5px 11px; border-radius:14px; z-index:10; }
-  #tools { position:absolute; left:50%; bottom:40px; transform:translateX(-50%); display:flex; gap:13px; align-items:flex-end; flex-wrap:wrap; justify-content:center; max-width:96vw; z-index:12; }
-  .tgroup { display:flex; flex-direction:column; align-items:center; gap:4px; }
-  .tglabel { font-size:9.5px; letter-spacing:.7px; text-transform:uppercase; color:#7c8492; font-weight:700; }
-  .tgbtns { display:flex; gap:5px; background:rgba(12,15,21,.6); border:1px solid rgba(255,255,255,.08); padding:5px; border-radius:13px; backdrop-filter:blur(6px); }
-  #tools button { background:rgba(34,40,50,.92); color:#cdd5df; border:1px solid rgba(255,255,255,.12); padding:7px 11px; border-radius:9px; font-size:13px; cursor:pointer; white-space:nowrap; }
+  /* Araç çubuğu: alttaki geniş çubuk yerine DİKEY yan raylar — Görünüm+Bilgi SOLDA, Ölçüm SAĞDA.
+     Alttaki yer açılır, model daha ferah görünür. Mobilde alt yatay-kaydırılır şeride döner. */
+  #tools { position:absolute; inset:0; pointer-events:none; z-index:12; }
+  .trail { position:absolute; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:11px;
+           max-height:calc(100% - 92px); overflow-y:auto; overflow-x:hidden; pointer-events:none; padding:2px; scrollbar-width:none; }
+  .trail::-webkit-scrollbar { width:0; height:0; }
+  .trail-left { left:12px; align-items:flex-start; }
+  .trail-right { right:12px; align-items:flex-end; }
+  .tgroup { display:flex; flex-direction:column; gap:4px; align-items:stretch; pointer-events:auto; }
+  .tglabel { font-size:9.5px; letter-spacing:.7px; text-transform:uppercase; color:#7c8492; font-weight:700; padding:0 4px; }
+  .trail-right .tglabel { text-align:right; }
+  .tgbtns { display:flex; flex-direction:column; gap:5px; width:130px; background:rgba(12,15,21,.62); border:1px solid rgba(255,255,255,.08); padding:5px; border-radius:13px; backdrop-filter:blur(6px); }
+  #tools button { background:rgba(34,40,50,.92); color:#cdd5df; border:1px solid rgba(255,255,255,.12); padding:7px 10px; border-radius:9px; font-size:12.5px; cursor:pointer; white-space:nowrap; text-align:left; width:100%; }
   #tools button:hover { background:rgba(58,66,80,.98); color:#fff; }
   #tools button.on { background:#2f6df0; color:#fff; border-color:#2f6df0; }
+  @media (max-width:760px){
+    /* Mobilde de DİKEY yan raylar (alt taraf boş kalsın); sadece daha dar/kompakt. */
+    .trail { gap:9px; max-height:calc(100% - 66px); }
+    .tgbtns { width:104px; padding:4px; gap:4px; }
+    #tools button { font-size:11.5px; padding:6px 8px; }
+    .hint { display:none; }   /* "Sürükle: döndür" fare ipucu — dokunmatikte gereksiz, yer açar */
+  }
   #tools button.thelp { background:rgba(47,109,240,.16); border-color:rgba(47,109,240,.4); }
   #tools button.thelp:hover { background:rgba(47,109,240,.34); color:#fff; }
   /* Ölçüm/okuma kutusu ÜST-ORTADA (tabs'ın altında) — alttaki çok-satırlı kategorili
@@ -121,17 +136,21 @@
   #dem-layers .dl { background:rgba(30,35,44,.85); color:#cdd5df; border:1px solid rgba(255,255,255,.12); padding:6px 12px; border-radius:8px; font-size:13px; cursor:pointer; }
   #dem-layers .dl:hover { background:rgba(54,62,76,.95); color:#fff; }
   #dem-layers .dl.active { background:#2f6df0; color:#fff; border-color:#2f6df0; }
-  #dem-legend { position:absolute; left:14px; bottom:22px; background:rgba(18,22,28,.9); padding:9px 11px; border-radius:9px; z-index:10; }
-  #dem-legend .lt { color:#cdd5df; margin-bottom:6px; font-size:11.5px; }
-  #dem-legend .lbar { display:flex; gap:6px; height:124px; }
-  #dem-legend .lg { width:16px; border-radius:3px; }
-  #dem-legend .lg-dem { background:linear-gradient(to top, rgb(60,120,60), rgb(180,170,90) 40%, rgb(140,100,60) 75%, rgb(235,235,235)); }
-  #dem-legend .slopecls { display:flex; flex-direction:column; gap:2px; }
-  #dem-legend .slopecls div { display:flex; align-items:center; gap:6px; color:#cdd5df; font-size:10.5px; }
-  #dem-legend .slopecls i { width:15px; height:11px; border-radius:2px; flex:0 0 auto; }
-  #dem-legend .ll { display:flex; flex-direction:column; justify-content:space-between; color:#9aa3af; font-size:11px; }
-  #dem-legend .abar { width:154px; height:16px; border-radius:3px; background:linear-gradient(to right, rgb(255,97,97), rgb(176,255,97) 25%, rgb(97,255,255) 50%, rgb(176,97,255) 75%, rgb(255,97,97)); }
-  #dem-legend .al { display:flex; justify-content:space-between; width:154px; color:#9aa3af; font-size:11px; margin-top:3px; }
+  /* Harita lejantı: hem DEM 2B view'inde (#dem-legend, sol) hem Karşılaştır'da (#cmp-legend, sağ) paylaşılır. */
+  .maplegend { position:absolute; background:rgba(18,22,28,.9); padding:9px 11px; border-radius:9px; z-index:10; }
+  #dem-legend { left:14px; bottom:22px; }
+  #cmp-legend { right:14px; bottom:14px; }
+  .maplegend .lt { color:#cdd5df; margin-bottom:6px; font-size:11.5px; }
+  .maplegend .lbar { display:flex; gap:6px; height:124px; }
+  .maplegend .lg { width:16px; border-radius:3px; }
+  .maplegend .lg-dem { background:linear-gradient(to top, rgb(60,120,60), rgb(180,170,90) 40%, rgb(140,100,60) 75%, rgb(235,235,235)); }
+  .maplegend .slopecls { display:flex; flex-direction:column; gap:2px; }
+  .maplegend .slopecls div { display:flex; align-items:center; gap:6px; color:#cdd5df; font-size:10.5px; }
+  .maplegend .slopecls i { width:15px; height:11px; border-radius:2px; flex:0 0 auto; }
+  .maplegend .ll { display:flex; flex-direction:column; justify-content:space-between; color:#9aa3af; font-size:11px; }
+  .maplegend .abar { width:154px; height:16px; border-radius:3px; background:linear-gradient(to right, rgb(255,97,97), rgb(176,255,97) 25%, rgb(97,255,255) 50%, rgb(176,97,255) 75%, rgb(255,97,97)); }
+  .maplegend .al { display:flex; justify-content:space-between; width:154px; color:#9aa3af; font-size:11px; margin-top:3px; }
+  @media (max-width:760px){ #cmp-legend { transform:scale(.86); transform-origin:bottom right; } }
   #ar-overlay { position:fixed; inset:0; z-index:50; display:none; background:#0e1116; }
   #ar-overlay.on { display:block; }
   #ar-host, #ar-host model-viewer { width:100%; height:100%; }
@@ -164,35 +183,41 @@
     <div class="status" id="model-status">Durum: başlatılıyor…</div>
     <div class="hint" data-i18n="hint.controls">Sürükle: döndür · Sağ tık: kaydır · Tekerlek: yakınlaş</div>
     <div id="tools">
-      <div class="tgroup">
-        <span class="tglabel" data-i18n="grp.measure">Ölçüm</span>
-        <div class="tgbtns">
-          <button id="t-measure" data-i18n="tool.measure" data-i18n-title="tool.measure.t" title="İki noktaya tıkla: mesafe ve yükseklik farkı">📏 Mesafe</button>
-          <button id="t-vol" data-i18n="tool.vol" data-i18n-title="tool.vol.t" title="Alanı çevrele: taban üstü hacim (m³)">📦 Hacim</button>
-          <button id="t-area" data-i18n="tool.area" data-i18n-title="tool.area.t" title="Alanı çevrele: düzlemsel + gerçek 3B yüzey alanı (m²)">📐 Alan</button>
-          <button id="t-elev" data-i18n="tool.elev" data-i18n-title="tool.elev.t" title="Bir noktaya tıkla: o noktanın rakımı (m)">📍 Rakım</button>
-          <button id="t-profile" data-i18n="tool.profile" data-i18n-title="tool.profile.t" title="İki nokta seç: aradaki yükseklik profili">📈 Profil</button>
-          <button id="t-clear" data-i18n="tool.clear" data-i18n-title="tool.clear.t" title="Tüm ölçüm/işaretleri temizle">🗑 Temizle</button>
+      <!-- SOL ray: Görünüm + Paylaşım & Bilgi (dikey) -->
+      <div class="trail trail-left">
+        <div class="tgroup">
+          <span class="tglabel" data-i18n="grp.view">Görünüm</span>
+          <div class="tgbtns">
+            <button id="t-wire" data-i18n="tool.wire" data-i18n-title="tool.wire.t" title="Modeli üçgen ağ (wireframe) göster">△ Üçgenler</button>
+            <button id="t-rotate" data-i18n="tool.rotate" data-i18n-title="tool.rotate.t" title="Otomatik döndür">🔄 Döndür</button>
+            <button id="t-tour" data-i18n="tool.tour" data-i18n-title="tool.tour.t" title="Tur çek + video indir (rota yoksa 360°)">🎬 Tur</button>
+            <button id="t-waypoint" data-i18n="tool.wp" data-i18n-title="tool.wp.t" title="Şu anki kamera açısını tur rotasına ekle">📍 Rota +</button>
+            <button id="t-sun" data-i18n="tool.sun" data-i18n-title="tool.sun.t" title="Güneş/gölge: tarih-saate göre gerçek güneş ve gölgeler">☀️ Güneş</button>
+          </div>
+        </div>
+        <div class="tgroup">
+          <span class="tglabel" data-i18n="grp.share">Paylaşım & Bilgi</span>
+          <div class="tgbtns">
+            <button id="t-shot" data-i18n="tool.shot" data-i18n-title="tool.shot.t" title="Ekran görüntüsünü PNG indir">📷 Görüntü</button>
+            <button id="t-share" data-i18n="tool.share" data-i18n-title="tool.share.t" title="Bu kamera görünümünün bağlantısını kopyala">🔗 Bağlantı</button>
+            <button id="t-ar" data-i18n="tool.ar" data-i18n-title="tool.ar.t" title="Mobilde artırılmış gerçeklik (AR)">📱 AR</button>
+            <button id="t-kunye" data-i18n="tool.info" data-i18n-title="tool.info.t" title="Künye / teknik bilgi">ℹ️ Künye</button>
+            <button id="t-help" class="thelp" data-i18n="tool.help" data-i18n-title="tool.help.t" title="Araçların ne işe yaradığı ve nasıl kullanılacağı">❔ Yardım</button>
+          </div>
         </div>
       </div>
-      <div class="tgroup">
-        <span class="tglabel" data-i18n="grp.view">Görünüm</span>
-        <div class="tgbtns">
-          <button id="t-wire" data-i18n="tool.wire" data-i18n-title="tool.wire.t" title="Modeli üçgen ağ (wireframe) göster">△ Üçgenler</button>
-          <button id="t-rotate" data-i18n="tool.rotate" data-i18n-title="tool.rotate.t" title="Otomatik döndür">🔄 Döndür</button>
-          <button id="t-tour" data-i18n="tool.tour" data-i18n-title="tool.tour.t" title="Tur çek + video indir (rota yoksa 360°)">🎬 Tur</button>
-          <button id="t-waypoint" data-i18n="tool.wp" data-i18n-title="tool.wp.t" title="Şu anki kamera açısını tur rotasına ekle">📍 Rota +</button>
-          <button id="t-sun" data-i18n="tool.sun" data-i18n-title="tool.sun.t" title="Güneş/gölge: tarih-saate göre gerçek güneş ve gölgeler">☀️ Güneş</button>
-        </div>
-      </div>
-      <div class="tgroup">
-        <span class="tglabel" data-i18n="grp.share">Paylaşım & Bilgi</span>
-        <div class="tgbtns">
-          <button id="t-shot" data-i18n="tool.shot" data-i18n-title="tool.shot.t" title="Ekran görüntüsünü PNG indir">📷 Görüntü</button>
-          <button id="t-share" data-i18n="tool.share" data-i18n-title="tool.share.t" title="Bu kamera görünümünün bağlantısını kopyala">🔗 Bağlantı</button>
-          <button id="t-ar" data-i18n="tool.ar" data-i18n-title="tool.ar.t" title="Mobilde artırılmış gerçeklik (AR)">📱 AR</button>
-          <button id="t-kunye" data-i18n="tool.info" data-i18n-title="tool.info.t" title="Künye / teknik bilgi">ℹ️ Künye</button>
-          <button id="t-help" class="thelp" data-i18n="tool.help" data-i18n-title="tool.help.t" title="Araçların ne işe yaradığı ve nasıl kullanılacağı">❔ Yardım</button>
+      <!-- SAĞ ray: Ölçüm (dikey) -->
+      <div class="trail trail-right">
+        <div class="tgroup">
+          <span class="tglabel" data-i18n="grp.measure">Ölçüm</span>
+          <div class="tgbtns">
+            <button id="t-measure" data-i18n="tool.measure" data-i18n-title="tool.measure.t" title="İki noktaya tıkla: mesafe ve yükseklik farkı">📏 Mesafe</button>
+            <button id="t-vol" data-i18n="tool.vol" data-i18n-title="tool.vol.t" title="Alanı çevrele: taban üstü hacim (m³)">📦 Hacim</button>
+            <button id="t-area" data-i18n="tool.area" data-i18n-title="tool.area.t" title="Alanı çevrele: düzlemsel + gerçek 3B yüzey alanı (m²)">📐 Alan</button>
+            <button id="t-elev" data-i18n="tool.elev" data-i18n-title="tool.elev.t" title="Bir noktaya tıkla: o noktanın rakımı (m)">📍 Rakım</button>
+            <button id="t-profile" data-i18n="tool.profile" data-i18n-title="tool.profile.t" title="İki nokta seç: aradaki yükseklik profili">📈 Profil</button>
+            <button id="t-clear" data-i18n="tool.clear" data-i18n-title="tool.clear.t" title="Tüm ölçüm/işaretleri temizle">🗑 Temizle</button>
+          </div>
         </div>
       </div>
     </div>
@@ -226,7 +251,7 @@
       <div class="row"><span data-i18n="info.photos">Fotoğraf sayısı</span><span>1983 (DJI dronu)</span></div>
       <div class="row"><span data-i18n="info.license">Lisans</span><span><a href="https://creativecommons.org/licenses/by/4.0/deed.tr" target="_blank" rel="noopener" style="color:#7fe9dc;text-decoration:none">CC BY 4.0</a></span></div>
       <div class="note">Veri: DJI hava aracı ile fotogrametrik çekim (1983 görüntü).</div>
-      <div class="kpaper"><div class="kpaper-lbl"><span data-i18n="info.paper">İlgili yayın</span></div><div class="kpaper-cite">Çelik, Y., Tagliasacchi, E., Taş, M. A., &amp; Polat, P. (2026). Otlukbeli (Erzincan) travertenlerinin jeolojik–kültürel miras açısından önemi (Doğu Anadolu). <i>Türkiye Jeoloji Bülteni</i>, 69(4), 159–190. <a href="https://dergipark.org.tr/tr/pub/tjb" target="_blank" rel="noopener" title="Yayını aç">↗</a></div></div>
+      <div class="kpaper"><div class="kpaper-lbl"><span data-i18n="info.paper">İlgili yayın</span></div><div class="kpaper-cite">Çelik, Y., Tagliasacchi, E., Taş, M. A., &amp; Polat, P. (2026). Otlukbeli (Erzincan) travertenlerinin jeolojik–kültürel miras açısından önemi (Doğu Anadolu). <i>Türkiye Jeoloji Bülteni</i>, 69(4), 159–190. <a href="https://doi.org/10.25288/tjb.1800081" target="_blank" rel="noopener" title="DOI: 10.25288/tjb.1800081">DOI ↗</a></div></div>
       <div class="cite">
         <button id="cite-bib" type="button" data-i18n="cite.bib">⧉ BibTeX kopyala</button>
         <button id="cite-ris" type="button" data-i18n="cite.ris">⧉ RIS kopyala</button>
@@ -246,7 +271,7 @@
       <button class="dl" data-img="aspect.jpg" data-leg="aspect" data-i18n="dem.aspect">Bakı</button>
       <button class="dl dl-toggle" id="dem-contour" data-i18n="dem.contourtgl" title="Eşyükselti eğrilerini aç/kapa">⛰ Eşyükselti</button>
     </div>
-    <div id="dem-legend">
+    <div id="dem-legend" class="maplegend">
       <div class="leg" data-leg="dem">
         <div class="lt" data-i18n="leg.elev">Yükseklik (m)</div>
         <div class="lbar"><div class="lg lg-dem"></div><div class="ll"><span>1893</span><span>1811</span><span>1729</span></div></div>
@@ -303,6 +328,46 @@
         <button class="cdl" data-img="contour.jpg" data-key="dem.contour" data-i18n="dem.contour">Eşyükselti</button>
       </div>
       <div id="cmp-hint" data-i18n="cmp.hint">Bölücüyü sürükle: solda ortofoto, sağda seçilen DEM katmanı</div>
+      <div id="cmp-legend" class="maplegend">
+        <div class="leg" data-leg="dem">
+          <div class="lt" data-i18n="leg.elev">Yükseklik (m)</div>
+          <div class="lbar"><div class="lg lg-dem"></div><div class="ll"><span>1893</span><span>1811</span><span>1729</span></div></div>
+        </div>
+        <div class="leg" data-leg="slope" style="display:none">
+          <div class="lt" data-i18n="leg.slope">Eğim (°)</div>
+          <div class="slopecls">
+            <div><i style="background:rgb(130,30,70)"></i>60–90</div>
+            <div><i style="background:rgb(190,45,40)"></i>45–60</div>
+            <div><i style="background:rgb(220,90,40)"></i>30–45</div>
+            <div><i style="background:rgb(235,140,50)"></i>20–30</div>
+            <div><i style="background:rgb(230,180,60)"></i>12–20</div>
+            <div><i style="background:rgb(200,200,80)"></i>6–12</div>
+            <div><i style="background:rgb(150,190,80)"></i>2–6</div>
+            <div><i style="background:rgb(90,160,75)"></i>0–2</div>
+          </div>
+        </div>
+        <div class="leg" data-leg="aspect" style="display:none">
+          <div class="lt" data-i18n="leg.aspect">Bakı (yön)</div>
+          <div class="slopecls">
+            <div><i style="background:rgb(242,85,85)"></i><span data-i18n="dir.N">K — Kuzey</span></div>
+            <div><i style="background:rgb(242,203,85)"></i><span data-i18n="dir.NE">KD — Kuzeydoğu</span></div>
+            <div><i style="background:rgb(164,242,85)"></i><span data-i18n="dir.E">D — Doğu</span></div>
+            <div><i style="background:rgb(85,242,124)"></i><span data-i18n="dir.SE">GD — Güneydoğu</span></div>
+            <div><i style="background:rgb(85,242,242)"></i><span data-i18n="dir.S">G — Güney</span></div>
+            <div><i style="background:rgb(85,124,242)"></i><span data-i18n="dir.SW">GB — Güneybatı</span></div>
+            <div><i style="background:rgb(164,85,242)"></i><span data-i18n="dir.W">B — Batı</span></div>
+            <div><i style="background:rgb(242,85,203)"></i><span data-i18n="dir.NW">KB — Kuzeybatı</span></div>
+            <div><i style="background:rgb(120,120,125)"></i><span data-i18n="dir.flat">Düz alan</span></div>
+          </div>
+        </div>
+        <div class="leg" data-leg="contour" style="display:none">
+          <div class="lt" data-i18n="leg.contour">Eşyükselti</div>
+          <div class="slopecls">
+            <div><i style="background:#120a02"></i><span data-i18n="leg.contour.major">Ana çizgi</span>&nbsp;(50 m)</div>
+            <div><i style="background:#241a0a"></i><span data-i18n="leg.contour.minor">Ara çizgi</span>&nbsp;(10 m)</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -952,9 +1017,14 @@ ER  - `;
     wrap.addEventListener('pointermove', e=>{ if(drag) setPct(xToPct(e.clientX)); });
     addEventListener('pointerup', ()=>{ drag=false; });
     wrap.addEventListener('pointerdown', e=>{ if(e.target!==div && !div.contains(e.target)) setPct(xToPct(e.clientX)); });
+    // Karşılaştır lejantı: sağdaki seçilen DEM katmanına göre doğru lejantı göster.
+    const cmpLeg=document.getElementById('cmp-legend');
+    const IMG2LEG={'dem_relief.jpg':'dem','slope.jpg':'slope','aspect.jpg':'aspect','contour.jpg':'contour'};
+    function showCmpLeg(img){ if(!cmpLeg) return; const lg=IMG2LEG[img]||'dem'; cmpLeg.querySelectorAll('.leg').forEach(l=>{ l.style.display=(l.dataset.leg===lg)?'block':'none'; }); }
+    showCmpLeg('dem_relief.jpg');
     document.querySelectorAll('#cmp-pick .cdl').forEach(b=>b.onclick=()=>{
       document.querySelectorAll('#cmp-pick .cdl').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active'); topImg.src=b.dataset.img+IMGV;
+      b.classList.add('active'); topImg.src=b.dataset.img+IMGV; showCmpLeg(b.dataset.img);
       if(lblR){ lblR.setAttribute('data-i18n', b.dataset.key); lblR.textContent=(window.T?T(b.dataset.key):b.textContent); }
     });
   });
