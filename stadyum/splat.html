@@ -93,34 +93,63 @@
 <body>
   <div id="stage"></div>
 
-  <div class="badge">✨ Foto-gerçekçi <small>Gaussian Splatting</small></div>
+  <div class="badge">✨ <span data-t="badge">Foto-gerçekçi</span> <small>Gaussian Splatting</small></div>
 
-  <button class="info-btn" id="infoBtn"><span class="q">?</span> Bu görünüm nedir?</button>
+  <button class="info-btn" id="infoBtn"><span class="q">?</span> <span data-t="info">Bu görünüm nedir?</span></button>
 
   <div class="scrim" id="scrim"></div>
   <aside class="panel" id="panel" role="dialog" aria-label="Bilgi">
-    <button class="close" id="closeBtn" aria-label="Kapat">×</button>
-    <h2>✨ Foto-gerçekçi görünüm nedir?</h2>
-    <p>Bu sahne, alanın yüzlerce fotoğrafından <b>3B Gaussian Splatting</b> yöntemiyle üretildi.
-       Görüntü, üçgen yüzeylerden (mesh) değil, ışığı ve rengi taşıyan <b>milyonlarca minik Gaussian noktasından</b> oluşur.</p>
-    <p>Bu sayede gölgeler, yansımalar ve ince dokular <b>fotoğraf gerçekliğinde</b> görünür — klasik
-       “<b>3B Model</b>” sekmesindeki katı modelin sunamadığı bir doğallıkla.</p>
-    <div class="tip">📐 <span>Bu görünüm yalnızca <b>izlemek</b> içindir. <b>Ölçüm, kesit ve analiz</b> için
-       “3B Model” sekmesini kullanın.</span></div>
+    <button class="close" id="closeBtn" aria-label="Kapat" data-t-aria="close">×</button>
+    <h2 data-t="h2">✨ Foto-gerçekçi görünüm nedir?</h2>
+    <p data-t="p1">Bu sahne, alanın yüzlerce fotoğrafından 3B Gaussian Splatting yöntemiyle üretildi. Görüntü, üçgen yüzeylerden (mesh) değil, ışığı ve rengi taşıyan milyonlarca minik Gaussian noktasından oluşur.</p>
+    <p data-t="p2">Bu sayede gölgeler, yansımalar ve ince dokular fotoğraf gerçekliğinde görünür — klasik “3B Model” sekmesindeki katı modelin sunamadığı bir doğallıkla.</p>
+    <div class="tip">📐 <span data-t="tip">Bu görünüm yalnızca izlemek içindir. Ölçüm, kesit ve analiz için “3B Model” sekmesini kullanın.</span></div>
   </aside>
 
-  <div class="hint" id="hint"><b>Sürükle</b> döndür · <b>Kaydır</b> yakınlaş · <b>Sağ tık</b> kaydır</div>
+  <div class="hint" id="hint" data-t="hint">Sürükle döndür · Kaydır yakınlaş · Sağ tık kaydır</div>
 
   <div id="boot"><div class="boot-card">
     <div class="spinner"></div>
-    <h1>Foto-gerçekçi sahne yükleniyor</h1>
-    <p>Yüksek kaliteli görüntü hazırlanıyor, bağlantıya göre birkaç saniye sürebilir.</p>
+    <h1 data-t="bootH">Foto-gerçekçi sahne yükleniyor</h1>
+    <p data-t="bootP">Yüksek kaliteli görüntü hazırlanıyor, bağlantıya göre birkaç saniye sürebilir.</p>
   </div></div>
 
   <div id="err"><div class="box">
-    <h1>Sahne yüklenemedi</h1>
+    <h1 data-t="errH">Sahne yüklenemedi</h1>
     <pre id="errmsg"></pre>
   </div></div>
+
+  <script>
+  /* Satır-içi TR/EN (iframe; ayrı dil düğmesi basmaz). Paylaşımlı i18n.js'in
+     localStorage('lang')'ını okur; ebeveyn dili değiştirince 'storage' ile canlı güncellenir. textContent (XSS-güvenli). */
+  (function () {
+    const I18N = {
+      badge: ['Foto-gerçekçi', 'Photorealistic'],
+      info:  ['Bu görünüm nedir?', 'What is this view?'],
+      h2:    ['✨ Foto-gerçekçi görünüm nedir?', '✨ What is the photorealistic view?'],
+      p1:    ['Bu sahne, alanın yüzlerce fotoğrafından 3B Gaussian Splatting yöntemiyle üretildi. Görüntü, üçgen yüzeylerden (mesh) değil, ışığı ve rengi taşıyan milyonlarca minik Gaussian noktasından oluşur.',
+              'This scene was produced from hundreds of photos of the site using 3D Gaussian Splatting. The image is built not from triangle surfaces (mesh) but from millions of tiny Gaussian points that carry light and color.'],
+      p2:    ['Bu sayede gölgeler, yansımalar ve ince dokular fotoğraf gerçekliğinde görünür — klasik “3B Model” sekmesindeki katı modelin sunamadığı bir doğallıkla.',
+              'This makes shadows, reflections and fine textures appear with photographic realism — a naturalness the solid model in the classic “3D Model” tab cannot offer.'],
+      tip:   ['Bu görünüm yalnızca izlemek içindir. Ölçüm, kesit ve analiz için “3B Model” sekmesini kullanın.',
+              'This view is for viewing only. For measurement, cross-section and analysis, use the “3D Model” tab.'],
+      hint:  ['Sürükle döndür · Kaydır yakınlaş · Sağ tık kaydır', 'Drag rotate · Scroll zoom · Right-click pan'],
+      bootH: ['Foto-gerçekçi sahne yükleniyor', 'Loading photorealistic scene'],
+      bootP: ['Yüksek kaliteli görüntü hazırlanıyor, bağlantıya göre birkaç saniye sürebilir.', 'Preparing the high-quality image; this may take a few seconds depending on your connection.'],
+      errH:  ['Sahne yüklenemedi', 'Scene could not be loaded'],
+      close: ['Kapat', 'Close'],
+    };
+    function curLang() { try { return localStorage.getItem('lang') === 'en' ? 1 : 0; } catch (e) { return 0; } }
+    function apply() {
+      const i = curLang();
+      document.querySelectorAll('[data-t]').forEach(el => { const v = I18N[el.getAttribute('data-t')]; if (v) el.textContent = v[i]; });
+      document.querySelectorAll('[data-t-aria]').forEach(el => { const v = I18N[el.getAttribute('data-t-aria')]; if (v) el.setAttribute('aria-label', v[i]); });
+      document.documentElement.lang = i ? 'en' : 'tr';
+    }
+    apply();
+    addEventListener('storage', e => { if (e.key === 'lang') apply(); });
+  })();
+  </script>
 
   <script type="module">
     import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';

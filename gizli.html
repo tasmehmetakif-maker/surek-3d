@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Yönetici Görüntüleyici</title>
+<style>
+  :root{ --bg:#0b0f14; --fg:#eef3f8; --muted:#9fb0c0; --accent:#2f6df0; --accent2:#38e8d0;
+    --panel:rgba(14,20,28,.92); --line:rgba(255,255,255,.12);
+    --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:var(--font);overflow:hidden;-webkit-tap-highlight-color:transparent}
+  #stage{position:fixed;inset:0}
+  #stage canvas{display:block;width:100%!important;height:100%!important;outline:none}
+
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;display:flex;align-items:center;gap:10px;
+    padding:0 14px;background:rgba(12,16,22,.9);border-bottom:1px solid var(--line);z-index:30;backdrop-filter:blur(8px)}
+  .topbar .badge{display:flex;align-items:center;gap:7px;font-weight:650;font-size:14px}
+  .topbar .badge small{font-weight:500;color:var(--muted);font-size:11.5px}
+  .topbar .sp{flex:1}
+  .topbar button,.topbar a{background:rgba(30,35,44,.85);border:1px solid var(--line);color:var(--fg);
+    border-radius:8px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:none}
+  .topbar button:hover,.topbar a:hover{border-color:var(--accent)}
+
+  /* Şifre / durum katmanı */
+  .overlay{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--bg);padding:24px;text-align:center}
+  .overlay.hidden{display:none}
+  .card{max-width:380px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:18px;
+    padding:30px 26px;box-shadow:0 30px 70px -30px #000}
+  .card .lock{font-size:34px;margin-bottom:10px}
+  .card h1{font-size:18px;margin:0 0 6px}
+  .card p{font-size:13px;color:var(--muted);margin:0 0 18px;line-height:1.55}
+  .card input{width:100%;background:#0e141b;border:1px solid var(--line);border-radius:10px;color:var(--fg);
+    font-size:15px;padding:11px 13px;outline:none;margin-bottom:12px}
+  .card input:focus{border-color:var(--accent)}
+  .card button{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04222c;
+    border:0;border-radius:10px;font-size:14.5px;font-weight:700;padding:11px;cursor:pointer}
+  .card button:hover{filter:brightness(1.07)}
+  .card .err{color:#ff9b9b;font-size:12.5px;min-height:16px;margin-top:8px}
+  .spin{width:40px;height:40px;margin:0 auto 14px;border-radius:50%;
+    border:3px solid rgba(124,196,255,.22);border-top-color:var(--accent);animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .hint{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:25;padding:6px 13px;border-radius:999px;
+    background:rgba(14,20,28,.8);border:1px solid var(--line);font-size:11.5px;color:var(--muted);transition:opacity .5s}
+</style>
+</head>
+<body>
+  <div id="stage"></div>
+
+  <div class="topbar" id="topbar" style="display:none">
+    <span class="badge">🔒 <span id="mtitle">Model</span> <small>Yönetici görünümü · yüksek kalite</small></span>
+    <span class="sp"></span>
+    <button id="wirebtn" title="Üçgen ağ (wireframe)">△ Tel kafes</button>
+    <button id="resetbtn" title="Görünümü sıfırla">⟲ Sıfırla</button>
+    <button id="exitbtn" title="Oturumu kilitle (şifre belleği temizlenir)">⎋ Kilitle</button>
+    <a href="/" title="Portföy">🏛 Portföy</a>
+  </div>
+
+  <div class="overlay" id="gate">
+    <div class="card">
+      <div class="lock">🔒</div>
+      <h1 id="gate-title">Yönetici Erişimi</h1>
+      <p id="gate-sub">Bu model henüz yayında değil. Görüntülemek için yönetici şifresini gir.</p>
+      <input id="pw" type="password" autocomplete="current-password" placeholder="Yönetici şifresi" />
+      <button id="unlock">Aç</button>
+      <div class="err" id="err"></div>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="loading">
+    <div class="card">
+      <div class="spin"></div>
+      <h1>Açılıyor…</h1>
+      <p id="loadmsg">Şifreli model indiriliyor ve çözülüyor.</p>
+    </div>
+  </div>
+
+  <div class="hint" id="hint">Sürükle: döndür · Sağ tık: kaydır · Tekerlek: yakınlaş</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+  import * as THREE from 'three';
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+  // Yayınlanmamış modeller (izin listesi) + başlıkları
+  const TITLES = {
+    buzul: 'Katır Buzul Gölleri-Kemah (Erzincan)',
+    mezra: 'Mezra-Kemah (Erzincan)',
+    kemah: 'Peribacaları-Kemah (Erzincan)',
+    polat: 'Polat Gölü-İliç (Erzincan)',
+    tomara: 'Tomara Şelalesi-Şiran (Gümüşhane)',
+    konarli: 'Konarlı Şelalesi-Tercan (Erzincan)',
+  };
+  const ITER = 250000;                 // encrypt_models.js ile AYNI olmalı
+  const TIER = 'high';                 // .enc dosya adı: high.enc
+
+  const slug = new URLSearchParams(location.search).get('m');
+  const $ = id => document.getElementById(id);
+
+  if (!slug || !TITLES[slug]) {
+    $('gate-title').textContent = 'Geçersiz model';
+    $('gate-sub').textContent = 'Adres ?m=<model> içermeli. Örn: /gizli.html?m=buzul';
+    $('pw').style.display = 'none'; $('unlock').style.display = 'none';
+  } else {
+    $('mtitle').textContent = TITLES[slug];
+    document.title = TITLES[slug] + ' — Yönetici';
+  }
+
+  // ---- Kripto: PBKDF2-SHA256 + AES-256-GCM çözme (.enc = salt|iv|ct+tag) ----
+  async function deriveKey(password, salt) {
+    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt, iterations: ITER, hash: 'SHA-256' },
+      km, { name: 'AES-GCM', length: 256 }, false, ['decrypt']
+    );
+  }
+  async function decryptEnc(buf, password) {
+    const b = new Uint8Array(buf);
+    const salt = b.slice(0, 16), iv = b.slice(16, 28), data = b.slice(28);
+    const key = await deriveKey(password, salt);
+    return crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data); // yanlış şifre => throw
+  }
+
+  // .enc'i bir kez indir, bellekte tut (yanlış şifre tekrarında yeniden indirme)
+  let encBuf = null;
+  async function getEnc() {
+    if (encBuf) return encBuf;
+    const r = await fetch(`./${slug}/${TIER}.enc`, { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    encBuf = await r.arrayBuffer();
+    return encBuf;
+  }
+
+  // ---- three.js sahne ----
+  let renderer, scene, camera, controls, modelRoot, wire = false;
+  function initViewer() {
+    const stage = $('stage');
+    renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: false });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.NoToneMapping;       // foto-doku gerçek renk
+    stage.appendChild(renderer.domElement);
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0b0f14);
+    scene.add(new THREE.AmbientLight(0xffffff, 1.45));
+    const hemi = new THREE.HemisphereLight(0xffffff, 0x44484f, 1.0); scene.add(hemi);
+    const dir = new THREE.DirectionalLight(0xffffff, 0.9); dir.position.set(1, 2, 1.5); scene.add(dir);
+
+    camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.01, 5000);
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; controls.dampingFactor = 0.08;
+    addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+    (function loop(){ requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
+  }
+
+  let homeCam = null;
+  function frameModel(obj) {
+    const box = new THREE.Box3().setFromObject(obj);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
+    const dist = (maxDim / 2) / Math.tan((camera.fov * Math.PI / 180) / 2) * 1.6;
+    camera.near = maxDim / 1000; camera.far = maxDim * 100; camera.updateProjectionMatrix();
+    const pos = new THREE.Vector3(center.x + dist * 0.6, center.y + dist * 0.7, center.z + dist * 0.9);
+    camera.position.copy(pos);
+    controls.target.copy(center); controls.update();
+    homeCam = { pos: pos.clone(), tgt: center.clone() };
+  }
+
+  const draco = new DRACOLoader();
+  draco.setDecoderPath('https://unpkg.com/three@0.169.0/examples/jsm/libs/draco/');  // ana viewer ile aynı
+  const gltfLoader = new GLTFLoader().setDRACOLoader(draco);
+  function loadGLB(blobUrl) {
+    gltfLoader.load(blobUrl, gltf => {
+      if (modelRoot) scene.remove(modelRoot);
+      modelRoot = gltf.scene;
+      scene.add(modelRoot);
+      frameModel(modelRoot);
+      URL.revokeObjectURL(blobUrl);
+      $('loading').classList.add('hidden');
+      $('topbar').style.display = 'flex';
+      setTimeout(() => { const h = $('hint'); if (h) h.style.opacity = '0'; }, 6000);
+    }, undefined, err => {
+      $('loading').classList.add('hidden');
+      showGate('Model çizilemedi: ' + (err && err.message || err));
+    });
+  }
+
+  // ---- Akış: şifre -> indir -> çöz -> yükle ----
+  function showGate(msg) { $('gate').classList.remove('hidden'); $('loading').classList.add('hidden'); $('err').textContent = msg || ''; $('pw').focus(); }
+  function showLoading(msg) { $('gate').classList.add('hidden'); $('loading').classList.remove('hidden'); if (msg) $('loadmsg').textContent = msg; }
+
+  async function tryUnlock(password) {
+    if (!password) { $('err').textContent = 'Şifre gerekli.'; return; }
+    showLoading('Şifreli model indiriliyor…');
+    let buf;
+    try { buf = await getEnc(); }
+    catch (e) { showGate('Model dosyası alınamadı (' + e.message + ').'); return; }
+    let plain;
+    try { showLoading('Çözülüyor…'); plain = await decryptEnc(buf, password); }
+    catch (e) { showGate('Yanlış şifre. Tekrar dene.'); return; }
+    try { sessionStorage.setItem('adminpw', password); } catch (e) {}
+    if (!renderer) initViewer();
+    showLoading('Model çiziliyor…');
+    loadGLB(URL.createObjectURL(new Blob([plain])));
+  }
+
+  // olay bağları
+  if (slug && TITLES[slug]) {
+    $('unlock').onclick = () => tryUnlock($('pw').value);
+    $('pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock($('pw').value); });
+    $('wirebtn').onclick = () => {
+      if (!modelRoot) return; wire = !wire;
+      modelRoot.traverse(o => { if (o.isMesh && o.material) { const ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach(m => m.wireframe = wire); } });
+    };
+    $('resetbtn').onclick = () => { if (homeCam) { camera.position.copy(homeCam.pos); controls.target.copy(homeCam.tgt); controls.update(); } };
+    $('exitbtn').onclick = () => { try { sessionStorage.removeItem('adminpw'); } catch (e) {} location.reload(); };
+
+    // Aynı oturumda şifre varsa otomatik dene (model değiştirince tekrar sormaz)
+    let saved = null; try { saved = sessionStorage.getItem('adminpw'); } catch (e) {}
+    if (saved) tryUnlock(saved); else $('pw').focus();
+  }
+</script>
+</body>
+</html>

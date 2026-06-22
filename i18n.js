@@ -13,6 +13,7 @@
     'tab.ortho': ['Ortofoto', 'Orthophoto'],
     'tab.dem2d': ['DEM (2B)', 'DEM (2D)'],
     'tab.compare': ['⇋ Karşılaştır', '⇋ Compare'],
+    'tab.splat': ['✨ Foto-gerçekçi', '✨ Photorealistic'],
     'nav.portfolio': ['🏛 Portföy', '🏛 Portfolio'],
     // ---- Ziyaret sayacı ----
     'vc.total': ['Toplam ziyaret', 'Total visits'],
