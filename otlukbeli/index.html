@@ -439,6 +439,8 @@
 
   // ===== ŞİFRELİ MOD: kilitli (yayınlanmamış) modellerin varlıkları .enc; çalışma-anı şifre-çözme =====
   const ENCRYPTED = false;
+  const NOULTRA = false;  // ultra.glb kaynağı bozuk modellerde "En Yüksek"i kaldır (max = Yüksek)
+  if (NOULTRA) document.querySelector('.q.ultra')?.remove();
   let sessionPwd = (() => { try { return sessionStorage.getItem('dec-pwd'); } catch (e) { return null; } })();
   const _decCache = {};
   async function _deriveKey(pw, salt){ const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']); return crypto.subtle.deriveKey({ name:'PBKDF2', salt, iterations:250000, hash:'SHA-256' }, km, { name:'AES-GCM', length:256 }, false, ['decrypt']); }
