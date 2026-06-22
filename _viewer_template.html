@@ -557,12 +557,11 @@
         const t = i / N, x = a.x + (b.x - a.x) * t, z = a.z + (b.z - a.z) * t;
         ray2.set(new THREE.Vector3(x, topY, z), down);
         const hit = ray2.intersectObject(current, true)[0];
-        if(hit) pts.push({ d: horiz * t, y: hit.point.y });
+        if(hit) pts.push({ d: horiz * t, y: hit.point.y, p: hit.point.clone() });
       }
       return pts;
     }
-    function drawProfile(a, b){
-      const pts = sampleProfile(a, b);
+    function drawProfile(pts){
       if(pts.length < 2 || !profPanel) return;
       const cv = document.getElementById('profile-canvas'), ctx = cv.getContext('2d'), W = cv.width, H = cv.height, pad = 62;
       ctx.clearRect(0, 0, W, H);
@@ -594,8 +593,11 @@
       if(ppts.length >= 2){ measureGroup.clear(); ppts = []; if(profPanel) profPanel.style.display = 'none'; }
       ppts.push(p.clone()); measureGroup.add(dotMesh(p));
       if(ppts.length === 2){
-        const ln = new THREE.Line(new THREE.BufferGeometry().setFromPoints([ppts[0], ppts[1]]), new THREE.LineBasicMaterial({ color: 0x38e8d0, depthTest: false })); ln.renderOrder = 999; measureGroup.add(ln);
-        drawProfile(ppts[0], ppts[1]);
+        const pts = sampleProfile(ppts[0], ppts[1]);
+        // 3B çizgi topografyayı TAKİP ETSİN: düz A→B yerine yüzeye düşürülmüş örnek noktalarını bağla
+        const linePts = (pts.length >= 2) ? pts.map(s => s.p) : [ppts[0], ppts[1]];
+        const ln = new THREE.Line(new THREE.BufferGeometry().setFromPoints(linePts), new THREE.LineBasicMaterial({ color: 0x38e8d0, depthTest: false })); ln.renderOrder = 999; measureGroup.add(ln);
+        drawProfile(pts);
       }
     }
     if(btnP) btnP.onclick = () => {
