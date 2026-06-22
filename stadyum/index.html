@@ -163,6 +163,7 @@
   <div id="tabs">
     <strong>Erzincan Stadyumu</strong>
     <button class="tab active" data-view="model" data-i18n="tab.model">3B Model</button>
+    <button class="tab" data-view="splat" data-i18n="tab.splat">✨ Foto-gerçekçi</button>
     <span id="lang-switch" style="margin-left:auto"></span>
     <a href="/" class="homelink" data-i18n="nav.portfolio" title="Akademik portföy / tüm modeller">🏛 Portföy</a>
   </div>
@@ -379,6 +380,14 @@
     </div>
   </div>
 
+  <!-- ✨ Foto-gerçekçi (Gaussian Splatting) görünümü — yalnız splat sekmesi olan modelde dolu gelir -->
+  <div class="view" id="view-splat">
+    <iframe id="splat-frame" title="Foto-gerçekçi görünüm (Gaussian Splatting)"
+      data-src="./splat.html?src=stadyum.splat&up=0,0,1&cpos=-0.5,-2.5,2.2&clook=-0.5,-0.3,0.18&maxpol=52&mindist=1.3&maxdist=4.8&alpha=8"
+      style="width:100%; height:100%; border:0; display:block; background:#0b0f14;"
+      allow="fullscreen; xr-spatial-tracking" loading="lazy"></iframe>
+  </div>
+
   <!-- AR overlay (model-viewer tembel yüklenir) -->
   <div id="ar-overlay">
     <button id="ar-close" data-i18n-title="common.close.t" title="Kapat">✕</button>
@@ -421,6 +430,15 @@
   document.querySelectorAll('.tab').forEach(t => t.onclick = () => showView(t.dataset.view));
 
   (function loop(){ requestAnimationFrame(loop); if (activeRender) activeRender(); })();
+
+  // ===================== ✨ FOTO-GERÇEKÇİ (Gaussian Splatting) =====================
+  // Yalnız splat sekmesi olan modelde (#view-splat varsa). iframe izole + lazy: sekme ilk tıklanınca yüklenir.
+  if (document.getElementById('view-splat')) {
+    registerView('splat', () => {
+      const f = document.getElementById('splat-frame');
+      if (f && !f.src && f.dataset.src) f.src = f.dataset.src;
+    });
+  }
 
   // ===================== 3B MODEL =====================
   registerView('model', () => {});

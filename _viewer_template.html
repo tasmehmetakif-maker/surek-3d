@@ -379,6 +379,9 @@
     </div>
   </div>
 
+  <!-- ✨ Foto-gerçekçi (Gaussian Splatting) görünümü — yalnız splat sekmesi olan modelde dolu gelir -->
+{{SPLAT_VIEW}}
+
   <!-- AR overlay (model-viewer tembel yüklenir) -->
   <div id="ar-overlay">
     <button id="ar-close" data-i18n-title="common.close.t" title="Kapat">✕</button>
@@ -421,6 +424,15 @@
   document.querySelectorAll('.tab').forEach(t => t.onclick = () => showView(t.dataset.view));
 
   (function loop(){ requestAnimationFrame(loop); if (activeRender) activeRender(); })();
+
+  // ===================== ✨ FOTO-GERÇEKÇİ (Gaussian Splatting) =====================
+  // Yalnız splat sekmesi olan modelde (#view-splat varsa). iframe izole + lazy: sekme ilk tıklanınca yüklenir.
+  if (document.getElementById('view-splat')) {
+    registerView('splat', () => {
+      const f = document.getElementById('splat-frame');
+      if (f && !f.src && f.dataset.src) f.src = f.dataset.src;
+    });
+  }
 
   // ===================== 3B MODEL =====================
   registerView('model', () => {});
