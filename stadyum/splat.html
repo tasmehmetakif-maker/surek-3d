@@ -172,11 +172,20 @@
         // mkkellogg kendi yükleme arayüzü (ilerleme çubuğu) — büyük .ply için faydalı
       });
       window.__viewer = viewer;
-      viewer.addSplatScene(src, {
-        splatAlphaRemovalThreshold: alpha,
-        showLoadingUI: true,
-        progressiveLoad: false
-      }).then(()=>{
+      // CDN (Cloudflare) büyük .splat'ı gzip'leyince Content-Length sıkıştırılmış boyut olur
+      // ve 32'ye tam bölünmez → mkkellogg "Could not load file" hatası verir. Çözüm: dosyayı
+      // kendimiz indir (tarayıcı gzip'i doğru çözer → gerçek baytlar) → blob URL ile yükle (CDN baypas).
+      const fmtMap = { splat: GaussianSplats3D.SceneFormat.Splat, ply: GaussianSplats3D.SceneFormat.Ply, ksplat: GaussianSplats3D.SceneFormat.KSplat };
+      const ext = (src.split('?')[0].split('.').pop() || '').toLowerCase();
+      fetch(src)
+        .then(r => { if(!r.ok) throw new Error('HTTP '+r.status+' — '+src); return r.arrayBuffer(); })
+        .then(buf => {
+          const blobUrl = URL.createObjectURL(new Blob([buf]));
+          const opts = { splatAlphaRemovalThreshold: alpha, showLoadingUI: true, progressiveLoad: false };
+          if (fmtMap[ext] !== undefined) opts.format = fmtMap[ext];
+          return viewer.addSplatScene(blobUrl, opts);
+        })
+        .then(()=>{
         document.getElementById('boot').classList.add('gone');
         viewer.start();
         // Kamera kısıtlaması: ziyaretçi yalnızca iyi (hava) açıları görsün — erimiş yatay/alt açılar erişilemez
