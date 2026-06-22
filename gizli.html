@@ -100,6 +100,7 @@
     polat: 'Polat Gölü-İliç (Erzincan)',
     tomara: 'Tomara Şelalesi-Şiran (Gümüşhane)',
     konarli: 'Konarlı Şelalesi-Tercan (Erzincan)',
+    surek: 'Sürek Şelalesi-Kemah (Erzincan)',
   };
   const ITER = 250000;                 // encrypt_models.js ile AYNI olmalı
   const TIER = 'high';                 // .enc dosya adı: high.enc
@@ -135,7 +136,8 @@
   let encBuf = null;
   async function getEnc() {
     if (encBuf) return encBuf;
-    const r = await fetch(`./${slug}/${TIER}.enc`, { cache: 'no-store' });
+    const url = (slug === 'surek') ? `./${TIER}.enc` : `./${slug}/${TIER}.enc`;  // surek kökte
+    const r = await fetch(url, { cache: 'no-store' });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     encBuf = await r.arrayBuffer();
     return encBuf;

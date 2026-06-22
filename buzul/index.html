@@ -28,6 +28,9 @@
   .cs-card p { color:#aeb7c2; font-size:14.5px; line-height:1.6; margin-bottom:22px; }
   .cs-btn { display:inline-block; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#04222c; font-weight:700; font-size:14px; padding:11px 20px; border-radius:11px; text-decoration:none; }
   .cs-btn:hover { filter:brightness(1.08); }
+  .cs-actions { display:flex; flex-direction:column; gap:10px; align-items:center; margin-top:4px; }
+  .cs-admin { box-shadow:0 6px 22px -8px rgba(47,109,240,.7); }
+  .cs-back2 { background:transparent; border:1px solid rgba(255,255,255,.2); color:#aeb7c2; font-weight:600; }
 </style>
 </head>
 <body>
@@ -42,7 +45,10 @@
       <div class="cs-badge" data-i18n="cs.badge">Yakında</div>
       <h1>Katır Buzul Gölleri-Kemah (Erzincan)</h1>
       <p data-i18n="cs.body">Bu modelin interaktif 3B görüntüleyicisi hazırlanıyor ve yakında yayında olacak.</p>
-      <a href="/" class="cs-btn" data-i18n="cs.back">← Tüm modeller</a>
+      <div class="cs-actions">
+        <a href="/gizli.html?m=buzul" class="cs-btn cs-admin" data-i18n="cs.admin">🔒 Yönetici Girişi</a>
+        <a href="/" class="cs-btn cs-back2" data-i18n="cs.back">← Tüm modeller</a>
+      </div>
     </div>
   </div>
 </body>

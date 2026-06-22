@@ -22,6 +22,7 @@
     'cs.badge': ['Yakında', 'Coming soon'],
     'cs.body': ['Bu modelin interaktif 3B görüntüleyicisi hazırlanıyor ve yakında yayında olacak.', 'The interactive 3D viewer for this model is being prepared and will be available soon.'],
     'cs.back': ['← Tüm modeller', '← All models'],
+    'cs.admin': ['🔒 Yönetici Girişi', '🔒 Admin Access'],
     'ak.card.soon': ['🔒 Yakında', '🔒 Coming soon'],
     'info.paper': ['İlgili yayın', 'Related publication'],
     'ak.card.paper': ['📄 İlgili yayın ↗', '📄 Related publication ↗'],
