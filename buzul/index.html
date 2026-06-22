@@ -455,6 +455,7 @@
   window.__afterUnlock = null;  // model bloğu set eder (şifre doğrulanınca ilk modeli yükler)
   if (ENCRYPTED) {
     const _g = document.getElementById('pwd-gate'); _g.classList.add('on');
+    document.querySelector('.q.ultra')?.remove();  // kilitli modelde "En Yüksek" yok (ultra 100MB+ Pages'e sığmaz; max = Yüksek/high.enc)
     const _i = document.getElementById('pwd-input'), _b = document.getElementById('pwd-submit'), _e = document.getElementById('pwd-err');
     const _verify = async pw => { if (!pw) return false; try { const r = await fetch('low.enc', { cache:'no-store' }); if (!r.ok) return false; await _decBuf(await r.arrayBuffer(), pw); return true; } catch (e) { return false; } };
     const _unlock = async pw => { if (!(await _verify(pw))) { _e.textContent = 'Yanlış şifre.'; _b.disabled = false; _b.textContent = 'Aç'; return; } sessionPwd = pw; try { sessionStorage.setItem('dec-pwd', pw); } catch (e) {} _g.classList.remove('on'); if (window.__afterUnlock) window.__afterUnlock(); };
