@@ -201,7 +201,7 @@
       <button class="q" data-url="low.glb" data-i18n="q.low" data-i18n-title="q.low.t" title="Düşük detay — en hızlı">Düşük</button>
       <button class="q active" data-url="medium.glb" data-i18n="q.medium" data-i18n-title="q.medium.t" title="Dengeli (önerilen)">Orta</button>
       <button class="q" data-url="high.glb" data-i18n="q.high" data-i18n-title="q.high.t" title="Yüksek detay">Yüksek</button>
-      <button class="q ultra" data-url="ultra.glb" data-i18n="q.ultra" data-i18n-title="q.ultra.t" title="Tam detay" data-fallback="https://surek-ultra.tas-mehmet-akif.workers.dev/konarli-ultra.glb?v=2">En Yüksek</button>
+      <button class="q ultra" data-url="ultra.glb" data-i18n="q.ultra" data-i18n-title="q.ultra.t" title="Tam detay" data-fallback="https://surek-ultra.tas-mehmet-akif.workers.dev/konarli-ultra.glb?v=2" data-r2enc="https://surek-ultra.tas-mehmet-akif.workers.dev/konarli-ultra.enc">En Yüksek</button>
     </div>
     <div class="status" id="model-status">Durum: başlatılıyor…</div>
     <div class="hint" data-i18n="hint.controls">Sürükle: döndür · Sağ tık: kaydır · Tekerlek: yakınlaş</div>
@@ -444,10 +444,10 @@
   async function _deriveKey(pw, salt){ const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']); return crypto.subtle.deriveKey({ name:'PBKDF2', salt, iterations:250000, hash:'SHA-256' }, km, { name:'AES-GCM', length:256 }, false, ['decrypt']); }
   async function _decBuf(buf, pw){ const b = new Uint8Array(buf); const key = await _deriveKey(pw, b.slice(0,16)); return crypto.subtle.decrypt({ name:'AES-GCM', iv:b.slice(16,28) }, key, b.slice(28)); }
   // ad ('medium.glb','ortho.jpg'...) -> <adsız>.enc çöz -> blob URL (önbellekli). !ENCRYPTED ise adı aynen döndürür.
-  async function decAsset(name){
+  async function decAsset(name, encOverride){
     if (!ENCRYPTED) return name;
     if (_decCache[name]) return _decCache[name];
-    const enc = name.split('?')[0].replace(/\.[^.]+$/, '') + '.enc';
+    const enc = encOverride || (name.split('?')[0].replace(/\.[^.]+$/, '') + '.enc');
     const r = await fetch(enc, { cache:'no-store' }); if (!r.ok) throw new Error(enc + ' ' + r.status);
     const plain = await _decBuf(await r.arrayBuffer(), sessionPwd);
     const u = URL.createObjectURL(new Blob([plain])); _decCache[name] = u; return u;
@@ -455,7 +455,6 @@
   window.__afterUnlock = null;  // model bloğu set eder (şifre doğrulanınca ilk modeli yükler)
   if (ENCRYPTED) {
     const _g = document.getElementById('pwd-gate'); _g.classList.add('on');
-    document.querySelector('.q.ultra')?.remove();  // kilitli modelde "En Yüksek" yok (ultra 100MB+ Pages'e sığmaz; max = Yüksek/high.enc)
     const _i = document.getElementById('pwd-input'), _b = document.getElementById('pwd-submit'), _e = document.getElementById('pwd-err');
     const _verify = async pw => { if (!pw) return false; try { const r = await fetch('low.enc', { cache:'no-store' }); if (!r.ok) return false; await _decBuf(await r.arrayBuffer(), pw); return true; } catch (e) { return false; } };
     const _unlock = async pw => { if (!(await _verify(pw))) { _e.textContent = 'Yanlış şifre.'; _b.disabled = false; _b.textContent = 'Aç'; return; } sessionPwd = pw; try { sessionStorage.setItem('dec-pwd', pw); } catch (e) {} _g.classList.remove('on'); if (window.__afterUnlock) window.__afterUnlock(); };
@@ -527,7 +526,7 @@
       g=>{ if(current){scene.remove(current);dispose(current);} current=g.scene; bvhReady=false; scene.add(current); frame(current); if(!_hashApplied){ _hashApplied=true; applyHashCam(); } stats(current); resetTools(); applyWire(); current.traverse(o=>{ if(o.isMesh){ o.castShadow=true; o.receiveShadow=true; } }); if(typeof sunOn!=='undefined' && sunOn){ configShadowCam(); updateSun(); } lastLoadedUrl=url; setStatus(Tt('st.loaded',{u:url}), true); document.querySelectorAll('.q').forEach(b=>b.classList.remove('active')); btn?.classList.add('active'); },
       x=>{ if(x.total) setStatus(Tt('st.loadingpct',{p:Math.round(x.loaded/x.total*100)})); },
       e=>{ const fb = btn && btn.dataset && btn.dataset.fallback; if(fb && url !== fb){ setStatus(Tt('st.fallback')); load(fb, btn); return; } console.error(e); setStatus(Tt('st.fail',{u:url}), false); });
-      if (ENCRYPTED) decAsset(url).then(_go).catch(er=>{ console.error(er); setStatus(Tt('st.fail',{u:url}), false); });
+      if (ENCRYPTED) decAsset(url, btn?.dataset?.r2enc).then(_go).catch(er=>{ console.error(er); setStatus(Tt('st.fail',{u:url}), false); });
       else _go(url);
     }
     addEventListener('langchange', () => { if(lastLoadedUrl) setStatus(Tt('st.loaded',{u:lastLoadedUrl}), true); if(lastTrisTxt) document.getElementById('model-stats').textContent = lastTrisTxt+' '+Tt('hud.tris'); });
