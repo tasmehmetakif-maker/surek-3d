@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<meta name="robots" content="noindex, nofollow" />
+<title>✨ Foto-gerçekçi — Yönetici</title>
+<style>
+  :root{ --bg:#0b0f14; --fg:#eef3f8; --muted:#9fb0c0; --accent:#2f6df0; --accent2:#38e8d0;
+    --panel:rgba(14,20,28,.92); --line:rgba(255,255,255,.12);
+    --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:var(--font);overflow:hidden;-webkit-tap-highlight-color:transparent}
+  #stage{position:fixed;inset:0}
+  #stage canvas{display:block;width:100%!important;height:100%!important;outline:none}
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;display:flex;align-items:center;gap:10px;
+    padding:0 14px;background:rgba(12,16,22,.9);border-bottom:1px solid var(--line);z-index:30;backdrop-filter:blur(8px)}
+  .topbar .badge{display:flex;align-items:center;gap:7px;font-weight:650;font-size:14px}
+  .topbar .badge small{font-weight:500;color:var(--muted);font-size:11.5px}
+  .topbar .sp{flex:1}
+  .topbar button,.topbar a{background:rgba(30,35,44,.85);border:1px solid var(--line);color:var(--fg);
+    border-radius:8px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:none}
+  .topbar button:hover,.topbar a:hover{border-color:var(--accent)}
+  .overlay{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--bg);padding:24px;text-align:center}
+  .overlay.hidden{display:none}
+  .card{max-width:380px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:18px;
+    padding:30px 26px;box-shadow:0 30px 70px -30px #000}
+  .card .lock{font-size:34px;margin-bottom:10px}
+  .card h1{font-size:18px;margin:0 0 6px}
+  .card p{font-size:13px;color:var(--muted);margin:0 0 18px;line-height:1.55}
+  .card input{width:100%;background:#0e141b;border:1px solid var(--line);border-radius:10px;color:var(--fg);
+    font-size:15px;padding:11px 13px;outline:none;margin-bottom:12px}
+  .card input:focus{border-color:var(--accent)}
+  .card button{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04222c;
+    border:0;border-radius:10px;font-size:14.5px;font-weight:700;padding:11px;cursor:pointer}
+  .card button:hover{filter:brightness(1.07)}
+  .card .err{color:#ff9b9b;font-size:12.5px;min-height:16px;margin-top:8px}
+  .spin{width:40px;height:40px;margin:0 auto 14px;border-radius:50%;
+    border:3px solid rgba(124,196,255,.22);border-top-color:var(--accent);animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .badge2{position:fixed;top:58px;left:14px;z-index:25;display:flex;align-items:center;gap:7px;
+    padding:6px 12px;border-radius:999px;background:var(--panel);border:1px solid var(--line);
+    backdrop-filter:blur(8px);font-weight:650;font-size:13px}
+  .badge2 small{font-weight:500;color:var(--muted);font-size:11px}
+  .hint{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:25;padding:6px 13px;border-radius:999px;
+    background:rgba(14,20,28,.8);border:1px solid var(--line);font-size:11.5px;color:var(--muted);transition:opacity .5s}
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "@mkkellogg/gaussian-splats-3d": "https://cdn.jsdelivr.net/npm/@mkkellogg/gaussian-splats-3d@0.4.7/build/gaussian-splats-3d.module.js"
+  }
+}
+</script>
+</head>
+<body>
+  <div id="stage"></div>
+
+  <div class="topbar" id="topbar" style="display:none">
+    <span class="badge">✨ <span id="mtitle">Foto-gerçekçi</span> <small>Yönetici · Gaussian Splatting</small></span>
+    <span class="sp"></span>
+    <button id="resetbtn" title="Görünümü sıfırla">⟲ Sıfırla</button>
+    <a id="glblink" href="#" title="Katı 3B model (mesh) görünümü">△ 3B Model</a>
+    <button id="exitbtn" title="Oturumu kilitle (şifre belleği temizlenir)">⎋ Kilitle</button>
+    <a href="/" title="Portföy">🏛 Portföy</a>
+  </div>
+
+  <div class="overlay" id="gate">
+    <div class="card">
+      <div class="lock">🔒</div>
+      <h1 id="gate-title">Yönetici Erişimi</h1>
+      <p id="gate-sub">Foto-gerçekçi (Gaussian Splatting) görünümü henüz yayında değil. Görüntülemek için yönetici şifresini gir.</p>
+      <input id="pw" type="password" autocomplete="current-password" placeholder="Yönetici şifresi" />
+      <button id="unlock">Aç</button>
+      <div class="err" id="err"></div>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="loading">
+    <div class="card">
+      <div class="spin"></div>
+      <h1>Açılıyor…</h1>
+      <p id="loadmsg">Şifreli splat indiriliyor ve çözülüyor.</p>
+    </div>
+  </div>
+
+  <div class="hint" id="hint">Sürükle: döndür · Tekerlek: yakınlaş · Sağ tık: kaydır</div>
+
+<script type="module">
+  import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
+
+  // Yayınlanmamış modeller (gizli.html ile AYNI liste) + başlıkları
+  const TITLES = {
+    buzul: 'Katır Buzul Gölleri-Kemah (Erzincan)',
+    mezra: 'Mezra-Kemah (Erzincan)',
+    kemah: 'Peribacaları-Kemah (Erzincan)',
+    polat: 'Polat Gölü-İliç (Erzincan)',
+    tomara: 'Tomara Şelalesi-Şiran (Gümüşhane)',
+    konarli: 'Konarlı Şelalesi-Tercan (Erzincan)',
+    surek: 'Sürek Şelalesi-Kemah (Erzincan)',
+  };
+  // Splat kamera varsayılanları (compute_up.py çıktısı). URL param ile geçici geçersiz kılınabilir (ayar için).
+  // up = PCA dikey (en ince eksen); cpos/clook = merkez + yukarı; mindist/maxdist/maxpol = orbit kısıtı.
+  const CAM = {
+    surek: { up:[-0.102,-0.057,-0.993], clook:[0.284,0.083,0.025], cpos:[-1.004,-2.420,-2.300],
+             mindist:0.4, maxdist:12, minpol:0, maxpol:180, alpha:6 },
+    // diğer modeller splat'ları hazır oldukça eklenecek
+  };
+  const ITER = 250000;                 // encrypt_models.js / gizli.html ile AYNI olmalı
+  const SPLAT_FILE = 'foto.enc';       // şifreli splat adı (foto.splat -> foto.enc)
+
+  const $ = id => document.getElementById(id);
+  const P = new URLSearchParams(location.search);
+  const slug = P.get('m');
+
+  if (!slug || !TITLES[slug]) {
+    $('gate-title').textContent = 'Geçersiz model';
+    $('gate-sub').textContent = 'Adres ?m=<model> içermeli. Örn: /gizli-foto.html?m=surek';
+    $('pw').style.display = 'none'; $('unlock').style.display = 'none';
+  } else {
+    $('mtitle').textContent = TITLES[slug];
+    document.title = TITLES[slug] + ' — Foto-gerçekçi (Yönetici)';
+    $('glblink').href = '/gizli.html?m=' + slug;
+  }
+
+  // ---- Kripto: PBKDF2-SHA256 250k + AES-256-GCM çözme (.enc = salt|iv|ct+tag) ----
+  async function deriveKey(password, salt) {
+    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt, iterations: ITER, hash: 'SHA-256' },
+      km, { name: 'AES-GCM', length: 256 }, false, ['decrypt']
+    );
+  }
+  async function decryptEnc(buf, password) {
+    const b = new Uint8Array(buf);
+    const salt = b.slice(0, 16), iv = b.slice(16, 28), data = b.slice(28);
+    const key = await deriveKey(password, salt);
+    return crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data); // yanlış şifre => throw
+  }
+  let encBuf = null;
+  async function getEnc() {
+    if (encBuf) return encBuf;
+    const url = (slug === 'surek') ? `./${SPLAT_FILE}` : `./${slug}/${SPLAT_FILE}`;  // surek kökte
+    const r = await fetch(url, { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    encBuf = await r.arrayBuffer();
+    return encBuf;
+  }
+
+  function showGate(msg) { $('gate').classList.remove('hidden'); $('loading').classList.add('hidden'); $('err').textContent = msg || ''; $('pw').focus(); }
+  function showLoading(msg) { $('gate').classList.add('hidden'); $('loading').classList.remove('hidden'); if (msg) $('loadmsg').textContent = msg; }
+
+  // URL param yardımcıları (ayar/ince tuning için: ?up=..&cpos=..&maxpol=..)
+  const numv = (k, d) => { const s = P.get(k); if (!s) return d; const v = s.split(',').map(Number); return v.some(isNaN) ? d : v; };
+  const fltv = (k, d) => { const v = parseFloat(P.get(k)); return isNaN(v) ? d : v; };
+
+  let viewer = null, home = null;
+  async function showSplat(plainBuf) {
+    const c = CAM[slug] || {};
+    const up    = numv('up',    c.up    || [0, 0, 1]);
+    const clook = numv('clook', c.clook || [0, 0, 0]);
+    const cpos  = numv('cpos',  c.cpos  || [0, -3, 2]);
+    const mindist = fltv('mindist', c.mindist ?? 0.6);
+    const maxdist = fltv('maxdist', c.maxdist ?? 8);
+    const minpol  = fltv('minpol',  c.minpol  ?? 0);
+    const maxpol  = fltv('maxpol',  c.maxpol  ?? 82);
+    const alpha   = parseInt(P.get('alpha') ?? (c.alpha ?? 6), 10);
+    home = { cpos: [...cpos], clook: [...clook] };
+
+    viewer = new GaussianSplats3D.Viewer({
+      rootElement: $('stage'), cameraUp: up,
+      initialCameraPosition: cpos, initialCameraLookAt: clook,
+      sphericalHarmonicsDegree: 0, sharedMemoryForWorkers: false,
+      dynamicScene: false, antialiased: true,
+    });
+    window.__viewer = viewer;
+    const blobUrl = URL.createObjectURL(new Blob([plainBuf]));
+    await viewer.addSplatScene(blobUrl, { format: GaussianSplats3D.SceneFormat.Splat, splatAlphaRemovalThreshold: alpha, showLoadingUI: true, progressiveLoad: false });
+    $('loading').classList.add('hidden');
+    $('topbar').style.display = 'flex';
+    viewer.start();
+    const ctrl = viewer.controls;
+    if (ctrl) {
+      ctrl.enablePan = true; ctrl.screenSpacePanning = false; ctrl.panSpeed = 1.2;
+      ctrl.minDistance = mindist; ctrl.maxDistance = maxdist;
+      ctrl.minPolarAngle = minpol * Math.PI / 180; ctrl.maxPolarAngle = maxpol * Math.PI / 180;
+      ctrl.update();
+    }
+    window.__ctrl = ctrl;
+    setTimeout(() => { const h = $('hint'); if (h) h.style.opacity = '0'; }, 6000);
+  }
+
+  async function tryUnlock(password) {
+    if (!password) { $('err').textContent = 'Şifre gerekli.'; return; }
+    showLoading('Şifreli splat indiriliyor…');
+    let buf;
+    try { buf = await getEnc(); }
+    catch (e) { showGate('Splat dosyası alınamadı (' + e.message + ').'); return; }
+    let plain;
+    try { showLoading('Çözülüyor…'); plain = await decryptEnc(buf, password); }
+    catch (e) { showGate('Yanlış şifre. Tekrar dene.'); return; }
+    try { sessionStorage.setItem('adminpw', password); } catch (e) {}
+    showLoading('Sahne çiziliyor…');
+    try { await showSplat(plain); }
+    catch (e) { showGate('Sahne çizilemedi: ' + (e && e.message || e)); }
+  }
+
+  if (slug && TITLES[slug]) {
+    $('unlock').onclick = () => tryUnlock($('pw').value);
+    $('pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock($('pw').value); });
+    $('resetbtn').onclick = () => { if (viewer && home) { viewer.camera.position.set(...home.cpos); viewer.controls.target.set(...home.clook); viewer.controls.update(); } };
+    $('exitbtn').onclick = () => { try { sessionStorage.removeItem('adminpw'); } catch (e) {} location.reload(); };
+    // Aynı oturumda (gizli.html'de) şifre girildiyse otomatik aç
+    let saved = null; try { saved = sessionStorage.getItem('adminpw'); } catch (e) {}
+    if (saved) tryUnlock(saved); else $('pw').focus();
+  }
+</script>
+</body>
+</html>

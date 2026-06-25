@@ -51,6 +51,7 @@
   <div class="topbar" id="topbar" style="display:none">
     <span class="badge">🔒 <span id="mtitle">Model</span> <small>Yönetici görünümü · yüksek kalite</small></span>
     <span class="sp"></span>
+    <a id="fotobtn" href="#" title="Foto-gerçekçi (Gaussian Splatting) görünümü" style="display:none">✨ Foto-gerçekçi</a>
     <button id="wirebtn" title="Üçgen ağ (wireframe)">△ Tel kafes</button>
     <button id="resetbtn" title="Görünümü sıfırla">⟲ Sıfırla</button>
     <button id="exitbtn" title="Oturumu kilitle (şifre belleği temizlenir)">⎋ Kilitle</button>
@@ -115,6 +116,13 @@
   } else {
     $('mtitle').textContent = TITLES[slug];
     document.title = TITLES[slug] + ' — Yönetici';
+    // Splat'ı hazır modellerde "✨ Foto-gerçekçi" butonunu göster (aynı şifre, gizli-foto.html)
+    const SPLAT_READY = ['surek'];
+    if (SPLAT_READY.includes(slug)) {
+      const fb = document.getElementById('fotobtn');
+      fb.href = '/gizli-foto.html?m=' + slug;
+      fb.style.display = '';
+    }
   }
 
   // ---- Kripto: PBKDF2-SHA256 + AES-256-GCM çözme (.enc = salt|iv|ct+tag) ----
