@@ -76,6 +76,12 @@ window.PUBS_EN = {
         ab.textContent = (en && T.abs[i]) ? T.abs[i] : ab.dataset.tr;
       }
     });
+    // Tip/indeks etiketleri (.t.ix) — Türkçe olanları EN'de çevir (ESCI/Scopus/TR Dizin/DOI aynı kalır)
+    var LBL={'Özet Bildiri':'Abstract','Bildiri':'Proceedings','Kitap Bölümü':'Book Chapter','Doktora Tezi':'Doctoral Dissertation','Açık Erişim':'Open Access','Hakemli':'Peer-reviewed'};
+    document.querySelectorAll('.t.ix').forEach(function(s){
+      if(s.dataset.tr==null) s.dataset.tr=s.textContent.trim();
+      s.textContent=(en&&LBL[s.dataset.tr])?LBL[s.dataset.tr]:s.dataset.tr;
+    });
   }
   window.applyPubLang = apply;
   window.addEventListener('langchange', apply);

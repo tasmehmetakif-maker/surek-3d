@@ -56,77 +56,112 @@
 </head>
 <body>
   <div class="bar">
-    <a href="/">← Siteye dön</a>
-    <button onclick="window.print()">⤓ PDF olarak indir</button>
+    <a href="/" data-en="← Back to site">← Siteye dön</a>
+    <button id="cvlang" style="background:#fff;color:var(--ink)">EN</button>
+    <button onclick="window.print()" data-en="⤓ Download as PDF">⤓ PDF olarak indir</button>
   </div>
   <div class="sheet">
     <div class="top">
       <img src="akif-avatar.jpg" alt="Mehmet Akif Taş" />
       <div>
-        <h1>Dr. Öğr. Üyesi Mehmet Akif Taş</h1>
-        <div class="role">Erzincan Binali Yıldırım Üniversitesi · Fen-Edebiyat Fakültesi · Coğrafya Bölümü — CBS Anabilim Dalı</div>
-        <div class="meta">
+        <h1 data-en="Assist. Prof. Dr. Mehmet Akif Taş">Dr. Öğr. Üyesi Mehmet Akif Taş</h1>
+        <div class="role" data-en="Erzincan Binali Yıldırım University · Faculty of Arts and Sciences · Department of Geography — Division of GIS">Erzincan Binali Yıldırım Üniversitesi · Fen-Edebiyat Fakültesi · Coğrafya Bölümü — CBS Anabilim Dalı</div>
+        <div class="meta" data-en='<b>Email:</b> <a href="mailto:akif.tas@erzincan.edu.tr">akif.tas@erzincan.edu.tr</a> &nbsp;·&nbsp; <b>Phone:</b> +90 446 224 3032 (ext. 40281) &nbsp;·&nbsp; <b>Location:</b> Erzincan, Türkiye<br>
+          <a href="https://orcid.org/0000-0003-3543-037X">ORCID: 0000-0003-3543-037X</a> &nbsp;·&nbsp; <a href="https://scholar.google.com/citations?user=zmL04OYAAAAJ">Google Scholar</a> &nbsp;·&nbsp; <a href="https://avesis.ebyu.edu.tr/akif.tas">AVESİS</a> &nbsp;·&nbsp; <a href="https://mehmetakiftas.com/">mehmetakiftas.com</a>'>
           <b>E-posta:</b> <a href="mailto:akif.tas@erzincan.edu.tr">akif.tas@erzincan.edu.tr</a> &nbsp;·&nbsp; <b>Telefon:</b> +90 446 224 3032 (Dahili 40281) &nbsp;·&nbsp; <b>Konum:</b> Erzincan, Türkiye<br>
           <a href="https://orcid.org/0000-0003-3543-037X">ORCID: 0000-0003-3543-037X</a> &nbsp;·&nbsp; <a href="https://scholar.google.com/citations?user=zmL04OYAAAAJ">Google Scholar</a> &nbsp;·&nbsp; <a href="https://avesis.ebyu.edu.tr/akif.tas">AVESİS</a> &nbsp;·&nbsp; <a href="https://mehmetakiftas.com/">mehmetakiftas.com</a>
         </div>
       </div>
     </div>
 
-    <h2>Profil</h2>
-    <p style="font-size:13px; color:#33414f">Coğrafi Bilgi Sistemleri (CBS) ve uzaktan algılama tabanlı fiziki ve beşeri coğrafya araştırmaları yürütüyorum. Başlıca konular: doğal afet duyarlılık analizleri (heyelan, taşkın; AHP / Frekans Oranı), arazi kullanımı ve ekosistem değişimi, göl seviyesi ve orman örtüsü değişimlerinin uydu görüntüleriyle (Landsat, Sentinel) izlenmesi, jeomorfoloji ve jeolojik–kültürel miras (travertenler). Saha verilerini İHA fotogrametrisiyle (Agisoft Metashape) yüksek çözünürlüklü 3B model, ortofoto ve DEM'e dönüştürüyorum.</p>
+    <h2 data-en="Profile">Profil</h2>
+    <p style="font-size:13px; color:#33414f" data-en="I conduct physical and human geography research based on Geographic Information Systems (GIS) and remote sensing. Main topics: natural-hazard susceptibility analyses (landslide, flood; AHP / Frequency Ratio), land-use and ecosystem change, monitoring of lake-level and forest-cover change with satellite imagery (Landsat, Sentinel), geomorphology and geological–cultural heritage (travertines). I turn field data into high-resolution 3D models, orthophotos and DEMs through UAV photogrammetry (Agisoft Metashape).">Coğrafi Bilgi Sistemleri (CBS) ve uzaktan algılama tabanlı fiziki ve beşeri coğrafya araştırmaları yürütüyorum. Başlıca konular: doğal afet duyarlılık analizleri (heyelan, taşkın; AHP / Frekans Oranı), arazi kullanımı ve ekosistem değişimi, göl seviyesi ve orman örtüsü değişimlerinin uydu görüntüleriyle (Landsat, Sentinel) izlenmesi, jeomorfoloji ve jeolojik–kültürel miras (travertenler). Saha verilerini İHA fotogrametrisiyle (Agisoft Metashape) yüksek çözünürlüklü 3B model, ortofoto ve DEM'e dönüştürüyorum.</p>
 
-    <h2>Eğitim</h2>
-    <div class="item"><span class="yr">2021</span> <span class="t" style="display:inline">Doktora — Coğrafya</span><div class="d" style="margin-left:74px">Marmara Üniversitesi</div></div>
+    <h2 data-en="Education">Eğitim</h2>
+    <div class="item"><span class="yr">2021</span> <span class="t" style="display:inline" data-en="PhD — Geography">Doktora — Coğrafya</span><div class="d" style="margin-left:74px" data-en="Marmara University">Marmara Üniversitesi</div></div>
 
-    <h2>Akademik Etki</h2>
+    <h2 data-en="Academic Impact">Akademik Etki</h2>
     <div class="stats">
-      <div><b id="ct-cit">45</b>Toplam Atıf</div>
+      <div><b id="ct-cit">45</b><span data-en="Total Citations">Toplam Atıf</span></div>
       <div><b id="ct-h">4</b>h-index</div>
       <div><b id="ct-i10">2</b>i10-index</div>
-      <div><b>23</b>Yayın</div>
-      <div><b>9</b>3B Model</div>
+      <div><b>23</b><span data-en="Publications">Yayın</span></div>
+      <div><b>9</b><span data-en="3D Models">3B Model</span></div>
     </div>
-    <div style="font-size:11px; color:#9aa7b4; margin-top:6px">Kaynak: Google Scholar / OpenAlex (canlı).</div>
+    <div style="font-size:11px; color:#9aa7b4; margin-top:6px" data-en="Source: Google Scholar / OpenAlex (live).">Kaynak: Google Scholar / OpenAlex (canlı).</div>
 
-    <h2>Araştırma Alanları</h2>
-    <div class="tags"><span>Coğrafi Bilgi Sistemleri</span><span>Uzaktan Algılama</span><span>Doğal Afetler</span><span>Heyelan Duyarlılığı</span><span>Taşkın Analizi</span><span>Jeomorfoloji</span><span>Fotogrametri</span><span>Türkiye Coğrafyası</span></div>
+    <h2 data-en="Research Areas">Araştırma Alanları</h2>
+    <div class="tags"><span data-en="Geographic Information Systems">Coğrafi Bilgi Sistemleri</span><span data-en="Remote Sensing">Uzaktan Algılama</span><span data-en="Natural Hazards">Doğal Afetler</span><span data-en="Landslide Susceptibility">Heyelan Duyarlılığı</span><span data-en="Flood Analysis">Taşkın Analizi</span><span data-en="Geomorphology">Jeomorfoloji</span><span data-en="Photogrammetry">Fotogrametri</span><span data-en="Geography of Türkiye">Türkiye Coğrafyası</span></div>
 
-    <h2>Projeler</h2>
-    <div class="item"><span class="yr">2025–2026</span><span class="t" style="display:inline"> Marmara Denizinin Güneyindeki Göl ve Sulak Alanlarda Mekansal Değişimin CBS ile Haritalandırılması ve Ağır Metal Birikiminin İncelenmesi</span><div class="d" style="margin-left:74px">Araştırmacı · BAP Araştırma Projesi · Yürütücü: Şenol C.</div></div>
-    <div class="item"><span class="yr">2025</span><span class="t" style="display:inline"> Konya-Beyşehir Yol Güzergahı Miryokefalon Savaş Yerinin Tespiti</span><div class="d" style="margin-left:74px">Araştırmacı · CB Strateji ve Bütçe Başkanlığı · Yürütücü: Çaycı A.</div></div>
-    <div class="item"><span class="yr">2024–2025</span><span class="t" style="display:inline"> Erzincan Coğrafya Atlası</span><div class="d" style="margin-left:74px">Araştırmacı · BAP Araştırma Projesi · Yürütücü: Akpınar E.</div></div>
+    <h2 data-en="Projects">Projeler</h2>
+    <div class="item"><span class="yr">2025–2026</span><span class="t" style="display:inline" data-en=" Mapping Spatial Change and Investigating Heavy-Metal Accumulation in Lakes and Wetlands South of the Sea of Marmara using GIS"> Marmara Denizinin Güneyindeki Göl ve Sulak Alanlarda Mekansal Değişimin CBS ile Haritalandırılması ve Ağır Metal Birikiminin İncelenmesi</span><div class="d" style="margin-left:74px" data-en="Researcher · BAP Research Project · PI: Şenol C.">Araştırmacı · BAP Araştırma Projesi · Yürütücü: Şenol C.</div></div>
+    <div class="item"><span class="yr">2025</span><span class="t" style="display:inline" data-en=" Determination of the Myriokephalon Battle Site on the Konya–Beyşehir Route"> Konya-Beyşehir Yol Güzergahı Miryokefalon Savaş Yerinin Tespiti</span><div class="d" style="margin-left:74px" data-en="Researcher · Presidency of Strategy and Budget · PI: Çaycı A.">Araştırmacı · CB Strateji ve Bütçe Başkanlığı · Yürütücü: Çaycı A.</div></div>
+    <div class="item"><span class="yr">2024–2025</span><span class="t" style="display:inline" data-en=" Erzincan Geography Atlas"> Erzincan Coğrafya Atlası</span><div class="d" style="margin-left:74px" data-en="Researcher · BAP Research Project · PI: Akpınar E.">Araştırmacı · BAP Araştırma Projesi · Yürütücü: Akpınar E.</div></div>
 
-    <h2>Seçilmiş Yayınlar <span style="font-weight:400; text-transform:none; letter-spacing:0; color:#9aa7b4; font-size:11px">(tümü 23 — mehmetakiftas.com/yayinlar.html)</span></h2>
+    <h2 data-en='Selected Publications <span style="font-weight:400; text-transform:none; letter-spacing:0; color:#9aa7b4; font-size:11px">(all 23 — mehmetakiftas.com/yayinlar.html)</span>'>Seçilmiş Yayınlar <span style="font-weight:400; text-transform:none; letter-spacing:0; color:#9aa7b4; font-size:11px">(tümü 23 — mehmetakiftas.com/yayinlar.html)</span></h2>
     <div class="pubs">
-      <div class="item"><div class="t">Otlukbeli (Erzincan) Travertenlerinin Jeolojik–Kültürel Miras Açısından Önemi (Doğu Anadolu)</div><div class="d">Çelik Y., Tagliasacchi E., Taş M. A., Polat P. · Türkiye Jeoloji Bülteni, 69(4), 159–190 (2026) · ESCI, TRDizin</div></div>
-      <div class="item"><div class="t">LandTrendr ve Makine Öğrenmesi ile Orman Tahribatı ve İyileşme Süreçlerinin Sınıflandırılması: Milas–Bodrum Örneği</div><div class="d">Taş M. A. · Turkish J. of Remote Sensing and GIS, 7(1), 109–124 (2026)</div></div>
-      <div class="item"><div class="t">Comparison of AHP and Frequency Ratio Methods in Landslide Susceptibility Assessment: Kemah–Kömür Stream Basin, Erzincan</div><div class="d">Taş M. A. · Ege Coğrafya Dergisi, 34(2), 337–356 (2025) · TRDizin</div></div>
-      <div class="item"><div class="t">Assessment of Potential Flood Magnitude in the Endek Stream Basin (Horasan–Erzurum) Using Unit Hydrographs</div><div class="d">Taş M. A. · Menba Su Ürünleri Fak. Dergisi, 10(3), 129–147 (2024) · TRDizin</div></div>
-      <div class="item"><div class="t">Analitik Hiyerarşi Süreci ile Of İlçesi'nde (Trabzon) Heyelan Risk Duyarlılığı Analizi</div><div class="d">Taş M. A., Şenol C., Yanık M. E. · Afet ve Risk Dergisi, 7(1), 279–302 (2024) · Scopus, TRDizin</div></div>
+      <div class="item"><div class="t" data-en="The Importance of the Otlukbeli (Erzincan) Travertines for Geological–Cultural Heritage (Eastern Anatolia)">Otlukbeli (Erzincan) Travertenlerinin Jeolojik–Kültürel Miras Açısından Önemi (Doğu Anadolu)</div><div class="d" data-en="Çelik Y., Tagliasacchi E., Taş M. A., Polat P. · Bulletin of the Geological Society of Türkiye, 69(4), 159–190 (2026) · ESCI, TRDizin">Çelik Y., Tagliasacchi E., Taş M. A., Polat P. · Türkiye Jeoloji Bülteni, 69(4), 159–190 (2026) · ESCI, TRDizin</div></div>
+      <div class="item"><div class="t" data-en="Classification of Forest Degradation and Recovery Using LandTrendr and Machine Learning: The Milas–Bodrum Case">LandTrendr ve Makine Öğrenmesi ile Orman Tahribatı ve İyileşme Süreçlerinin Sınıflandırılması: Milas–Bodrum Örneği</div><div class="d" data-en="Taş M. A. · Turkish J. of Remote Sensing and GIS, 7(1), 109–124 (2026)">Taş M. A. · Turkish J. of Remote Sensing and GIS, 7(1), 109–124 (2026)</div></div>
+      <div class="item"><div class="t" data-en="Comparison of AHP and Frequency Ratio Methods in Landslide Susceptibility Assessment: Kemah–Kömür Stream Basin, Erzincan">Comparison of AHP and Frequency Ratio Methods in Landslide Susceptibility Assessment: Kemah–Kömür Stream Basin, Erzincan</div><div class="d" data-en="Taş M. A. · Aegean Geographical Journal, 34(2), 337–356 (2025) · TRDizin">Taş M. A. · Ege Coğrafya Dergisi, 34(2), 337–356 (2025) · TRDizin</div></div>
+      <div class="item"><div class="t" data-en="Assessment of Potential Flood Magnitude in the Endek Stream Basin (Horasan–Erzurum) Using Unit Hydrographs">Assessment of Potential Flood Magnitude in the Endek Stream Basin (Horasan–Erzurum) Using Unit Hydrographs</div><div class="d" data-en="Taş M. A. · Menba J. of Fisheries Faculty, 10(3), 129–147 (2024) · TRDizin">Taş M. A. · Menba Su Ürünleri Fak. Dergisi, 10(3), 129–147 (2024) · TRDizin</div></div>
+      <div class="item"><div class="t" data-en="Landslide Risk Susceptibility Analysis in Of District (Trabzon) with the AHP Method">Analitik Hiyerarşi Süreci ile Of İlçesi'nde (Trabzon) Heyelan Risk Duyarlılığı Analizi</div><div class="d" data-en="Taş M. A., Şenol C., Yanık M. E. · Journal of Disaster and Risk, 7(1), 279–302 (2024) · Scopus, TRDizin">Taş M. A., Şenol C., Yanık M. E. · Afet ve Risk Dergisi, 7(1), 279–302 (2024) · Scopus, TRDizin</div></div>
     </div>
 
-    <h2>Verdiği Dersler</h2>
+    <h2 data-en="Courses Taught">Verdiği Dersler</h2>
     <div class="two">
-      <div class="crow">Uzaktan Algılama ve Coğrafi Bilgi Sistemleri <em>Yüksek Lisans</em></div>
-      <div class="crow">Havza Bazında Analizler ve CBS <em>Yüksek Lisans</em></div>
-      <div class="crow">Coğrafi Bilgi Sistemleri 1 <em>Lisans</em></div>
-      <div class="crow">Coğrafi Bilgi Sistemleri 2 <em>Lisans</em></div>
-      <div class="crow">CBS'de İleri Seviye Analizler <em>Lisans</em></div>
-      <div class="crow">Coğrafi Bilgi Sisteminde Analizler <em>Lisans</em></div>
-      <div class="crow">Arazi Uygulamaları <em>Lisans</em></div>
-      <div class="crow">Mesleki Fotoğrafçılık <em>Lisans</em></div>
-      <div class="crow">Mesleki Bilgisayar <em>Lisans</em></div>
-      <div class="crow">Mesleki Yabancı Dil <em>Lisans</em></div>
+      <div class="crow" data-en='Remote Sensing and Geographic Information Systems <em>MSc</em>'>Uzaktan Algılama ve Coğrafi Bilgi Sistemleri <em>Yüksek Lisans</em></div>
+      <div class="crow" data-en='Basin-Scale Analyses and GIS <em>MSc</em>'>Havza Bazında Analizler ve CBS <em>Yüksek Lisans</em></div>
+      <div class="crow" data-en='Geographic Information Systems 1 <em>BSc</em>'>Coğrafi Bilgi Sistemleri 1 <em>Lisans</em></div>
+      <div class="crow" data-en='Geographic Information Systems 2 <em>BSc</em>'>Coğrafi Bilgi Sistemleri 2 <em>Lisans</em></div>
+      <div class="crow" data-en='Advanced Analyses in GIS <em>BSc</em>'>CBS'de İleri Seviye Analizler <em>Lisans</em></div>
+      <div class="crow" data-en='Analyses in Geographic Information Systems <em>BSc</em>'>Coğrafi Bilgi Sisteminde Analizler <em>Lisans</em></div>
+      <div class="crow" data-en='Field Applications <em>BSc</em>'>Arazi Uygulamaları <em>Lisans</em></div>
+      <div class="crow" data-en='Professional Photography <em>BSc</em>'>Mesleki Fotoğrafçılık <em>Lisans</em></div>
+      <div class="crow" data-en='Professional Computing <em>BSc</em>'>Mesleki Bilgisayar <em>Lisans</em></div>
+      <div class="crow" data-en='Professional Foreign Language <em>BSc</em>'>Mesleki Yabancı Dil <em>Lisans</em></div>
     </div>
 
-    <h2>Tez Danışmanlıkları</h2>
-    <div class="item"><div class="t">Analitik Hiyerarşi Süreci (AHS) Metodu ile Terme Havzası (Samsun) Taşkın Risk Analizi</div><div class="d">Y. Ayvaz · 2023 · Yüksek Lisans</div></div>
+    <h2 data-en="Thesis Supervision">Tez Danışmanlıkları</h2>
+    <div class="item"><div class="t" data-en="Flood Risk Analysis of the Terme Basin (Samsun) with the AHP Method">Analitik Hiyerarşi Süreci (AHS) Metodu ile Terme Havzası (Samsun) Taşkın Risk Analizi</div><div class="d" data-en="Y. Ayvaz · 2023 · MSc">Y. Ayvaz · 2023 · Yüksek Lisans</div></div>
 
-    <h2>İnteraktif 3B Modeller</h2>
-    <p style="font-size:12.5px; color:#33414f">İHA fotogrametrisiyle üretilmiş 9 yüksek çözünürlüklü 3B arazi modeli (Otlukbeli Gölü, Erzincan Stadyumu, Sürek/Tomara/Konarlı Şelaleleri, Katır Buzul Gölleri, Polat Gölü, Peribacaları, Mezra) — ölçüm, ortofoto ve DEM araçlarıyla: <a style="color:var(--acc)" href="https://mehmetakiftas.com/">mehmetakiftas.com</a></p>
+    <h2 data-en="Interactive 3D Models">İnteraktif 3B Modeller</h2>
+    <p style="font-size:12.5px; color:#33414f" data-en='9 high-resolution 3D terrain models produced with UAV photogrammetry (Otlukbeli Lake, Erzincan Stadium, Sürek/Tomara/Konarlı Waterfalls, Katır Glacial Lakes, Polat Lake, Fairy Chimneys, Mezra) — with measurement, orthophoto and DEM tools: <a style="color:var(--acc)" href="https://mehmetakiftas.com/">mehmetakiftas.com</a>'>İHA fotogrametrisiyle üretilmiş 9 yüksek çözünürlüklü 3B arazi modeli (Otlukbeli Gölü, Erzincan Stadyumu, Sürek/Tomara/Konarlı Şelaleleri, Katır Buzul Gölleri, Polat Gölü, Peribacaları, Mezra) — ölçüm, ortofoto ve DEM araçlarıyla: <a style="color:var(--acc)" href="https://mehmetakiftas.com/">mehmetakiftas.com</a></p>
 
-    <div class="foot">Bu özgeçmiş AVESİS profili ve akademik kaynaklardan otomatik derlenmiştir · mehmetakiftas.com/cv.html</div>
+    <div class="foot" data-en="This CV is automatically compiled from the AVESİS profile and academic sources · mehmetakiftas.com/cv.html">Bu özgeçmiş AVESİS profili ve akademik kaynaklardan otomatik derlenmiştir · mehmetakiftas.com/cv.html</div>
   </div>
+  <script>
+    (function(){
+      function curLang(){
+        try {
+          var p = new URLSearchParams(location.search).get('lang');
+          if (p==='en'||p==='tr') return p;
+          var s = localStorage.getItem('lang');
+          if (s==='en'||s==='tr') return s;
+        } catch(e){}
+        return 'tr';
+      }
+      function apply(lang){
+        var en = (lang==='en');
+        var els = document.querySelectorAll('[data-en]');
+        for (var i=0;i<els.length;i++){
+          var el = els[i];
+          if (el.dataset.tr==null) el.dataset.tr = el.innerHTML;
+          el.innerHTML = en ? el.dataset.en : el.dataset.tr;
+        }
+        document.documentElement.lang = en ? 'en' : 'tr';
+        var btn = document.getElementById('cvlang');
+        if (btn) btn.textContent = en ? 'TR' : 'EN';
+      }
+      var lang = curLang();
+      apply(lang);
+      var btn = document.getElementById('cvlang');
+      if (btn) btn.addEventListener('click', function(){
+        lang = (lang==='en') ? 'tr' : 'en';
+        try { localStorage.setItem('lang', lang); } catch(e){}
+        apply(lang);
+      });
+    })();
+  </script>
   <script>
     try {
       fetch('https://api.openalex.org/authors/A5036448179?mailto=cbsilerianaliz@gmail.com')
