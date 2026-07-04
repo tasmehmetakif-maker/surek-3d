@@ -439,7 +439,7 @@
 
   // ===== ŞİFRELİ MOD: kilitli (yayınlanmamış) modellerin varlıkları .enc; çalışma-anı şifre-çözme =====
   const ENCRYPTED = true;
-  const NOULTRA = true;  // ultra.glb kaynağı bozuk modellerde "En Yüksek"i kaldır (max = Yüksek)
+  const NOULTRA = false;  // polat ultra.glb/ultra.enc sağlam — "En Yüksek" açık (worker slug: polat-ultra)
   if (NOULTRA) document.querySelector('.q.ultra')?.remove();
   let sessionPwd = (() => { try { return sessionStorage.getItem('dec-pwd'); } catch (e) { return null; } })();
   const _decCache = {};

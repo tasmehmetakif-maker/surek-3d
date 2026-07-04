@@ -285,7 +285,7 @@
     'ya.lead': ['Coğrafi Bilgi Sistemleri, uzaktan algılama, doğal afet duyarlılığı ve jeomorfoloji. Her kayıtta özet, DOI, konu etiketleri ve kopyalanabilir APA atıfı.',
                 'Geographic Information Systems, remote sensing, natural-hazard susceptibility and geomorphology. Each entry has an abstract, DOI, topic tags and a copyable APA citation.'],
     'ya.s.art': ['Makale', 'Articles'], 'ya.s.proc': ['Bildiri', 'Proceedings'], 'ya.s.book': ['Kitap Bölümü', 'Book Chapters'], 'ya.s.total': ['Toplam', 'Total'],
-    'ya.h.art': ['Makaleler', 'Journal Articles'], 'ya.h.proc': ['Bildiriler', 'Conference Proceedings'], 'ya.h.book': ['Kitap Bölümleri', 'Book Chapters'],
+    'ya.h.art': ['Makaleler', 'Journal Articles'], 'ya.h.proc': ['Bildiriler', 'Conference Proceedings'], 'ya.h.book': ['Kitap Bölümleri', 'Book Chapters'], 'ya.h.phd': ['Doktora Tezi', 'Doctoral Dissertation'],
   };
 
   function pickLang() {

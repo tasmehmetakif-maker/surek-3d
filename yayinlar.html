@@ -279,7 +279,7 @@
     </div></div>
 
     <!-- ===== TEZ ===== -->
-    <h2>Doktora Tezi</h2>
+    <h2><span data-i18n="ya.h.phd">Doktora Tezi</span></h2>
     <div class="pub"><div class="yr">2021</div><div class="det">
       <div class="pt">Melen Çayı Havzası'nın Coğrafi Planlanması ve Entegre Havza Yönetimi</div>
       <div class="pa">Marmara Üniversitesi Sosyal Bilimler Enstitüsü, Coğrafya Anabilim Dalı</div>
@@ -295,7 +295,7 @@
     document.querySelectorAll('.cpy').forEach(b => b.onclick = () => {
       const t = b.parentElement.querySelector('.apatext'); if(!t) return;
       navigator.clipboard.writeText(t.textContent.trim()).then(() => {
-        const o = b.textContent; b.textContent = '✓ Kopyalandı'; setTimeout(() => b.textContent = o, 1300);
+        const o = b.textContent; b.textContent = (localStorage.getItem('lang')==='en'?'✓ Copied':'✓ Kopyalandı'); setTimeout(() => b.textContent = o, 1300);
       }).catch(() => {});
     });
   </script>
