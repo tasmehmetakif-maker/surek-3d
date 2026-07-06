@@ -117,7 +117,7 @@
     $('mtitle').textContent = TITLES[slug];
     document.title = TITLES[slug] + ' — Yönetici';
     // Splat'ı hazır modellerde "✨ Foto-gerçekçi" butonunu göster (aynı şifre, gizli-foto.html)
-    const SPLAT_READY = ['surek'];
+    const SPLAT_READY = ['surek', 'mezra'];
     if (SPLAT_READY.includes(slug)) {
       const fb = document.getElementById('fotobtn');
       fb.href = '/gizli-foto.html?m=' + slug;
